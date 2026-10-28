@@ -1,7 +1,8 @@
-import { initialOwners, legalMoves, type HoleIndex, type Player } from '@etg/gebeta-rules';
+import { initialOwners, type HoleIndex, type Player } from '@etg/gebeta-rules';
 import { useMemo, useRef, useState } from 'react';
 import type { Sfx } from '../audio/sfx';
 import type { Session } from '../game/session';
+import { playableHoles } from '../game/view';
 import type { Settings, Speed } from '../state/settings';
 import { useBoardView } from './boardView';
 import { CameraRig } from './CameraRig';
@@ -31,11 +32,7 @@ export function BoardScene({ session, settings, speed, sfx, onHoleTap, onAnimati
   usePlayback({ session, speed, sfx, positions, onDone: onAnimationDone, onCounts: setCounts, onOwners: setOwners });
 
   const round = session?.match.round;
-  const playable = useMemo(() => {
-    if (!session || !round || session.phase !== 'awaiting-move' || session.paused) return new Set<HoleIndex>();
-    if (session.humanSeat !== null && round.toMove !== session.humanSeat) return new Set<HoleIndex>();
-    return new Set(legalMoves(round));
-  }, [session, round]);
+  const playable = useMemo(() => playableHoles(session), [session]);
 
   const seat = session?.humanSeat ?? (settings.fixedCamera ? 0 : (round?.toMove ?? 0));
 

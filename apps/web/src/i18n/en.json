@@ -18,6 +18,85 @@
     "soundOn": "Sound on",
     "soundOff": "Sound off"
   },
+  "picker": {
+    "level": "How strong should the computer be?",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "format": "What kind of game?",
+    "quick": "Quick game",
+    "quickHint": "One round. Whoever takes more stones wins.",
+    "match": "Full match",
+    "matchHint": "Up to 5 rounds, played for homes (ቤት).",
+    "back": "Back"
+  },
+  "toss": {
+    "prompt": "Call the coin: አንበሳ or ሰው?",
+    "promptFriend": "Player 1, call the coin: አንበሳ or ሰው?",
+    "lion": "አንበሳ · Lion",
+    "person": "ሰው · Person",
+    "sideLion": "አንበሳ (lion)",
+    "sidePerson": "ሰው (person)",
+    "landed": "It landed on {{side}}.",
+    "youStart": "You start.",
+    "computerStarts": "The computer starts.",
+    "playerStarts": "{{player}} starts.",
+    "go": "Play"
+  },
+  "players": {
+    "you": "You",
+    "computer": "Computer",
+    "p1": "Player 1",
+    "p2": "Player 2"
+  },
+  "hud": {
+    "yourTurn": "Your turn",
+    "computerThinking": "The computer is thinking…",
+    "computerPlaying": "The computer is playing…",
+    "playerTurn": "{{player}}’s turn",
+    "round": "Round {{n}} of {{total}}",
+    "extraRound": "Extra round",
+    "stones": "Stones",
+    "homes": "Homes · ቤት",
+    "menu": "Menu"
+  },
+  "menu": {
+    "title": "Paused",
+    "resume": "Continue",
+    "restart": "Start again",
+    "speed": "Speed",
+    "normal": "Normal",
+    "fast": "Fast",
+    "skip": "Skip",
+    "counts": "Stone counts",
+    "fixedCamera": "Keep the view fixed",
+    "sound": "Sound",
+    "on": "On",
+    "off": "Off",
+    "quit": "Quit to home"
+  },
+  "summary": {
+    "title": "End of round {{n}}",
+    "stones": "{{count}} stones",
+    "nextHomes": "Next round: {{count}} homes",
+    "draw": "A drawn round. Both start again with six homes.",
+    "next": "Next round"
+  },
+  "result": {
+    "draw": "It's a draw",
+    "youWon": "You won!",
+    "computerWon": "The computer won",
+    "playerWon": "{{player}} wins",
+    "score": "{{a}} – {{b}}",
+    "noHomes": "{{player}} has no homes left.",
+    "rounds_one": "{{count}} round played",
+    "rounds_other": "{{count}} rounds played",
+    "again": "Play again",
+    "home": "Home"
+  },
+  "holes": {
+    "label": "Hole {{n}}, {{count}} stones, owned by {{owner}}"
+  },
   "about": {
     "title": "About Gebeta · ገበጣ",
     "p1": "Gebeta is played across Ethiopia. In the 12-hole version there are two rows of six holes, one row for each player.",

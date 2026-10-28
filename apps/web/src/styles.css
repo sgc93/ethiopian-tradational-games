@@ -237,10 +237,297 @@ button {
   touch-action: none;
 }
 
-.temp-start {
+/* --- In-game heads-up display --- */
+
+.hud {
   position: absolute;
-  top: max(1rem, env(safe-area-inset-top));
-  left: 1rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: max(0.75rem, env(safe-area-inset-top)) 4.75rem 0.5rem 1rem;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(36, 20, 13, 0.75), rgba(36, 20, 13, 0));
+}
+
+.hud-top {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.hud-turn {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  min-height: 1.6em;
+}
+
+.hud-round {
+  margin: 0;
+  color: var(--ochre-light);
+  font-size: 0.95rem;
+}
+
+.hud-players {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.hud-player {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(36, 20, 13, 0.55);
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+  color: var(--cream-dim);
+}
+
+.hud-player.seat-0 {
+  border-color: rgba(224, 168, 90, 0.5);
+}
+
+.hud-player.seat-1 {
+  border-color: rgba(120, 140, 160, 0.5);
+}
+
+.hud-player.is-active {
+  color: var(--cream);
+  background: rgba(36, 20, 13, 0.85);
+}
+
+.hud-name {
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.hud-stat b {
+  color: var(--cream);
+}
+
+.menu-button {
+  position: absolute;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: 1rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(244, 231, 209, 0.25);
+  background: rgba(36, 20, 13, 0.7);
+}
+
+/* --- Dialogs over the board --- */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(20, 11, 7, 0.45);
+  z-index: 20;
+}
+
+.card {
+  width: min(26rem, 100%);
+  padding: 1.5rem 1.25rem;
+  border-radius: 18px;
+  background: linear-gradient(to bottom, #5a3322, #3a2216);
+  border: 1px solid rgba(244, 231, 209, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  text-align: center;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.card-note {
+  margin: 0;
+  color: var(--cream-dim);
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.card-actions .btn {
+  flex: 1 1 8rem;
+}
+
+.result-score {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.1rem 1rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.summary-row.is-winner {
+  outline: 2px solid var(--ochre);
+}
+
+.summary-name {
+  font-weight: 600;
+  grid-row: span 2;
+  align-self: center;
+}
+
+.menu-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+/* --- Coin toss --- */
+
+.coin {
+  position: relative;
+  width: 6rem;
+  height: 6rem;
+  margin: 0 auto;
+  transform-style: preserve-3d;
+  transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.coin.is-flipping.lands-lion {
+  animation: flip-to-lion 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.coin.is-flipping.lands-person {
+  animation: flip-to-person 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.coin.lands-person:not(.is-flipping) {
+  transform: rotateY(180deg);
+}
+
+.coin-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #3a2216;
+  background: radial-gradient(circle at 35% 30%, #f3d9a0, #c9963f 70%, #8c6424);
+  box-shadow: inset 0 0 0 4px rgba(90, 60, 20, 0.35);
+}
+
+.coin-person {
+  transform: rotateY(180deg);
+}
+
+@keyframes flip-to-lion {
+  from {
+    transform: rotateY(0) translateY(0);
+  }
+  50% {
+    transform: rotateY(1080deg) translateY(-1.5rem);
+  }
+  to {
+    transform: rotateY(1800deg) translateY(0);
+  }
+}
+
+@keyframes flip-to-person {
+  from {
+    transform: rotateY(0) translateY(0);
+  }
+  50% {
+    transform: rotateY(1080deg) translateY(-1.5rem);
+  }
+  to {
+    transform: rotateY(1980deg) translateY(0);
+  }
+}
+
+/* --- Pickers on the home screen --- */
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.picker h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.choice small {
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* --- Hole buttons: hidden until a keyboard focuses one --- */
+
+.hole-buttons {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.5rem max(0.5rem, env(safe-area-inset-bottom));
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+
+.hole-buttons:focus-within {
+  clip-path: none;
+  background: rgba(36, 20, 13, 0.85);
+}
+
+.hole-buttons button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(244, 231, 209, 0.3);
+  background: rgba(244, 231, 209, 0.1);
+}
+
+.hole-buttons button:disabled {
+  opacity: 0.35;
 }
 
 .count-layer {
@@ -268,7 +555,12 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn {
+  .btn,
+  .coin {
     transition: none;
+  }
+  .coin.is-flipping.lands-lion,
+  .coin.is-flipping.lands-person {
+    animation-duration: 0.01s;
   }
 }

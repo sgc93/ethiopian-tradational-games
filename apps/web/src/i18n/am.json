@@ -18,6 +18,85 @@
     "soundOn": "ድምፅ በርቷል",
     "soundOff": "ድምፅ ጠፍቷል"
   },
+  "picker": {
+    "level": "የኮምፒውተሩን ጥንካሬ ይምረጡ",
+    "easy": "ቀላል",
+    "medium": "መካከለኛ",
+    "hard": "ከባድ",
+    "format": "የጨዋታውን ዓይነት ይምረጡ",
+    "quick": "ፈጣን ጨዋታ",
+    "quickHint": "አንድ ዙር። ብዙ ጠጠር የወሰደ ያሸንፋል።",
+    "match": "ሙሉ ግጥሚያ",
+    "matchHint": "እስከ 5 ዙር፣ ለቤት የሚደረግ ጨዋታ።",
+    "back": "ይመለሱ"
+  },
+  "toss": {
+    "prompt": "አንበሳ ወይስ ሰው?",
+    "promptFriend": "ተጫዋች 1፣ አንበሳ ወይስ ሰው?",
+    "lion": "አንበሳ",
+    "person": "ሰው",
+    "sideLion": "አንበሳ",
+    "sidePerson": "ሰው",
+    "landed": "ሳንቲሙ {{side}} ሆኖ ወደቀ።",
+    "youStart": "እርስዎ ይጀምራሉ።",
+    "computerStarts": "ኮምፒውተሩ ይጀምራል።",
+    "playerStarts": "{{player}} ይጀምራል።",
+    "go": "ይጀምሩ"
+  },
+  "players": {
+    "you": "እርስዎ",
+    "computer": "ኮምፒውተር",
+    "p1": "ተጫዋች 1",
+    "p2": "ተጫዋች 2"
+  },
+  "hud": {
+    "yourTurn": "የእርስዎ ተራ",
+    "computerThinking": "ኮምፒውተሩ እያሰበ ነው…",
+    "computerPlaying": "ኮምፒውተሩ እየተጫወተ ነው…",
+    "playerTurn": "የ{{player}} ተራ",
+    "round": "ዙር {{n}} ከ{{total}}",
+    "extraRound": "ተጨማሪ ዙር",
+    "stones": "ጠጠሮች",
+    "homes": "ቤቶች",
+    "menu": "ምናሌ"
+  },
+  "menu": {
+    "title": "ቆሟል",
+    "resume": "ይቀጥሉ",
+    "restart": "እንደገና ይጀምሩ",
+    "speed": "ፍጥነት",
+    "normal": "መደበኛ",
+    "fast": "ፈጣን",
+    "skip": "በቀጥታ",
+    "counts": "የጠጠር ቁጥሮች",
+    "fixedCamera": "እይታው አይዙር",
+    "sound": "ድምፅ",
+    "on": "በርቷል",
+    "off": "ጠፍቷል",
+    "quit": "ወደ መነሻ ይመለሱ"
+  },
+  "summary": {
+    "title": "የዙር {{n}} መጨረሻ",
+    "stones": "{{count}} ጠጠሮች",
+    "nextHomes": "በቀጣዩ ዙር፦ {{count}} ቤቶች",
+    "draw": "ዙሩ በአቻ ተጠናቀቀ። ሁለቱም በስድስት ቤት እንደገና ይጀምራሉ።",
+    "next": "ቀጣይ ዙር"
+  },
+  "result": {
+    "draw": "አቻ!",
+    "youWon": "አሸንፈዋል!",
+    "computerWon": "ኮምፒውተሩ አሸነፈ",
+    "playerWon": "{{player}} አሸነፈ",
+    "score": "{{a}} – {{b}}",
+    "noHomes": "{{player}} ምንም ቤት አልቀረውም።",
+    "rounds_one": "{{count}} ዙር ተካሂዷል",
+    "rounds_other": "{{count}} ዙሮች ተካሂደዋል",
+    "again": "እንደገና ይጫወቱ",
+    "home": "መነሻ"
+  },
+  "holes": {
+    "label": "ጉድጓድ {{n}}፣ {{count}} ጠጠሮች፣ የ{{owner}}"
+  },
   "about": {
     "title": "ስለ ገበጣ",
     "p1": "ገበጣ በመላው ኢትዮጵያ ይጫወታል። ባለ 12 ጉድጓዱ ገበጣ ስድስት ስድስት ጉድጓዶች ያሏቸው ሁለት ረድፎች አሉት፤ እያንዳንዱ ተጫዋች አንድ ረድፍ ይይዛል።",

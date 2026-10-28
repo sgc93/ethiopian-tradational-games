@@ -1,10 +1,25 @@
+import type { Format, Level } from '@etg/gebeta-rules';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { controller } from '../game/instance';
+import type { Mode } from '../game/session';
+import { loadSession } from '../persistence/storage';
 import { LANGUAGES } from '../state/settings';
 import { useApp } from '../state/store';
+import { FormatPicker, LevelPicker } from '../ui/FormatPicker';
+
+type Step = null | { kind: 'level' } | { kind: 'format'; mode: Mode };
 
 export function HomeScreen() {
   const { t } = useTranslation();
   const { settings, updateSettings, setScreen } = useApp();
+  const saved = useMemo(() => loadSession(), []);
+  const [step, setStep] = useState<Step>(null);
+
+  const begin = (mode: Mode, format: Format) => {
+    controller.start(mode, format);
+    setScreen('game');
+  };
 
   return (
     <main className="screen home">
@@ -15,17 +30,40 @@ export function HomeScreen() {
         <HoleRow />
       </header>
 
-      <nav className="home-actions">
-        {/* Goes straight to the board until the game flow screens exist (plan task 11). */}
-        <button className="btn btn-primary" onClick={() => setScreen('game')}>
-          {t('home.playComputer')}
-        </button>
-        <button className="btn">{t('home.playFriend')}</button>
-        <button className="btn">{t('home.learn')}</button>
-        <button className="btn btn-quiet" onClick={() => setScreen('about')}>
-          {t('home.about')}
-        </button>
-      </nav>
+      {step === null && (
+        <nav className="home-actions">
+          {saved && (
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                controller.resume(saved);
+                setScreen('game');
+              }}
+            >
+              {t('home.continue')}
+            </button>
+          )}
+          <button className={`btn${saved ? '' : ' btn-primary'}`} onClick={() => setStep({ kind: 'level' })}>
+            {t('home.playComputer')}
+          </button>
+          <button className="btn" onClick={() => setStep({ kind: 'format', mode: { kind: 'friend' } })}>
+            {t('home.playFriend')}
+          </button>
+          <button className="btn" onClick={() => begin({ kind: 'guided' }, 'quick')}>
+            {t('home.learn')}
+          </button>
+          <button className="btn btn-quiet" onClick={() => setScreen('about')}>
+            {t('home.about')}
+          </button>
+        </nav>
+      )}
+      {step?.kind === 'level' && (
+        <LevelPicker
+          onPick={(level: Level) => setStep({ kind: 'format', mode: { kind: 'computer', level } })}
+          onBack={() => setStep(null)}
+        />
+      )}
+      {step?.kind === 'format' && <FormatPicker onPick={(f) => begin(step.mode, f)} onBack={() => setStep(null)} />}
 
       <footer className="home-settings">
         <div className="segmented" role="group" aria-label={t('languages.label')}>
