@@ -1,57 +1,43 @@
-import { initialOwners, legalMoves, newRound, type HoleIndex } from '@etg/gebeta-rules';
-import { useEffect, useMemo, useRef } from 'react';
+import { initialOwners, legalMoves, type HoleIndex, type Player } from '@etg/gebeta-rules';
+import { useMemo, useRef, useState } from 'react';
+import type { Sfx } from '../audio/sfx';
 import type { Session } from '../game/session';
-import type { Settings } from '../state/settings';
-import { CameraRig } from './CameraRig';
+import type { Settings, Speed } from '../state/settings';
 import { useBoardView } from './boardView';
+import { CameraRig } from './CameraRig';
 import { Earth } from './Earth';
 import { HoleAnchors } from './HoleAnchors';
 import { HoleHitAreas } from './HoleHitAreas';
 import { HoleMarkers } from './HoleMarkers';
-import { handSlot, pileSlot, stoneSlot, type Vec3 } from './layout';
-import { StoneTracker, type StoneLocation } from './stoneTracker';
+import type { Vec3 } from './layout';
 import { Stones } from './Stones';
-
-export function locationToPosition(loc: StoneLocation): Vec3 {
-  switch (loc.kind) {
-    case 'hole':
-      return stoneSlot(loc.hole, loc.slot);
-    case 'hand':
-      return handSlot(loc.hole, loc.index);
-    case 'pile':
-      return pileSlot(loc.player, loc.index);
-  }
-}
-
-const IDLE_ROUND = newRound(initialOwners(), 0);
+import { usePlayback } from './usePlayback';
 
 interface Props {
   session: Session | null;
   settings: Settings;
+  speed: Speed;
+  sfx: Sfx;
   onHoleTap(hole: HoleIndex): void;
   onAnimationDone(turnId: number): void;
 }
 
+const setCounts = (counts: number[]) => useBoardView.setState({ counts });
+
 /** The board, its stones and the camera. Without a session it shows a fresh board at rest. */
-export function BoardScene({ session, settings, onHoleTap, onAnimationDone }: Props) {
-  const round = session?.match.round ?? IDLE_ROUND;
-  const tracker = useMemo(() => new StoneTracker(round), [round]);
+export function BoardScene({ session, settings, speed, sfx, onHoleTap, onAnimationDone }: Props) {
   const positions = useRef<Vec3[]>([]);
-  positions.current = useMemo(() => tracker.locations().map(locationToPosition), [tracker]);
-  useEffect(() => useBoardView.setState({ counts: tracker.holeCounts() }), [tracker]);
+  const [owners, setOwners] = useState<readonly Player[]>(initialOwners);
+  usePlayback({ session, speed, sfx, positions, onDone: onAnimationDone, onCounts: setCounts, onOwners: setOwners });
 
-  // Until the sowing animation exists, the board jumps straight to the new position.
-  useEffect(() => {
-    if (session?.phase === 'animating') onAnimationDone(session.turnId);
-  }, [session?.phase, session?.turnId, onAnimationDone]);
-
+  const round = session?.match.round;
   const playable = useMemo(() => {
-    if (!session || session.phase !== 'awaiting-move' || session.paused) return new Set<HoleIndex>();
+    if (!session || !round || session.phase !== 'awaiting-move' || session.paused) return new Set<HoleIndex>();
     if (session.humanSeat !== null && round.toMove !== session.humanSeat) return new Set<HoleIndex>();
     return new Set(legalMoves(round));
   }, [session, round]);
 
-  const seat = session?.humanSeat ?? (settings.fixedCamera ? 0 : round.toMove);
+  const seat = session?.humanSeat ?? (settings.fixedCamera ? 0 : (round?.toMove ?? 0));
 
   return (
     <>
@@ -71,7 +57,7 @@ export function BoardScene({ session, settings, onHoleTap, onAnimationDone }: Pr
       />
       <Earth />
       <Stones positions={positions} />
-      <HoleMarkers owners={round.owners} />
+      <HoleMarkers owners={owners} />
       <HoleHitAreas playable={playable} onTap={onHoleTap} />
       <HoleAnchors />
       <CameraRig seat={seat} />

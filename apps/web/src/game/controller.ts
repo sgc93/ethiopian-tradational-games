@@ -76,7 +76,7 @@ export function createController({ ai, persistence, rng, onChange }: Deps): Cont
   const begin = (mode: Mode, match: MatchState, phase: Session['phase']) => {
     epoch++;
     held = null;
-    set({ mode, match, humanSeat: seatFor(mode), phase, turnEvents: [], turnId: 0, paused: false });
+    set({ id: epoch, mode, match, humanSeat: seatFor(mode), phase, turnEvents: [], turnId: 0, paused: false });
   };
 
   const play = (hole: HoleIndex) => {

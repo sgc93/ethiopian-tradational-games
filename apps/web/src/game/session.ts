@@ -13,6 +13,8 @@ export interface SavedSession {
 export type Phase = 'toss' | 'awaiting-move' | 'animating' | 'thinking' | 'round-summary' | 'finished';
 
 export interface Session {
+  /** Changes when a session starts, restarts or resumes, so the board knows to start afresh. */
+  id: number;
   mode: Mode;
   match: MatchState;
   /** The seat a human plays; null when both seats are human (friend mode). */

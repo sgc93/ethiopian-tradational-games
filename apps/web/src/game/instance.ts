@@ -14,3 +14,6 @@ export const controller = createController({
   rng: Math.random,
   onChange: (session) => useSession.setState({ session }),
 });
+
+// A handle for poking at the game from the browser console while developing.
+if (import.meta.env.DEV) Object.assign(window, { __gebeta: { controller, session: () => useSession.getState().session } });
