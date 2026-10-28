@@ -6,6 +6,8 @@ import { controller, useSession } from '../game/instance';
 import { BoardScene } from '../scene/BoardScene';
 import { CountLabels } from '../scene/CountLabels';
 import { useApp } from '../state/store';
+import { GuidedOverlay } from '../tutorial/GuidedOverlay';
+import { useGuide } from '../tutorial/useGuide';
 import { CoinToss } from '../ui/CoinToss';
 import { GameMenu } from '../ui/GameMenu';
 import { HoleButtons } from '../ui/HoleButtons';
@@ -37,6 +39,8 @@ export function GameScreen() {
     else if (session.phase === 'toss') setTossOpen(true);
   }, [session, setScreen]);
 
+  const guide = useGuide(session, controller.setPaused);
+
   const goHome = () => {
     controller.quit();
     setScreen('home');
@@ -51,6 +55,7 @@ export function GameScreen() {
           settings={settings}
           speed={speed}
           sfx={sfx}
+          suggested={guide.suggested}
           onHoleTap={controller.playHole}
           onAnimationDone={controller.animationDone}
         />
@@ -85,7 +90,8 @@ export function GameScreen() {
             />
           )}
           {session.phase === 'round-summary' && <RoundSummary session={session} onNext={controller.continueAfterSummary} />}
-          {session.phase === 'finished' && (
+          {guide.active && <GuidedOverlay guide={guide} session={session} onLeave={goHome} />}
+          {session.phase === 'finished' && !guide.busy && (
             <ResultScreen session={session} onPlayAgain={controller.restart} onHome={goHome} />
           )}
         </>

@@ -19,6 +19,8 @@ interface Props {
   settings: Settings;
   speed: Speed;
   sfx: Sfx;
+  /** A hole to draw extra attention to (the guided game's suggestion). */
+  suggested?: HoleIndex | null;
   onHoleTap(hole: HoleIndex): void;
   onAnimationDone(turnId: number): void;
 }
@@ -26,7 +28,7 @@ interface Props {
 const setCounts = (counts: number[]) => useBoardView.setState({ counts });
 
 /** The board, its stones and the camera. Without a session it shows a fresh board at rest. */
-export function BoardScene({ session, settings, speed, sfx, onHoleTap, onAnimationDone }: Props) {
+export function BoardScene({ session, settings, speed, sfx, suggested = null, onHoleTap, onAnimationDone }: Props) {
   const positions = useRef<Vec3[]>([]);
   const [owners, setOwners] = useState<readonly Player[]>(initialOwners);
   usePlayback({ session, speed, sfx, positions, onDone: onAnimationDone, onCounts: setCounts, onOwners: setOwners });
@@ -55,7 +57,7 @@ export function BoardScene({ session, settings, speed, sfx, onHoleTap, onAnimati
       <Earth />
       <Stones positions={positions} />
       <HoleMarkers owners={owners} />
-      <HoleHitAreas playable={playable} onTap={onHoleTap} />
+      <HoleHitAreas playable={playable} suggested={suggested} onTap={onHoleTap} />
       <HoleAnchors />
       <CameraRig seat={seat} />
     </>

@@ -10,9 +10,18 @@ const SHAKE_MS = 380;
  * Invisible tap targets over the holes. Playable holes glow softly; tapping any other hole gives
  * it a brief gentle shake and does nothing else.
  */
-export function HoleHitAreas({ playable, onTap }: { playable: ReadonlySet<HoleIndex>; onTap(hole: HoleIndex): void }) {
+export function HoleHitAreas({
+  playable,
+  suggested = null,
+  onTap,
+}: {
+  playable: ReadonlySet<HoleIndex>;
+  suggested?: HoleIndex | null;
+  onTap(hole: HoleIndex): void;
+}) {
   const glows = useRef<(THREE.Mesh | null)[]>([]);
   const shakes = useRef<(THREE.Mesh | null)[]>([]);
+  const pulse = useRef<THREE.Mesh | null>(null);
   const shakeStart = useRef<number[]>(Array(HOLES).fill(-Infinity));
 
   useFrame(({ clock }) => {
@@ -20,6 +29,11 @@ export function HoleHitAreas({ playable, onTap }: { playable: ReadonlySet<HoleIn
     glows.current.forEach((g) => {
       if (g) (g.material as THREE.MeshBasicMaterial).opacity = 0.35 + 0.25 * Math.sin(t * 3);
     });
+    if (pulse.current) {
+      const p = (t * 0.9) % 1;
+      pulse.current.scale.setScalar(1 + p * 0.45);
+      (pulse.current.material as THREE.MeshBasicMaterial).opacity = 0.85 * (1 - p);
+    }
     shakes.current.forEach((s, hole) => {
       if (!s) return;
       const age = (performance.now() - shakeStart.current[hole]!) / SHAKE_MS;
@@ -38,6 +52,17 @@ export function HoleHitAreas({ playable, onTap }: { playable: ReadonlySet<HoleIn
 
   return (
     <>
+      {suggested !== null && playable.has(suggested) && (
+        // A ring that keeps rippling outward from the suggested hole.
+        <mesh
+          ref={pulse}
+          rotation-x={-Math.PI / 2}
+          position={[holeCenter(suggested)[0], 0.04, holeCenter(suggested)[2]]}
+        >
+          <ringGeometry args={[HOLE_RADIUS * 1.15, HOLE_RADIUS * 1.32, 48]} />
+          <meshBasicMaterial color="#fff3c4" transparent opacity={0.8} depthWrite={false} />
+        </mesh>
+      )}
       {Array.from({ length: HOLES }, (_, hole) => {
         const [cx, , cz] = holeCenter(hole);
         return (

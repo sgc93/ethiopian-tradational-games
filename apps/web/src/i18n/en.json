@@ -97,6 +97,49 @@
   "holes": {
     "label": "Hole {{n}}, {{count}} stones, owned by {{owner}}"
   },
+  "guide": {
+    "leave": "Leave lesson",
+    "gotIt": "Got it",
+    "hint": {
+      "sow": "Tap one of your glowing holes to pick up its stones and sow them.",
+      "relay": "Try the pulsing hole: its last stone lands on other stones, so you carry on.",
+      "stop-empty": "Try the pulsing hole: its sowing ends in an empty hole.",
+      "capture-last": "Try the pulsing hole: its last stone makes four, a ቤት for you.",
+      "capture-owner": "Try the pulsing hole: a stone on the way makes four for that hole’s owner.",
+      "round-end": "Keep playing until one side runs out of stones.",
+      "any": "Any glowing hole will do. Watch what the stones do."
+    },
+    "card": {
+      "sow": {
+        "title": "Sowing",
+        "body": "Pick up every stone in one of your holes and drop them one by one into the holes that follow, going round the board."
+      },
+      "relay": {
+        "title": "Carrying on",
+        "body": "If your last stone lands in a hole that already has stones, pick them all up and keep sowing."
+      },
+      "stop-empty": {
+        "title": "Stopping",
+        "body": "When your last stone lands in an empty hole, your turn ends."
+      },
+      "capture-last": {
+        "title": "Taking a ቤት (home)",
+        "body": "If your last stone makes exactly four, you take those four, wherever the hole is. Four stones are a ቤት. Your turn ends."
+      },
+      "capture-owner": {
+        "title": "The owner’s four",
+        "body": "If a stone in the middle of a sowing makes exactly four, the four go to whoever owns that hole, even when it is not their turn."
+      },
+      "round-end": {
+        "title": "The end of the round",
+        "body": "When a player has no stones left in their holes, the round ends and the other player takes every stone still on the board."
+      },
+      "homes": {
+        "title": "Playing for homes (ቤት)",
+        "body": "In a full match, every four stones you take is a home for the next round. If this were a full match, you would own {{you}} homes next round and the computer {{them}}."
+      }
+    }
+  },
   "about": {
     "title": "About Gebeta · ገበጣ",
     "p1": "Gebeta is played across Ethiopia. In the 12-hole version there are two rows of six holes, one row for each player.",
