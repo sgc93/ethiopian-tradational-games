@@ -16,7 +16,10 @@ export function HomeScreen() {
       </header>
 
       <nav className="home-actions">
-        <button className="btn btn-primary">{t('home.playComputer')}</button>
+        {/* Goes straight to the board until the game flow screens exist (plan task 11). */}
+        <button className="btn btn-primary" onClick={() => setScreen('game')}>
+          {t('home.playComputer')}
+        </button>
         <button className="btn">{t('home.playFriend')}</button>
         <button className="btn">{t('home.learn')}</button>
         <button className="btn btn-quiet" onClick={() => setScreen('about')}>

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { AboutScreen } from './screens/AboutScreen';
+import { GameScreen } from './screens/GameScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { NoWebGL } from './screens/NoWebGL';
 import { useApp } from './state/store';
@@ -12,6 +13,8 @@ export function App() {
   switch (screen) {
     case 'about':
       return <AboutScreen />;
+    case 'game':
+      return <GameScreen />;
     default:
       return <HomeScreen />;
   }
