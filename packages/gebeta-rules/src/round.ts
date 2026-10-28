@@ -14,14 +14,26 @@ export function initialOwners(): Player[] {
 }
 
 export function newRound(owners: readonly Player[], starter: Player): RoundState {
+  const board: number[] = Array(HOLES).fill(STONES_PER_HOLE);
   return {
-    board: Array(HOLES).fill(STONES_PER_HOLE),
+    board,
     owners: [...owners],
     captured: [0, 0],
     toMove: starter,
     starter,
     over: false,
+    seen: { [positionKey(board, starter)]: 1 },
   };
+}
+
+/**
+ * PROVISIONAL rule, awaiting the owner: a position seen this many times means the stones are
+ * only going round in circles, so the round ends.
+ */
+export const POSITION_REPEATS = 3;
+
+function positionKey(board: readonly number[], toMove: Player): string {
+  return `${board.join(',')}|${toMove}`;
 }
 
 /** Holes the player to move owns that hold at least one stone. */
@@ -93,13 +105,27 @@ export function applyMove(state: RoundState, hole: HoleIndex): { state: RoundSta
   }
 
   const toMove = (1 - mover) as Player;
-  const next: RoundState = { ...state, board, captured, toMove };
-  if (legalMoves(next).length > 0) return { state: next, events };
+  const posKey = positionKey(board, toMove);
+  const visits = (state.seen[posKey] ?? 0) + 1;
+  const next: RoundState = { ...state, board, captured, toMove, seen: { ...state.seen, [posKey]: visits } };
 
-  // §4.3: the player to move owns no stones, so the round ends and the other player sweeps the board.
+  let sweptBy: Player;
+  let reason: 'no-moves' | 'repetition';
+  if (legalMoves(next).length === 0) {
+    // §4.3: the player to move owns no stones, so the other player sweeps the board.
+    [sweptBy, reason] = [mover, 'no-moves'];
+  } else if (visits >= POSITION_REPEATS) {
+    // Provisional: whoever holds more of the remaining stones takes them; the mover on a tie.
+    let held = 0;
+    for (let h = 0; h < HOLES; h++) held += state.owners[h] === mover ? board[h]! : -board[h]!;
+    [sweptBy, reason] = [held >= 0 ? mover : toMove, 'repetition'];
+  } else {
+    return { state: next, events };
+  }
+
   const count = board.reduce((a, b) => a + b, 0);
-  captured[mover] += count;
+  captured[sweptBy] += count;
   board.fill(0);
-  events.push({ type: 'round-end', sweptBy: mover, count, totals: [captured[0], captured[1]] });
+  events.push({ type: 'round-end', sweptBy, count, totals: [captured[0], captured[1]], reason });
   return { state: { ...next, over: true }, events };
 }

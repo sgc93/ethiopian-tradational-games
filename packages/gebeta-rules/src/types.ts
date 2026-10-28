@@ -18,6 +18,8 @@ export interface RoundState {
   /** Who started this round. */
   readonly starter: Player;
   readonly over: boolean;
+  /** How often each position (board + player to move) has come up this round. */
+  readonly seen: Readonly<Record<string, number>>;
 }
 
 export type TurnEvent =
@@ -26,7 +28,14 @@ export type TurnEvent =
   | { type: 'drop'; hole: HoleIndex; countAfter: number }
   | { type: 'capture'; hole: HoleIndex; by: Player; rule: 'last-stone' | 'owner' }
   | { type: 'turn-end'; reason: 'empty' | 'capture' | 'loop' }
-  | { type: 'round-end'; sweptBy: Player; count: number; totals: readonly [number, number] };
+  | {
+      type: 'round-end';
+      sweptBy: Player;
+      count: number;
+      totals: readonly [number, number];
+      /** 'repetition': the same position came back a third time (provisional rule, see positionRepeats). */
+      reason: 'no-moves' | 'repetition';
+    };
 
 export class IllegalMoveError extends Error {
   override name = 'IllegalMoveError';

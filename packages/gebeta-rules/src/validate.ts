@@ -20,6 +20,7 @@ export function isValidMatchState(x: unknown): x is MatchState {
   if (!Array.isArray(captured) || captured.length !== 2 || !captured.every(isCount)) return false;
   if (!isPlayer(r.toMove) || !isPlayer(r.starter) || typeof r.over !== 'boolean') return false;
   if (captured.some((c) => c % STONES_PER_HOLE !== 0)) return false;
+  if (!isObject(r.seen) || !Object.values(r.seen).every(isCount)) return false;
 
   const total = [...board, ...captured].reduce((a: number, b: number) => a + b, 0);
   return total === TOTAL_STONES;

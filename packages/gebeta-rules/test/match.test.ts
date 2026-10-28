@@ -22,6 +22,7 @@ const done = (totals: [number, number], starter: Player = 0): RoundState => ({
   toMove: 1,
   starter,
   over: true,
+  seen: {},
 });
 
 test('A winning 28–20 takes hole 6', () =>

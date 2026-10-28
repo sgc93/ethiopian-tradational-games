@@ -11,5 +11,5 @@ export function roundFrom(
   if (board.length !== 12 || owners.length !== 12 || total !== TOTAL_STONES) {
     throw new Error(`bad fixture: ${board.length} holes, ${total} stones`);
   }
-  return { board, owners, captured, toMove, starter: 0, over: false };
+  return { board, owners, captured, toMove, starter: 0, over: false, seen: {} };
 }
