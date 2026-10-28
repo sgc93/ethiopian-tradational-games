@@ -27,6 +27,7 @@ export function newRound(owners: readonly Player[], starter: Player): RoundState
 /** Holes the player to move owns that hold at least one stone. */
 export function legalMoves(state: RoundState): HoleIndex[] {
   const moves: HoleIndex[] = [];
+  if (state.over) return moves;
   for (let h = 0; h < HOLES; h++) {
     if (state.owners[h] === state.toMove && (state.board[h] ?? 0) > 0) moves.push(h);
   }
@@ -91,6 +92,14 @@ export function applyMove(state: RoundState, hole: HoleIndex): { state: RoundSta
     events.push({ type: 'pickup', hole: pos, count, relay: true });
   }
 
-  const next: RoundState = { ...state, board, captured, toMove: (1 - mover) as Player };
-  return { state: next, events };
+  const toMove = (1 - mover) as Player;
+  const next: RoundState = { ...state, board, captured, toMove };
+  if (legalMoves(next).length > 0) return { state: next, events };
+
+  // §4.3: the player to move owns no stones, so the round ends and the other player sweeps the board.
+  const count = board.reduce((a, b) => a + b, 0);
+  captured[mover] += count;
+  board.fill(0);
+  events.push({ type: 'round-end', sweptBy: mover, count, totals: [captured[0], captured[1]] });
+  return { state: { ...next, over: true }, events };
 }
