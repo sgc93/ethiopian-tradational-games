@@ -1,0 +1,238 @@
+:root {
+  --earth-deep: #2e1a12;
+  --earth: #4a2a1c;
+  --earth-warm: #6b3a22;
+  --clay: #8c4f2d;
+  --ochre: #c98a3d;
+  --ochre-light: #e2ad62;
+  --cream: #f4e7d1;
+  --cream-dim: #d9c6a8;
+  --pebble-1: #b8afa3;
+  --pebble-2: #7d7268;
+  --pebble-3: #e6ddcf;
+  --pebble-4: #5c5249;
+  --focus: #ffd27a;
+  --radius: 14px;
+  font-family: 'Noto Sans Ethiopic', system-ui, sans-serif;
+  color: var(--cream);
+  background: var(--earth-deep);
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(120% 80% at 50% 0%, var(--earth-warm) 0%, var(--earth) 45%, var(--earth-deep) 100%);
+  min-height: 100dvh;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.screen {
+  min-height: 100dvh;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: max(2rem, env(safe-area-inset-top)) 1rem max(1.5rem, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.home {
+  justify-content: space-between;
+}
+
+.home-title {
+  text-align: center;
+}
+
+.home-title h1 {
+  font-size: clamp(3.5rem, 18vw, 5.5rem);
+  font-weight: 600;
+  line-height: 1;
+  margin: 0.5rem 0 0;
+  letter-spacing: 0.02em;
+  text-shadow: 0 3px 0 var(--earth-deep);
+}
+
+.home-latin {
+  margin: 0.4rem 0 0;
+  font-size: 1.25rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ochre-light);
+}
+
+.home-tagline {
+  margin: 0.75rem 0 0;
+  color: var(--cream-dim);
+}
+
+.hole-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.hole {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #1f110b 0%, var(--earth-deep) 60%, var(--clay) 100%);
+  box-shadow:
+    inset 0 4px 6px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 225, 190, 0.25);
+  display: grid;
+  grid-template-columns: repeat(2, 0.7rem);
+  place-content: center;
+  gap: 0.15rem;
+}
+
+.pebble {
+  width: 0.7rem;
+  height: 0.55rem;
+  border-radius: 50% 45% 55% 40%;
+  box-shadow: inset -1px -2px 2px rgba(0, 0, 0, 0.35);
+}
+
+.pebble-0 {
+  background: var(--pebble-1);
+}
+.pebble-1 {
+  background: var(--pebble-2);
+}
+.pebble-2 {
+  background: var(--pebble-3);
+}
+.pebble-3 {
+  background: var(--pebble-4);
+}
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn {
+  min-height: 3.25rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(244, 231, 209, 0.18);
+  background: rgba(244, 231, 209, 0.08);
+  font-size: 1.1rem;
+  text-align: center;
+  transition:
+    background 120ms ease,
+    transform 120ms ease;
+}
+
+.btn:hover {
+  background: rgba(244, 231, 209, 0.14);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--ochre);
+  border-color: var(--ochre-light);
+  color: var(--earth-deep);
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: var(--ochre-light);
+}
+
+.btn-quiet {
+  background: transparent;
+  border-color: transparent;
+  color: var(--cream-dim);
+}
+
+.home-settings {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.segmented {
+  display: inline-flex;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.2rem;
+}
+
+.segmented button,
+.toggle {
+  min-height: 2.75rem;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--cream-dim);
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--cream);
+  color: var(--earth-deep);
+  font-weight: 600;
+}
+
+.toggle {
+  border: 1px solid rgba(244, 231, 209, 0.2);
+}
+
+.toggle[aria-pressed='false'] {
+  opacity: 0.7;
+}
+
+.about {
+  justify-content: center;
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.about h1 {
+  font-size: 1.75rem;
+  margin: 0;
+}
+
+.about p {
+  margin: 0;
+  color: var(--cream-dim);
+}
+
+.about .btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+}

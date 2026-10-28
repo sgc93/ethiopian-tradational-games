@@ -1,0 +1,37 @@
+{
+  "app": {
+    "title": "Gebeta",
+    "titleGeez": "ገበጣ",
+    "tagline": "The Ethiopian game of stones and holes"
+  },
+  "languages": {
+    "am": "አማርኛ",
+    "en": "English",
+    "label": "Language"
+  },
+  "home": {
+    "playComputer": "Play against the computer",
+    "playFriend": "Play with a friend",
+    "learn": "Learn to play",
+    "about": "About Gebeta · ገበጣ",
+    "continue": "Continue your game",
+    "soundOn": "Sound on",
+    "soundOff": "Sound off"
+  },
+  "about": {
+    "title": "About Gebeta · ገበጣ",
+    "p1": "Gebeta is played across Ethiopia. In the 12-hole version there are two rows of six holes, one row for each player.",
+    "p2": "Children scoop the holes into the earth and play with small pebbles, four in every hole to start.",
+    "p3": "You sow the stones around the board one by one. Stones are taken in fours, and four stones together are called a ቤት (bet, “home”).",
+    "back": "Back"
+  },
+  "noWebgl": {
+    "title": "This device can’t show the 3D board",
+    "body": "Gebeta needs WebGL 2, which this browser doesn’t offer. Try an up-to-date Chrome, Safari, Edge or Firefox."
+  },
+  "terms": {
+    "home": "ቤት (home)",
+    "lion": "አንበሳ (lion)",
+    "person": "ሰው (person)"
+  }
+}
