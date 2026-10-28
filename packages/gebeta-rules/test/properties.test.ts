@@ -46,4 +46,4 @@ test('stones, captures and ownership stay consistent through random play', () =>
     ),
     { numRuns: 300 },
   );
-});
+}, 60_000); // 300 random games; well over Vitest's 5 s default when both packages test at once

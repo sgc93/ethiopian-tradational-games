@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --port 4173",
     "check:size": "node scripts/check-size.mjs",
+    "e2e": "playwright test",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
