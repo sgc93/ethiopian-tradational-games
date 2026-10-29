@@ -1,0 +1,41 @@
+[
+  {
+    "id": "wood",
+    "source": "../../docs/design/board/images/17-wood-texture.jpg",
+    "size": 1024,
+    "seamless": true,
+    "grade": {
+      "tint": [
+        0.82,
+        0.66,
+        0.5
+      ],
+      "saturation": 1.15
+    },
+    "outputs": [
+      "color",
+      "normal",
+      "rough"
+    ],
+    "normalSize": 512,
+    "normalStrength": 1.6,
+    "roughSize": 512,
+    "rough": {
+      "base": 0.45,
+      "range": 0.2
+    }
+  },
+  {
+    "id": "band",
+    "source": "../../docs/design/board/blueprint/band-height-tile.svg",
+    "size": [
+      512,
+      544
+    ],
+    "seamless": false,
+    "outputs": [
+      "normal"
+    ],
+    "normalStrength": 3
+  }
+]

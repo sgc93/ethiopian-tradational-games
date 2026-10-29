@@ -1,0 +1,7 @@
+{
+  "note": "Every texture the scene uses: where its original came from and how it was accepted. Processed outputs are in apps/web/public/textures (built by tools/assets).",
+  "textures": [
+    { "id": "wood", "source": "docs/design/board/images/17-wood-texture.jpg", "tool": "owner reference image", "date": "2026-10-29", "status": "accepted", "check": "tiled 3 x 3, no seam" },
+    { "id": "band", "source": "docs/design/board/blueprint/band-height-tile.svg", "tool": "blueprint height map", "date": "2026-10-29", "status": "accepted", "check": "tiled 3 x 3, repeats align" }
+  ]
+}
