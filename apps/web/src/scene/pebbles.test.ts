@@ -10,15 +10,15 @@ test('pebbles vary and stay pebble-sized', () => {
     g.computeBoundingBox();
     const size = g.boundingBox!.getSize(new THREE.Vector3());
     const largest = Math.max(size.x, size.y, size.z);
-    expect(largest).toBeGreaterThanOrEqual(0.6 * STONE_SIZE);
-    expect(largest).toBeLessThanOrEqual(1.4 * STONE_SIZE);
+    expect(largest).toBeGreaterThanOrEqual(0.8 * STONE_SIZE);
+    expect(largest).toBeLessThanOrEqual(1.35 * STONE_SIZE);
     expect(size.y).toBeLessThan(largest); // flattened, like a real pebble
   }
   const arrays = gs.map((g) => Array.from(g.getAttribute('position').array).join(','));
   expect(new Set(arrays).size).toBe(6);
 });
 
-test('pebble colours are natural greys and browns', () => {
-  expect(PEBBLE_COLOURS.length).toBeGreaterThanOrEqual(6);
+test('six pebble tones from the reference pebbles', () => {
+  expect(PEBBLE_COLOURS).toHaveLength(6);
   for (const c of PEBBLE_COLOURS) expect(c).toMatch(/^#[0-9a-f]{6}$/);
 });
