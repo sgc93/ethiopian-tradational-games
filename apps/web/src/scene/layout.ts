@@ -1,12 +1,18 @@
 import type { HoleIndex, Player } from '@etg/gebeta-rules';
 import * as THREE from 'three';
+import { BLUEPRINT } from './board/blueprint';
 
-// World units, y up. Player A sits at +z looking towards −z; player B sits at −z.
-export const HOLE_SPACING = 1.0;
-export const ROW_GAP = 1.15;
-export const HOLE_RADIUS = 0.4;
-export const HOLE_DEPTH = 0.22;
-export const STONE_SIZE = 0.11;
+// World units (p), y up: 1 p = one cup pitch = 50 mm. Player A sits at +z looking towards −z; player B
+// sits at −z. A's store is at +x. The board's top face is y = 0 and the ground is under the feet.
+export const HOLE_SPACING = BLUEPRINT.cups.pitch;
+export const ROW_GAP = BLUEPRINT.cups.rowZ * 2;
+export const HOLE_RADIUS = BLUEPRINT.cups.diameter / 2;
+export const HOLE_DEPTH = BLUEPRINT.cups.depth;
+export const STORE_X = BLUEPRINT.stores.x;
+export const STORE_RADIUS = BLUEPRINT.stores.diameter / 2;
+export const STORE_DEPTH = BLUEPRINT.stores.depth;
+export const STONE_SIZE = BLUEPRINT.stones.diameter;
+export const GROUND_Y = -(BLUEPRINT.body.thickness + BLUEPRINT.feet.height);
 
 export type Vec3 = [number, number, number];
 
@@ -20,13 +26,18 @@ export function holeCenter(hole: HoleIndex): Vec3 {
     : [2.5 - (hole - 6) * HOLE_SPACING, 0, -ROW_GAP / 2];
 }
 
+/** Each player's store cup, at their own right-hand end of the board. */
+export function storeCenter(player: Player): Vec3 {
+  return [player === 0 ? STORE_X : -STORE_X, 0, 0];
+}
+
 const LIP_WIDTH = 0.3 * HOLE_RADIUS;
 const LIP_HEIGHT = 0.025;
 
-/** Height of the earth at distance `d` from a hole centre: a scooped bowl with a low raised lip. */
-export function bowlSurfaceY(d: number): number {
-  if (d < HOLE_RADIUS) return -HOLE_DEPTH * Math.sqrt(1 - (d / HOLE_RADIUS) ** 2);
-  if (d < HOLE_RADIUS + LIP_WIDTH) return LIP_HEIGHT * Math.sin((Math.PI * (d - HOLE_RADIUS)) / LIP_WIDTH);
+/** Height of a bowl's surface at distance `d` from its centre: a spherical cap with a low raised lip. */
+export function bowlSurfaceY(d: number, radius = HOLE_RADIUS, depth = HOLE_DEPTH): number {
+  if (d < radius) return -depth * Math.sqrt(1 - (d / radius) ** 2);
+  if (d < radius + LIP_WIDTH) return LIP_HEIGHT * Math.sin((Math.PI * (d - radius)) / LIP_WIDTH);
   return 0;
 }
 
@@ -40,7 +51,8 @@ export function hash2(a: number, b: number): number {
 
 const PER_LAYER = 7;
 const RING_ANGLES = [0, 120, 240, 60, 180, 300];
-const RING_RADIUS = 0.12;
+const RING_RADIUS = 0.2;
+const LAYER_HEIGHT = STONE_SIZE * 0.6;
 
 /**
  * Where the `slot`-th stone in a hole rests: a centre stone and a ring of six per layer, each
@@ -55,33 +67,50 @@ export function stoneSlot(hole: HoleIndex, slot: number): Vec3 {
   const x = cx + r * Math.cos(angle) + (hash2(hole, slot) - 0.5) * 0.02;
   const z = cz + r * Math.sin(angle) + (hash2(slot, hole) - 0.5) * 0.02;
   const d = Math.hypot(x - cx, z - cz);
-  return [x, bowlSurfaceY(d) + STONE_SIZE * 0.5 + layer * STONE_SIZE * 0.75, z];
+  return [x, bowlSurfaceY(d) + STONE_SIZE * 0.45 + layer * LAYER_HEIGHT, z];
 }
 
-const PILE_Z = ROW_GAP / 2 + 0.95;
-const GROUP_STEP = 0.44;
+const STORE_PER_LAYER = 9;
+const STORE_RING = 0.3;
 
-/** Captured stones lie on the ground beside their player's row, in groups of four (homes). */
-export function pileSlot(player: Player, index: number): Vec3 {
-  const group = Math.floor(index / 4);
-  const k = index % 4;
-  const gx = -2.42 + group * GROUP_STEP + (k % 2 ? 0.05 : -0.05);
-  const gz = PILE_Z + (k < 2 ? -0.05 : 0.05);
-  // Mirrored for B, so each player's pile starts at their own left.
-  return player === 0 ? [gx, STONE_SIZE * 0.42, gz] : [-gx, STONE_SIZE * 0.42, -gz];
+/** Captured stones lie in their owner's store cup: a centre stone and a ring of eight per layer. */
+export function storeSlot(player: Player, index: number): Vec3 {
+  const [cx, , cz] = storeCenter(player);
+  const layer = Math.floor(index / STORE_PER_LAYER);
+  const k = index % STORE_PER_LAYER;
+  const r = k === 0 ? 0 : STORE_RING * Math.max(0.5, 1 - 0.12 * layer);
+  const angle = (((k - 1) * 45 + layer * 20) * Math.PI) / 180;
+  // The jitter depends on the index alone, so B's store mirrors A's exactly.
+  const x = cx + (r * Math.cos(angle) + (hash2(index, 50) - 0.5) * 0.03) * (player === 0 ? 1 : -1);
+  const z = cz + r * Math.sin(angle) + (hash2(50, index) - 0.5) * 0.03;
+  const d = Math.hypot(x - cx, z - cz);
+  return [x, bowlSurfaceY(d, STORE_RADIUS, STORE_DEPTH) + STONE_SIZE * 0.45 + layer * LAYER_HEIGHT, z];
 }
 
 /** Picked-up stones hover above the hole they came from, as if held in a hand. */
 export function handSlot(hole: HoleIndex, index: number): Vec3 {
   const [cx, , cz] = holeCenter(hole);
-  return [cx + 0.07 * Math.cos(index * 2.4), 0.5 + Math.floor(index / 5) * 0.07, cz + 0.07 * Math.sin(index * 2.4)];
+  return [cx + 0.1 * Math.cos(index * 2.4), 0.7 + Math.floor(index / 5) * 0.12, cz + 0.1 * Math.sin(index * 2.4)];
 }
 
-/** The corners of everything that must stay in view: both rows, the piles, and a heap's height. */
-export function boardCorners(): Vec3[] {
-  const corners: Vec3[] = [];
-  for (const x of [-2.95, 2.95]) for (const z of [-1.65, 1.65]) for (const y of [0, 0.3]) corners.push([x, y, z]);
-  return corners;
+/**
+ * Everything the camera must keep in view: the body down to the ground, and both heads with
+ * their horns (the side outline, spread sideways where the horns are).
+ */
+export function fitPoints(): Vec3[] {
+  const pts: Vec3[] = [];
+  const { body, heads } = BLUEPRINT;
+  const spread = heads.measures.hornSpread / 2;
+  for (const s of [-1, 1]) {
+    for (const [u, v] of heads.outlines.side) {
+      const x = s < 0 ? -heads.x + u : heads.x - u;
+      for (const z of [-1, 0, 1]) pts.push([x, v, z * (v > 1.2 ? spread : 0.3)]);
+    }
+  }
+  for (const x of [-body.halfLength, body.halfLength]) {
+    for (const z of [-body.halfWidth, body.halfWidth]) for (const y of [0, GROUND_Y]) pts.push([x, y, z]);
+  }
+  return pts;
 }
 
 const ELEVATION = (52 * Math.PI) / 180;
@@ -91,17 +120,18 @@ const MARGIN = 0.9;
 export function seatCamera(player: Player, aspect: number): { position: Vec3; target: Vec3; fov: number } {
   const fov = aspect < 1 ? 55 : 40;
   const sign = player === 0 ? 1 : -1;
-  const target: Vec3 = [0, -0.05, 0];
+  const target: Vec3 = [0, 0.3, 0];
   const cam = new THREE.PerspectiveCamera(fov, aspect, 0.1, 200);
   const v = new THREE.Vector3();
+  const points = fitPoints();
   let position: Vec3 = [0, 0, 0];
-  for (let d = 3; d < 60; d += 0.25) {
-    position = [0, d * Math.sin(ELEVATION), sign * d * Math.cos(ELEVATION)];
+  for (let d = 3; d < 80; d += 0.25) {
+    position = [0, target[1] + d * Math.sin(ELEVATION), sign * d * Math.cos(ELEVATION)];
     cam.position.set(...position);
     cam.lookAt(...target);
     cam.updateMatrixWorld();
     cam.updateProjectionMatrix();
-    const fits = boardCorners().every((c) => {
+    const fits = points.every((c) => {
       v.set(...c).project(cam);
       return Math.abs(v.x) <= MARGIN && Math.abs(v.y) <= MARGIN;
     });

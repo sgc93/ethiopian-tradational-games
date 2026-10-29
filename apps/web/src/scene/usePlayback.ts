@@ -4,7 +4,7 @@ import { useEffect, useRef, type MutableRefObject } from 'react';
 import type { Sfx } from '../audio/sfx';
 import type { Session } from '../game/session';
 import type { Speed } from '../state/settings';
-import { handSlot, pileSlot, stoneSlot, type Vec3 } from './layout';
+import { handSlot, stoneSlot, storeSlot, type Vec3 } from './layout';
 import { planPlayback } from './playbackPlan';
 import { StoneTracker, type StoneLocation } from './stoneTracker';
 import { buildTimeline, DURATION_MS } from './timeline';
@@ -16,7 +16,7 @@ export function locationToPosition(loc: StoneLocation): Vec3 {
     case 'hand':
       return handSlot(loc.hole, loc.index);
     case 'pile':
-      return pileSlot(loc.player, loc.index);
+      return storeSlot(loc.player, loc.index);
   }
 }
 
