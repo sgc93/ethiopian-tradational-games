@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { controller, useSession } from './game/instance';
 import { SceneRoot } from './scene/SceneRoot';
 import { useScene } from './scene/sceneStore';
 import { AboutScreen } from './screens/AboutScreen';
 import { GameScreen } from './screens/GameScreen';
 import { HomeScreen } from './screens/HomeScreen';
+import { Loading } from './screens/Loading';
 import { NoWebGL } from './screens/NoWebGL';
 import { TurnPhone } from './screens/TurnPhone';
 import { useApp } from './state/store';
@@ -37,15 +38,20 @@ export function App() {
   const screen = useApp((s) => s.screen);
   const webgl = useMemo(() => supportsWebGL2(), []);
   const portrait = usePortrait();
+  // The scene loads behind the loading screen; the screens mount once the fire has flared.
+  const [loaded, setLoaded] = useState(false);
   usePortraitPause(portrait);
   if (!webgl) return <NoWebGL />;
   return (
     <>
       <SceneRoot />
       <UiLayer>
-        <div className="screens" inert={portrait || undefined}>
-          {screen === 'about' ? <AboutScreen /> : screen === 'game' ? <GameScreen /> : <HomeScreen />}
-        </div>
+        {loaded && (
+          <div className="screens" inert={portrait || undefined}>
+            {screen === 'about' ? <AboutScreen /> : screen === 'game' ? <GameScreen /> : <HomeScreen />}
+          </div>
+        )}
+        {!loaded && <Loading onDone={() => setLoaded(true)} />}
         {portrait && <TurnPhone />}
       </UiLayer>
     </>

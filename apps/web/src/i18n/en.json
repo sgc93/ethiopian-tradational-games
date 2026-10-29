@@ -156,6 +156,9 @@
     "lion": "አንበሳ (lion)",
     "person": "ሰው (person)"
   },
+  "loading": {
+    "line": "Lighting the fire…"
+  },
   "turn": {
     "title": "Turn your phone",
     "body": "Gebeta is played sideways, the way the board lies in front of you."

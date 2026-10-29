@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { useScene } from '../sceneStore';
 import { FLAME_BASE } from './embersState';
 import { flameFragmentShader, flameVertexShader } from './flameShader';
 import { flicker } from './flicker';
@@ -59,12 +60,14 @@ export function Flame() {
   useFrame(({ clock }) => {
     const t = clock.elapsedTime;
     const f = flicker(t);
+    // The loading flare: the flames grow from nothing as the light comes up (spec §9, screen 1).
+    const flare = useScene.getState().flare;
     materials.forEach((m, i) => {
       m.uniforms.uTime!.value = t * (1 + i * 0.07);
-      m.uniforms.uFlicker!.value = 0.7 + 0.3 * f;
+      m.uniforms.uFlicker!.value = (0.7 + 0.3 * f) * flare;
     });
-    if (sprite.current) sprite.current.opacity = 0.35 * f;
-    if (group.current) group.current.scale.y = 0.85 + 0.25 * f;
+    if (sprite.current) sprite.current.opacity = 0.35 * f * flare;
+    if (group.current) group.current.scale.y = (0.85 + 0.25 * f) * flare;
   });
 
   return (

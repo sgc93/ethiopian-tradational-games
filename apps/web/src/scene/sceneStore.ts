@@ -29,6 +29,10 @@ export interface SceneState {
   fade: number;
   /** `never` stops the canvas drawing, while "turn your phone" covers it. */
   frameloop: 'always' | 'never';
+  /** The fire's light, 0–1: black while loading, run up to 1 by the loading screen's flare. */
+  flare: number;
+  /** True once the world and the board are in the scene and a frame has drawn quickly again. */
+  worldReady: boolean;
   onHoleTap(hole: HoleIndex): void;
   onAnimationDone(turnId: number): void;
   setMode(mode: SceneMode): void;
@@ -47,6 +51,8 @@ export const useScene = create<SceneState>((set) => ({
   cameraMoving: false,
   fade: 0,
   frameloop: 'always',
+  flare: 0,
+  worldReady: false,
   onHoleTap: () => {},
   onAnimationDone: () => {},
   setMode: (mode) => set({ mode }),

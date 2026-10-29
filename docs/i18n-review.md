@@ -6,5 +6,6 @@ Every string added by the Teret interface work (plan part 2) with the Amharic th
 |---|---|---|---|
 | `turn.title` | Turn your phone | ስልክዎን ያዙሩ | REVIEW |
 | `turn.body` | Gebeta is played sideways, the way the board lies in front of you. | ገበጣ ሰሌዳው ፊትዎ እንደሚተኛ ሁሉ በጎን ይጫወታል። | REVIEW |
+| `loading.line` | Lighting the fire… | እሳቱን እያቀጣጠልን ነው… | REVIEW |
 
 The prototype's earlier Amharic (everything else in `am.json`) is still outstanding from the first design and belongs in the same reading.

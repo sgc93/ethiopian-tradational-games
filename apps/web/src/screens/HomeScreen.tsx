@@ -25,7 +25,7 @@ export function HomeScreen() {
   };
 
   return (
-    <main className="screen home">
+    <main className="screen home panel-enter">
       <header className="home-title">
         <h1 lang="am">{t('app.titleGeez')}</h1>
         <p className="home-latin">Gebeta</p>

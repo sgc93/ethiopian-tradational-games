@@ -11,7 +11,8 @@ test('works offline after the first visit', async ({ page, context }) => {
 
   await context.setOffline(true);
   await page.goto(GAME_URL);
-  await expect(page.getByRole('button', { name: 'Play against the computer' })).toBeVisible();
+  // Through the loading screen and the fire's flare, on a software renderer: the usual 5 s is short.
+  await expect(page.getByRole('button', { name: 'Play against the computer' })).toBeVisible({ timeout: 30_000 });
   await startComputerGame(page, 'Quick game');
   await waitForTurn(page);
   const before = await page.locator('[data-testid="hole-0"]').getAttribute('aria-label');

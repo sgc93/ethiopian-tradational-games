@@ -153,7 +153,7 @@ test('a portrait window shows "turn your phone" and pauses the game', async ({ p
 - `loading.ts`: `loadingState(progress: number, geometryReady: boolean, fontsReady: boolean): number` → 0–1 (`0.7·progress + 0.2·geometry + 0.1·fonts`); `hasVisited(storage): boolean` / `markVisited(storage)` (key `gebeta.visited`, exceptions swallowed); `flareCurve(t: number, duration: number): number` — 0 → 1 with `easeOutCubic`, where `duration` is 2.4 s on a first visit and 0.8 s afterwards.
 - `Loading`: emblem, "GEBETA", a 1 px gold line filling to `loadingState`, the line of text; at 1 it fades over 300 ms while `useScene.flare` runs its curve, then `HomeScreen` mounts with the panel-enter motion.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
 test('loading state weights', () => { expect(loadingState(1, true, true)).toBe(1); expect(loadingState(0.5, false, false)).toBeCloseTo(0.35); });
@@ -161,10 +161,10 @@ test('flare reaches 1 at its duration and is monotonic', () => { let last = 0; f
 test('visited flag survives a throwing storage', () => { const bad = { getItem() { throw 1; }, setItem() { throw 1; } }; expect(hasVisited(bad)).toBe(false); expect(() => markVisited(bad)).not.toThrow(); });
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement** with drei's `useProgress` for `progress`, `document.fonts.ready` for fonts, and the board geometry promise from part 1.
-- [ ] **Step 4: Run** → PASS; e2e → green (the e2e helpers wait for the Play button, which appears after loading).
-- [ ] **Step 5: Commit** — `feat(web): loading screen and the fire's first flare`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement** with drei's `useProgress` for `progress`, `document.fonts.ready` for fonts, and the board geometry promise from part 1.
+- [x] **Step 4: Run** → PASS; e2e → green (the e2e helpers wait for the Play button, which appears after loading).
+- [x] **Step 5: Commit** — `feat(web): loading screen and the fire's first flare`.
 
 ---
 
