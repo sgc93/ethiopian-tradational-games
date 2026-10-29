@@ -12,7 +12,8 @@ export default defineConfig({
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },
-    { name: 'phone', use: { ...devices['Pixel 7'], channel: 'chrome' } },
+    // Held sideways: the game is landscape only, and portrait shows "turn your phone" (spec §9).
+    { name: 'phone', use: { ...devices['Pixel 7 landscape'], channel: 'chrome' } },
   ],
   webServer: {
     command: 'pnpm build && pnpm preview',

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { openEnglish, startComputerGame } from './helpers';
+import { openEnglish, startComputerGame, waitForTurn } from './helpers';
 
 /** Every hole centre projected on screen, as the scene reports it for tests. */
 async function holePositions(page: import('@playwright/test').Page) {
@@ -10,19 +10,33 @@ async function holePositions(page: import('@playwright/test').Page) {
   );
 }
 
-test('the whole board is visible on a 360×640 phone', async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+test('the whole board is visible on an 844×390 phone', async ({ page }) => {
+  await page.setViewportSize({ width: 844, height: 390 });
   await openEnglish(page);
   await startComputerGame(page, 'Quick game');
   const positions = await holePositions(page);
   expect(positions).toHaveLength(12);
   for (const [x, y] of positions) {
     expect(x).toBeGreaterThan(0);
-    expect(x).toBeLessThan(360);
+    expect(x).toBeLessThan(844);
     expect(y).toBeGreaterThan(0);
-    expect(y).toBeLessThan(640);
+    expect(y).toBeLessThan(390);
   }
-  await page.screenshot({ path: 'test-results/board-360x640.png' });
+  await page.screenshot({ path: 'test-results/board-844x390.png' });
+});
+
+test('a portrait window shows "turn your phone" and pauses the game', async ({ page }) => {
+  await page.setViewportSize({ width: 844, height: 390 });
+  await openEnglish(page);
+  await startComputerGame(page, 'Quick game');
+  await waitForTurn(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('status')).toContainText(/turn your phone/i);
+  await expect(page.getByRole('status')).toContainText('ስልክዎን ያዙሩ');
+  await page.screenshot({ path: 'test-results/turn-phone-390x844.png' });
+  await page.setViewportSize({ width: 844, height: 390 });
+  await expect(page.getByRole('status')).toHaveCount(0);
+  await waitForTurn(page); // the game resumes with open holes
 });
 
 for (const [width, height] of [

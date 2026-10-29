@@ -49,7 +49,7 @@ function TierProbe() {
 /** The one canvas behind every screen: the fireside world, the board and the camera. */
 export function SceneRoot() {
   const [declined, setDeclined] = useState(false);
-  const { session, speed, sfx, suggested, onHoleTap, onAnimationDone, tier, fade } = useScene();
+  const { session, speed, sfx, suggested, onHoleTap, onAnimationDone, tier, fade, frameloop } = useScene();
   const dpr = declined ? Math.min(1, TIERS[tier].dpr) : TIERS[tier].dpr;
 
   return (
@@ -57,6 +57,7 @@ export function SceneRoot() {
       <Canvas
         shadows="soft"
         dpr={dpr}
+        frameloop={frameloop}
         camera={{ fov: 30, near: 0.1, far: 2000, position: [0, 12, 11] }}
         gl={{ toneMapping: THREE.AgXToneMapping, outputColorSpace: THREE.SRGBColorSpace }}
       >

@@ -8,6 +8,7 @@ import { useScene } from '../scene/sceneStore';
 import { LANGUAGES } from '../state/settings';
 import { useApp } from '../state/store';
 import { FormatPicker, LevelPicker } from '../ui/FormatPicker';
+import { onFirstPlayTap } from '../ui/fullscreen';
 
 type Step = null | { kind: 'level' } | { kind: 'format'; mode: Mode };
 
@@ -38,6 +39,7 @@ export function HomeScreen() {
             <button
               className="btn btn-primary"
               onClick={() => {
+                onFirstPlayTap();
                 controller.resume(saved);
                 setScreen('game');
               }}
@@ -45,13 +47,31 @@ export function HomeScreen() {
               {t('home.continue')}
             </button>
           )}
-          <button className={`btn${saved ? '' : ' btn-primary'}`} onClick={() => setStep({ kind: 'level' })}>
+          <button
+            className={`btn${saved ? '' : ' btn-primary'}`}
+            onClick={() => {
+              onFirstPlayTap();
+              setStep({ kind: 'level' });
+            }}
+          >
             {t('home.playComputer')}
           </button>
-          <button className="btn" onClick={() => setStep({ kind: 'format', mode: { kind: 'friend' } })}>
+          <button
+            className="btn"
+            onClick={() => {
+              onFirstPlayTap();
+              setStep({ kind: 'format', mode: { kind: 'friend' } });
+            }}
+          >
             {t('home.playFriend')}
           </button>
-          <button className="btn" onClick={() => begin({ kind: 'guided' }, 'quick')}>
+          <button
+            className="btn"
+            onClick={() => {
+              onFirstPlayTap();
+              begin({ kind: 'guided' }, 'quick');
+            }}
+          >
             {t('home.learn')}
           </button>
           <button className="btn btn-quiet" onClick={() => setScreen('about')}>

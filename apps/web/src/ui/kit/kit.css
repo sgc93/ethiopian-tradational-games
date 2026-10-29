@@ -19,6 +19,11 @@
   pointer-events: auto;
 }
 
+/* The screen switch's wrapper takes no space of its own; `inert` on it hides the screen from focus while "turn your phone" covers it. */
+.ui-layer > .screens {
+  display: contents;
+}
+
 /* ---------- type ---------- */
 .ui-layer .ttl {
   margin: 0;

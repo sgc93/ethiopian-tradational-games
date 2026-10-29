@@ -27,6 +27,8 @@ export interface SceneState {
   cameraMoving: boolean;
   /** A black cross-fade, 0–1, used in place of camera moves when motion is reduced. */
   fade: number;
+  /** `never` stops the canvas drawing, while "turn your phone" covers it. */
+  frameloop: 'always' | 'never';
   onHoleTap(hole: HoleIndex): void;
   onAnimationDone(turnId: number): void;
   setMode(mode: SceneMode): void;
@@ -44,6 +46,7 @@ export const useScene = create<SceneState>((set) => ({
   suggested: null,
   cameraMoving: false,
   fade: 0,
+  frameloop: 'always',
   onHoleTap: () => {},
   onAnimationDone: () => {},
   setMode: (mode) => set({ mode }),

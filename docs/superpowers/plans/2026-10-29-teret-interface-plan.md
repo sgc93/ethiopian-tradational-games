@@ -112,7 +112,7 @@ test('kit renders its roles', () => { render(<Panel title="Pause" labelledBy="t"
 - `TurnPhone`: emblem, `Icon name="phone"` rocking 90° every 2 s (CSS keyframes), title and the line in both languages; `role="status"`.
 - While portrait: `App` calls `controller.setPaused(true)` once, and `setPaused(false)` when landscape returns only if it was the one that paused (`pausedByOrientation` ref).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
 test('portrait when taller than wide', () => { expect(isPortrait(390, 844)).toBe(true); expect(isPortrait(844, 390)).toBe(false); expect(isPortrait(500, 500)).toBe(false); });
@@ -134,10 +134,10 @@ test('a portrait window shows "turn your phone" and pauses the game', async ({ p
 });
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement.** Replace `layout.spec`'s 360 × 640 test with 844 × 390 (same assertions on `__gebetaHolePositions`), since portrait no longer shows the board.
-- [ ] **Step 4: Run** unit tests → PASS; build and e2e → green.
-- [ ] **Step 5: Commit** — `feat(web): landscape only, with full screen on Android`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement.** Replace `layout.spec`'s 360 × 640 test with 844 × 390 (same assertions on `__gebetaHolePositions`), since portrait no longer shows the board.
+- [x] **Step 4: Run** unit tests → PASS; build and e2e → green.
+- [x] **Step 5: Commit** — `feat(web): landscape only, with full screen on Android`.
 
 ---
 

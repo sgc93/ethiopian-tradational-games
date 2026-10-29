@@ -15,8 +15,9 @@ export default defineConfig({
         name: 'Gebeta — ገበጣ',
         short_name: 'Gebeta',
         description: 'Gebeta (ገበጣ), the Ethiopian game of stones and holes, in 3D.',
-        display: 'standalone',
-        orientation: 'any',
+        // Landscape and full screen: the board lies sideways, and "turn your phone" covers portrait (spec §9).
+        display: 'fullscreen',
+        orientation: 'landscape',
         theme_color: '#4a2a1c',
         background_color: '#2e1a12',
       },
