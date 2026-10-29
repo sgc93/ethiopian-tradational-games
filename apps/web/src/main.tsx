@@ -1,5 +1,5 @@
-import '@fontsource/noto-sans-ethiopic/400.css';
-import '@fontsource/noto-sans-ethiopic/600.css';
+import './ui/tokens.css';
+import './ui/fonts.css';
 import './styles.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

@@ -4,9 +4,14 @@
   "type": "module",
   "scripts": {
     "build": "node process.mjs",
+    "fonts": "node fonts.mjs",
     "test": "node --test"
   },
   "devDependencies": {
-    "sharp": "^0.35.5"
+    "@fontsource/cinzel": "^5.3.0",
+    "@fontsource/eb-garamond": "^5.3.0",
+    "@fontsource/noto-serif-ethiopic": "^5.3.0",
+    "sharp": "^0.35.5",
+    "subset-font": "^2.9.0"
   }
 }

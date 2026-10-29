@@ -13,9 +13,6 @@ importers:
       '@etg/gebeta-rules':
         specifier: workspace:*
         version: link:../../packages/gebeta-rules
-      '@fontsource/noto-sans-ethiopic':
-        specifier: ^5.3.0
-        version: 5.3.0
       '@react-three/drei':
         specifier: ^10.7.9
         version: 10.7.9(@react-three/fiber@9.8.2(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(three@0.186.1))(@types/react@19.3.0)(@types/three@0.186.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(three@0.186.1)
@@ -110,9 +107,21 @@ importers:
 
   tools/assets:
     devDependencies:
+      '@fontsource/cinzel':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/eb-garamond':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/noto-serif-ethiopic':
+        specifier: ^5.3.0
+        version: 5.3.0
       sharp:
         specifier: ^0.35.5
         version: 0.35.5(@types/node@26.6.5)
+      subset-font:
+        specifier: ^2.9.0
+        version: 2.9.0
 
 packages:
 
@@ -689,8 +698,14 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@fontsource/noto-sans-ethiopic@5.3.0':
-    resolution: {integrity: sha512-ivXPkx5Grhse+0GEyedQysDI5vSMUIeDNBhev6OIcSX6WyAPtvutU/CSWqf2wv67POnvQ0QaQ8Aq36vy9WfZpw==}
+  '@fontsource/cinzel@5.3.0':
+    resolution: {integrity: sha512-KEOYTsrRppW0uRIPWBDPrQgunCS6f8u4nzZxYRBfo9SCknKojLYjK7B0ZoVmJhyVLefz271ZQRF9EOpHZlfhRw==}
+
+  '@fontsource/eb-garamond@5.3.0':
+    resolution: {integrity: sha512-VplwHpB8FLuzl+4G5LDci1b3Z4SghiuXH8XEgaxjnOb5aue5mEt1njmDKeO6iyLeGa73LffU7PC7hzncLRx0ZA==}
+
+  '@fontsource/noto-serif-ethiopic@5.3.0':
+    resolution: {integrity: sha512-G7kmgznmnKdJdStj7BouvyQnrXm0kkZnPVbSs6gkxR+yl2BcD4AkWKwzoqekEAOsZAVSyzkexnKccE/KmlX9bQ==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -1451,6 +1466,9 @@ packages:
     resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
     engines: {node: '>=10'}
 
+  argparse@2.0.1:
+    resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+
   aria-query@5.3.0:
     resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
 
@@ -1767,6 +1785,9 @@ packages:
   filelist@1.0.6:
     resolution: {integrity: sha512-5giy2PkLYY1cP39p17Ech+2xlpTRL9HLspOfEgm0L6CwBXBTgsK5ou0JtzYuepxkaQ/tvhCFIJ5uXo0OrM2DxA==}
 
+  fontverter@2.0.0:
+    resolution: {integrity: sha512-DFVX5hvXuhi1Jven1tbpebYTCT9XYnvx6/Z+HFUPb7ZRMCW+pj2clU9VMhoTPgWKPhAs7JJDSk3CW1jNUvKCZQ==}
+
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
     engines: {node: '>= 0.4'}
@@ -1839,6 +1860,9 @@ packages:
 
   gsap@3.15.0:
     resolution: {integrity: sha512-dMW4CWBTUK1AEEDeZc1g4xpPGIrSf9fJF960qbTZmN/QwZIWY5wgliS6JWl9/25fpTGJrMRtSjGtOmPnfjZB+A==}
+
+  harfbuzzjs@1.6.4:
+    resolution: {integrity: sha512-T/PyfhVt1gGR2Tkf5KJUj1DQFkVBXHw552lS1iLEEDhV1Lukb3eq1pk2ov85kgbT2YUiZtJBTak9w+M7YgzUEQ==}
 
   has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
@@ -2234,8 +2258,15 @@ packages:
     resolution: {integrity: sha512-19YVAg7T+WTrxggPukVq7DjTv6+PJ867TmhCvBsYwmbFCsZd344rq2Ld1p0wo8f8Qrrhgp82c6FJRqdXWtSEhg==}
     engines: {node: '>= 0.4'}
 
+  p-limit@3.1.0:
+    resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
+    engines: {node: '>=10'}
+
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
+
+  pako@1.0.11:
+    resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
 
   parse5@8.0.1:
     resolution: {integrity: sha512-z1e/HMG90obSGeidlli3hj7cbocou0/wa5HacvI3ASx34PecNjNQeaHNo5WIZpWofN9kgkqV1q5YvXe3F0FoPw==}
@@ -2534,6 +2565,9 @@ packages:
     resolution: {integrity: sha512-ZprKx+bBLXv067WTCALv8SSz5l2+XhpYCsVtSqlMnkAXMWDq+/ekVbl1ghqP9rUHTzv6sm/DwCOiYutU/yp1fw==}
     engines: {node: '>=10'}
 
+  subset-font@2.9.0:
+    resolution: {integrity: sha512-WJulQeFwbewrXIGcLJbSZFWI44fHW8gNRuPzLywfDL8w38IPRbN1JFxwG76aoohw9kcFdvjVIn2QmID1iy119A==}
+
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
@@ -2803,6 +2837,10 @@ packages:
     resolution: {integrity: sha512-4Nsy8K5Tr6SPDH9jhKJOHf7ChDrc1zufZTVSF7x72hwuEXBqxqk9G6cK+K2NRUtB3iELRJqjXb4JPDMBjMTl2Q==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
+  wawoff2@2.0.1:
+    resolution: {integrity: sha512-r0CEmvpH63r4T15ebFqeOjGqU4+EgTx4I510NtK35EMciSdcTxCw3Byy3JnBonz7iyIFZ0AbVo0bbFpEVuhCYA==}
+    hasBin: true
+
   webgl-constants@1.1.1:
     resolution: {integrity: sha512-LkBXKjU5r9vAW7Gcu3T5u+5cvSvh5WwINdr0C+9jpzVB41cjQAP5ePArDtk/WHYdVj0GefCgM73BA7FlIiNtdg==}
 
@@ -2846,6 +2884,9 @@ packages:
     resolution: {integrity: sha512-Tb2FUhB4vUsGQlfSquQLYkApkuPAFQXGFzxWKHHumVz2dK+X1RUm/HnID4+TfIGYJ1kTcwOaCk/buYCEJr6YjQ==}
     engines: {node: '>=20.11'}
     hasBin: true
+
+  woff2sfnt-sfnt2woff@1.0.0:
+    resolution: {integrity: sha512-edK4COc1c1EpRfMqCZO1xJOvdUtM5dbVb9iz97rScvnTevqEB3GllnLWCmMVp1MfQBdF1DFg/11I0rSyAdS4qQ==}
 
   workbox-background-sync@7.4.1:
     resolution: {integrity: sha512-HhT7KE8tOWDm02wRNshXUnUPofMlhenF2DBdUnDPOubhizzPeItkYTmAB6td1Z2cjYPa98vzEiPLEuzn5hN66g==}
@@ -2905,6 +2946,10 @@ packages:
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
+
+  yocto-queue@0.1.0:
+    resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
+    engines: {node: '>=10'}
 
   zustand@4.5.7:
     resolution: {integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==}
@@ -3664,7 +3709,11 @@ snapshots:
 
   '@exodus/bytes@1.16.0': {}
 
-  '@fontsource/noto-sans-ethiopic@5.3.0': {}
+  '@fontsource/cinzel@5.3.0': {}
+
+  '@fontsource/eb-garamond@5.3.0': {}
+
+  '@fontsource/noto-serif-ethiopic@5.3.0': {}
 
   '@img/colour@1.1.0': {}
 
@@ -4232,6 +4281,8 @@ snapshots:
 
   ansi-styles@5.2.0: {}
 
+  argparse@2.0.1: {}
+
   aria-query@5.3.0:
     dependencies:
       dequal: 2.0.3
@@ -4590,6 +4641,11 @@ snapshots:
     dependencies:
       minimatch: 5.1.9
 
+  fontverter@2.0.0:
+    dependencies:
+      wawoff2: 2.0.1
+      woff2sfnt-sfnt2woff: 1.0.0
+
   for-each@0.3.5:
     dependencies:
       is-callable: 1.2.7
@@ -4676,6 +4732,8 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   gsap@3.15.0: {}
+
+  harfbuzzjs@1.6.4: {}
 
   has-bigints@1.1.0: {}
 
@@ -5036,7 +5094,13 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
+  p-limit@3.1.0:
+    dependencies:
+      yocto-queue: 0.1.0
+
   package-json-from-dist@1.0.1: {}
+
+  pako@1.0.11: {}
 
   parse5@8.0.1:
     dependencies:
@@ -5430,6 +5494,12 @@ snapshots:
 
   strip-comments@2.0.1: {}
 
+  subset-font@2.9.0:
+    dependencies:
+      fontverter: 2.0.0
+      harfbuzzjs: 1.6.4
+      p-limit: 3.1.0
+
   supports-preserve-symlinks-flag@1.0.0: {}
 
   suspend-react@0.1.3(react@19.3.1):
@@ -5682,6 +5752,10 @@ snapshots:
     dependencies:
       xml-name-validator: 5.0.0
 
+  wawoff2@2.0.1:
+    dependencies:
+      argparse: 2.0.1
+
   webgl-constants@1.1.1: {}
 
   webgl-sdf-generator@1.1.1: {}
@@ -5744,6 +5818,10 @@ snapshots:
       isexe: 2.0.0
 
   why-is-node-running@3.2.1: {}
+
+  woff2sfnt-sfnt2woff@1.0.0:
+    dependencies:
+      pako: 1.0.11
 
   workbox-background-sync@7.4.1:
     dependencies:
@@ -5863,6 +5941,8 @@ snapshots:
   xmlchars@2.2.0: {}
 
   yallist@3.1.1: {}
+
+  yocto-queue@0.1.0: {}
 
   zustand@4.5.7(@types/react@19.3.0)(react@19.3.1):
     dependencies:
