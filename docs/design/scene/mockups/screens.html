@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gebeta · Teret screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+Ethiopic:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---------- design tokens (these are the spec) ---------- */
+  :root {
+    --ink-950: #0a0806; --ink-900: #120e0a; --ink-800: #1b1510; --ink-700: #261d15;
+    --gold-200: #f1dcaa; --gold-300: #e6c88e; --gold-400: #d6ae6a; --gold-500: #c09553; --gold-700: #7d5f33;
+    --ember-300: #ffc27a; --ember-400: #ff9a3c; --ember-600: #d9661f;
+    --moon-300: #b9cfee; --moon-500: #7f9cc4;
+    --text-100: #f4ead8; --text-300: #cdbfa3; --text-500: #8f826b;
+    --panel: rgba(13, 10, 7, 0.84);
+    --line: rgba(214, 174, 106, 0.55); --line-soft: rgba(214, 174, 106, 0.18);
+    --f-display: 'Cinzel', 'Noto Serif Ethiopic', serif;
+    --f-text: 'EB Garamond', 'Noto Serif Ethiopic', serif;
+    --f-geez: 'Noto Serif Ethiopic', serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #17140f; color: var(--text-100); font: 15px/1.5 system-ui, sans-serif; padding: 28px 40px 80px; }
+  h1.page { font: 600 22px var(--f-display); letter-spacing: .14em; color: var(--gold-300); margin: 0 0 4px; }
+  p.lead { margin: 0 0 22px; color: #b9ad97; max-width: 980px; }
+  .tools { position: sticky; top: 0; z-index: 50; background: #17140f; padding: 8px 0 12px; display: flex; gap: 10px; align-items: center; }
+  .tools button { background: #2a2219; color: var(--gold-300); border: 1px solid #5a4730; border-radius: 6px; padding: 6px 12px; cursor: pointer; font: 13px system-ui; }
+  .tools span { font-size: 12px; color: #8f826b; }
+  section.shot { margin: 34px 0 0; }
+  section.shot h2 { font: 600 14px var(--f-display); letter-spacing: .16em; color: var(--gold-300); margin: 0 0 4px; text-transform: uppercase; }
+  section.shot p { margin: 0 0 12px; color: #a99d86; font-size: 13.5px; max-width: 900px; }
+
+  /* ---------- device frame: iPhone 14 landscape, 844 x 390 CSS px ---------- */
+  .device { position: relative; width: 844px; height: 390px; overflow: hidden; border-radius: 30px; background: #000; box-shadow: 0 0 0 9px #050505, 0 0 0 10px #2b2b2b, 0 30px 70px rgba(0, 0, 0, .55); isolation: isolate; }
+  .device.portrait { width: 390px; height: 844px; }
+  .scene { position: absolute; inset: 0; background: #0b0806 center / cover no-repeat; }
+  .scene.game { background-image: url('view-seat.svg'); }
+  .scene.top { background-image: url('view-top.svg'); }
+  .scene.owners { background-image: url('view-top-owners.svg'); }
+  .scene.home { background-image: url('teret-key-art.jpg'); background-position: 50% 62%; }
+  .scene.dim::after { content: ''; position: absolute; inset: 0; background: rgba(6, 4, 3, .55); backdrop-filter: blur(5px); }
+  .grade { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 55%, transparent 45%, rgba(5, 3, 2, .62) 100%); }
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: .09; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .safe { position: absolute; left: 47px; right: 47px; top: 0; bottom: 21px; outline: 1px dashed rgba(110, 200, 255, .45); pointer-events: none; display: none; z-index: 40; }
+  .safe::after { content: ''; position: absolute; inset: 12px; outline: 1px dotted rgba(110, 200, 255, .3); }
+  body.guides .safe { display: block; }
+  .ui { position: absolute; inset: 0; z-index: 10; }
+
+  /* ---------- components ---------- */
+  .panel { position: absolute; background: var(--panel); backdrop-filter: blur(12px); border: 1px solid var(--line); box-shadow: 0 22px 50px rgba(0, 0, 0, .6), inset 0 0 0 4px rgba(10, 8, 6, .65), inset 0 0 0 5px var(--line-soft); }
+  .panel > .k { position: absolute; width: 7px; height: 7px; background: var(--gold-400); transform: rotate(45deg); }
+  .k.tl { left: -4px; top: -4px; } .k.tr { right: -4px; top: -4px; } .k.bl { left: -4px; bottom: -4px; } .k.br { right: -4px; bottom: -4px; }
+  .ttl { font: 600 17px/1.2 var(--f-display); letter-spacing: .22em; text-transform: uppercase; color: var(--gold-300); text-align: center; margin: 0; }
+  .ttl.geez { font: 600 19px/1.3 var(--f-geez); letter-spacing: .04em; text-transform: none; }
+  .divider { display: flex; align-items: center; justify-content: center; gap: 8px; width: 150px; margin: 8px auto 12px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--line)); }
+  .divider::after { transform: scaleX(-1); }
+  .divider i { width: 6px; height: 6px; background: var(--gold-400); transform: rotate(45deg); }
+  .note { font: 400 14px/1.45 var(--f-text); color: var(--text-300); text-align: center; margin: 0; }
+  .btn { height: 40px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font: 600 11.5px/1 var(--f-display); letter-spacing: .2em; text-transform: uppercase; color: var(--gold-300); background: rgba(16, 12, 9, .6); border: 1px solid rgba(214, 174, 106, .42); border-radius: 2px; white-space: nowrap; }
+  .btn.primary { color: #fff1cf; background: linear-gradient(180deg, #6e4517, #311d0b); border-color: #e3b56b; box-shadow: 0 0 22px rgba(255, 150, 60, .35), inset 0 1px 0 rgba(255, 228, 170, .3); }
+  .btn.quiet { border: 0; background: none; color: var(--gold-500); height: 28px; padding: 0 6px; }
+  .btn small { font: 400 italic 12.5px var(--f-text); letter-spacing: 0; text-transform: none; color: var(--text-300); }
+  .btn.choice { height: 56px; flex-direction: column; gap: 4px; }
+  .medal { position: absolute; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(12, 9, 7, .72); border: 1px solid rgba(214, 174, 106, .6); box-shadow: inset 0 0 0 3px rgba(10, 8, 6, .8), inset 0 0 0 4px rgba(214, 174, 106, .22); }
+  .medal svg { width: 18px; height: 18px; stroke: var(--gold-300); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .seg { position: absolute; display: flex; height: 30px; border: 1px solid rgba(214, 174, 106, .42); border-radius: 15px; overflow: hidden; background: rgba(12, 9, 7, .7); }
+  .seg b { display: grid; place-items: center; padding: 0 14px; font: 500 13px var(--f-geez); color: var(--text-300); }
+  .seg b.on { background: rgba(214, 174, 106, .18); color: var(--gold-200); box-shadow: inset 0 0 0 1px rgba(214, 174, 106, .5); border-radius: 15px; }
+  .seg b.lat { font: 600 10.5px var(--f-display); letter-spacing: .16em; }
+
+  .plate { position: absolute; width: 188px; height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 14px 0 4px; background: linear-gradient(90deg, rgba(12, 9, 7, .88), rgba(12, 9, 7, .5)); border: 1px solid rgba(214, 174, 106, .3); border-radius: 22px; }
+  .plate .av { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 40% 35%, #3a2a1a, #120d08); border: 1.5px solid var(--acc); flex: none; }
+  .plate .av svg { width: 20px; height: 20px; stroke: var(--acc); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .plate .nm { font: 600 10.5px/1 var(--f-display); letter-spacing: .18em; color: var(--gold-200); text-transform: uppercase; }
+  .plate .st { display: flex; gap: 12px; margin-top: 5px; font: 600 13px/1 var(--f-text); color: var(--text-100); }
+  .plate .st span { display: inline-flex; align-items: center; gap: 4px; }
+  .plate .st svg { width: 12px; height: 12px; stroke: var(--gold-400); fill: none; stroke-width: 1.4; }
+  .plate.a { --acc: var(--ember-400); } .plate.b { --acc: var(--moon-300); }
+  .plate.active { border-color: rgba(255, 154, 60, .75); box-shadow: 0 0 20px rgba(255, 140, 50, .28); }
+  .plate.active .av { box-shadow: 0 0 12px var(--acc); }
+  .plate .turn { position: absolute; right: -9px; top: 50%; width: 9px; height: 9px; margin-top: -5px; background: var(--ember-400); transform: rotate(45deg); box-shadow: 0 0 8px var(--ember-400); }
+
+  .cart { position: absolute; left: 338px; top: 12px; width: 168px; height: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: rgba(12, 9, 7, .72); border: 1px solid rgba(214, 174, 106, .45); clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%); }
+  .cart .t { font: 600 10px/1 var(--f-display); letter-spacing: .26em; color: var(--gold-300); }
+  .cart .pips { display: flex; gap: 6px; }
+  .cart .pips i { width: 5px; height: 5px; transform: rotate(45deg); border: 1px solid var(--gold-500); }
+  .cart .pips i.done { background: var(--gold-400); } .cart .pips i.now { background: var(--ember-400); border-color: var(--ember-400); box-shadow: 0 0 6px var(--ember-400); }
+  .caption { position: absolute; left: 0; right: 0; top: 52px; text-align: center; font: 600 10px/1 var(--f-display); letter-spacing: .3em; text-transform: uppercase; color: var(--ember-300); text-shadow: 0 1px 6px rgba(0, 0, 0, .9); }
+  .caption.cool { color: var(--moon-300); }
+  .dots i { display: inline-block; width: 4px; height: 4px; margin-left: 5px; transform: rotate(45deg); background: currentColor; opacity: .35; }
+  .dots i:nth-child(1) { opacity: 1; } .dots i:nth-child(2) { opacity: .65; }
+
+  .cnt { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; display: grid; place-items: center; font: 700 11.5px/1 var(--f-display); color: var(--gold-200); background: rgba(9, 7, 5, .66); border: 1px solid rgba(214, 174, 106, .45); }
+  .cnt.store { width: 30px; height: 30px; margin: -15px 0 0 -15px; font-size: 13.5px; }
+  .cnt.play { border-color: var(--ember-400); color: #fff3da; box-shadow: 0 0 10px rgba(255, 150, 60, .6); }
+  .glow { position: absolute; width: 70px; height: 34px; margin: -17px 0 0 -35px; border-radius: 50%; background: radial-gradient(ellipse, rgba(255, 170, 70, .5), rgba(255, 140, 40, .12) 55%, transparent 72%); mix-blend-mode: screen; pointer-events: none; }
+  .glow.strong { width: 86px; height: 42px; margin: -21px 0 0 -43px; background: radial-gradient(ellipse, rgba(255, 196, 110, .85), rgba(255, 150, 50, .25) 55%, transparent 74%); }
+  .ribbon { position: absolute; left: 50%; transform: translateX(-50%); bottom: 33px; max-width: 540px; padding: 10px 24px; text-align: center; font: 500 14.5px/1.35 var(--f-text); color: var(--text-100); background: linear-gradient(90deg, transparent, rgba(12, 9, 7, .88) 12%, rgba(12, 9, 7, .88) 88%, transparent); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+  .ribbon b { color: var(--ember-300); font-weight: 600; }
+  .coin { position: absolute; width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 38% 32%, #fbe5a8, #d4a24c 45%, #8a6122 80%); box-shadow: 0 0 40px rgba(255, 190, 90, .55), inset 0 0 0 4px rgba(120, 80, 20, .5), inset 0 0 0 7px rgba(255, 230, 160, .45); }
+  .coin span { font: 700 22px var(--f-geez); color: #5a3a10; text-shadow: 0 1px 0 rgba(255, 240, 200, .6); }
+  .logo .geez { font: 700 58px/1 var(--f-geez); color: var(--gold-200); text-shadow: 0 0 30px rgba(255, 170, 80, .35), 0 2px 0 rgba(0, 0, 0, .5); letter-spacing: .02em; }
+  .logo .lat { font: 600 15px/1 var(--f-display); letter-spacing: .62em; color: var(--gold-300); margin-top: 10px; }
+  .logo .tag { font: 400 italic 15px/1.3 var(--f-text); color: var(--text-300); margin-top: 12px; }
+  .emblem { width: 56px; height: 56px; }
+  .emblem circle, .emblem path { stroke: var(--gold-300); fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .bar { position: absolute; height: 2px; background: rgba(214, 174, 106, .18); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 62%; background: linear-gradient(90deg, var(--gold-500), var(--ember-300)); box-shadow: 0 0 10px var(--ember-400); }
+  .row2 { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px solid rgba(214, 174, 106, .14); font: 500 14px var(--f-text); color: var(--text-100); }
+  .row2 .v { display: flex; gap: 6px; }
+  .tg { height: 26px; padding: 0 12px; border-radius: 13px; display: grid; place-items: center; font: 600 9.5px var(--f-display); letter-spacing: .16em; color: var(--text-300); border: 1px solid rgba(214, 174, 106, .3); }
+  .tg.on { color: var(--gold-200); background: rgba(214, 174, 106, .18); border-color: rgba(214, 174, 106, .6); }
+  .homes { display: flex; gap: 4px; justify-content: center; margin-top: 6px; }
+  .homes svg { width: 15px; height: 15px; stroke: var(--gold-400); fill: none; stroke-width: 1.3; }
+  .homes svg.b { stroke: var(--moon-300); }
+  .big { font: 700 34px/1 var(--f-display); letter-spacing: .16em; color: var(--gold-200); text-align: center; text-shadow: 0 0 30px rgba(255, 170, 70, .45); }
+  .score { font: 600 26px/1 var(--f-display); letter-spacing: .1em; color: var(--text-100); text-align: center; margin: 10px 0 2px; }
+  .score i { font-style: normal; color: var(--text-500); margin: 0 10px; }
+  .spec { font: 12px/1.5 ui-monospace, Consolas, monospace; color: #8f9bb0; margin: 10px 0 0; white-space: pre-wrap; max-width: 900px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-pebble" viewBox="0 0 24 24"><path d="M5 14c0-4 4-7 8-7s6 3 6 6-3 5-7 5-7-1-7-4z"/></symbol>
+    <symbol id="i-hut" viewBox="0 0 24 24"><path d="M3 11L12 4l9 7M6 10v9h12v-9M10 19v-5h4v5"/></symbol>
+    <symbol id="i-ibex" viewBox="0 0 24 24"><path d="M9 21v-6l-3-3 2-3h3l2 2M11 9c-1-4 2-7 6-6 3 1 3 5 1 7M13 10c0-3 2-5 4-4"/></symbol>
+    <symbol id="i-knot" viewBox="0 0 24 24"><path d="M12 4l8 8-8 8-8-8zM8 8l8 8M16 8l-8 8"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M8 3h8v18H8zM11 18h2"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5M18 3v4h-4M20 12a8 8 0 0 1-14 5M6 21v-4h4"/></symbol>
+  </defs>
+</svg>
+
+<h1 class="page">Teret · every screen, to the pixel</h1>
+<p class="lead">Each frame is an iPhone 14 held sideways at 1:1 (844 × 390 CSS pixels). The dashed blue line is the safe area: 47 px clear at each side for the camera notch and 21 px at the bottom for the home bar. Content sits a further 12 px inside it. The pictures behind the interface stand in for the 3D scene; the board will match the blueprint.</p>
+<div class="tools"><button onclick="document.body.classList.toggle('guides')">Show / hide safe area</button><span>Larger screens keep this layout. Panels and type scale with the screen height (×1 at 390 px, up to ×1.6), and the scene fills the rest.</span></div>
+
+<!-- 1 · Loading -->
+<section class="shot">
+  <h2>1 · Loading · "Lighting the fire"</h2>
+  <p>On first visit, the emblem and a thin gold line fill as the scene loads. When it's ready, the fire flares from black and its light spreads over the board. Then the home screen fades in. Return visits skip straight to the flare (0.8 s).</p>
+  <div class="device"><div class="scene" style="background:#070504"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <svg class="emblem" viewBox="0 0 56 56" style="position:absolute;left:394px;top:118px"><circle cx="28" cy="28" r="26"/><circle cx="28" cy="28" r="22" style="opacity:.35"/><path d="M24 44V35l-5-5 3-5h5l3 3M27 23c-2-8 4-13 10-11 5 2 5 9 2 12M30 25c0-5 3-8 7-7"/></svg>
+      <div style="position:absolute;left:0;right:0;top:196px;text-align:center;font:600 13px var(--f-display);letter-spacing:.5em;color:var(--gold-300)">GEBETA</div>
+      <div class="bar" style="left:347px;top:228px;width:150px"><i></i></div>
+      <div style="position:absolute;left:0;right:0;top:244px;text-align:center;font:italic 13.5px var(--f-text);color:var(--text-500)">Lighting the fire…</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · Home -->
+<section class="shot">
+  <h2>2 · Home</h2>
+  <p>This is the live 3D scene. The camera sits low by the fire and sweeps a slow arc of ±25° and back, once a minute, always keeping the fire and the nearer ibex head in frame. A dark gradient behind the title and another behind the menu keep the text readable. The main button is "Continue your game" when a game is saved; otherwise it's "Play against the computer".</p>
+  <div class="device"><div class="scene home"></div><div class="grade"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,4,3,.78) 0,rgba(6,4,3,.2) 42%,rgba(6,4,3,0) 55%,rgba(6,4,3,.55) 72%,rgba(6,4,3,.82) 100%)"></div>
+    <div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="logo" style="position:absolute;left:71px;top:84px">
+        <div class="geez">ገበጣ</div><div class="lat">GEBETA</div><div class="tag">The Ethiopian game of stones and holes</div>
+      </div>
+      <div style="position:absolute;left:505px;top:83px;width:268px;display:flex;flex-direction:column;gap:10px">
+        <div class="btn primary">Continue your game</div>
+        <div class="btn">Play against the computer</div>
+        <div class="btn">Play with a friend</div>
+        <div class="btn">Learn to play</div>
+        <div class="btn quiet" style="align-self:center">About Gebeta · ገበጣ</div>
+      </div>
+      <div class="seg" style="left:59px;top:327px"><b class="on">አማርኛ</b><b class="lat">ENGLISH</b></div>
+      <div class="medal" style="left:243px;top:322px"><svg><use href="#i-sound"/></svg></div>
+    </div>
+  </div>
+  <pre class="spec">Title block  x 71  y 84   ገበጣ Noto Serif Ethiopic 700 58/58 · GEBETA Cinzel 600 15, tracking .62em · tagline EB Garamond italic 15
+Menu stack   x 505 y 83   w 268 · buttons 40 high, 10 apart · About is a quiet link, centred
+Footer       language switch x 59 y 327 (30 high) · sound medallion x 243 y 322 (40)</pre>
+</section>
+
+<!-- 3 · Home · level -->
+<section class="shot">
+  <h2>3 · Home · how strong is the computer?</h2>
+  <p>The menu stack is replaced in place by this panel (it slides 12 px and fades in over 220 ms), and the title stays put. The back chevron returns to the menu.</p>
+  <div class="device"><div class="scene home"></div><div class="grade"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,4,3,.78) 0,rgba(6,4,3,.2) 42%,rgba(6,4,3,0) 55%,rgba(6,4,3,.55) 72%,rgba(6,4,3,.82) 100%)"></div>
+    <div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="logo" style="position:absolute;left:71px;top:84px"><div class="geez">ገበጣ</div><div class="lat">GEBETA</div><div class="tag">The Ethiopian game of stones and holes</div></div>
+      <div class="panel" style="left:509px;top:62px;width:276px;height:252px;padding:18px 22px">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <div class="medal" style="left:10px;top:10px;width:30px;height:30px"><svg style="width:14px;height:14px"><use href="#i-back"/></svg></div>
+        <p class="ttl" style="font-size:13px;margin-top:6px">How strong?</p>
+        <div class="divider"><i></i></div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div class="btn primary">Easy</div><div class="btn">Medium</div><div class="btn">Hard</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Home · format -->
+<section class="shot">
+  <h2>4 · Home · what kind of game?</h2>
+  <p>Two choices, each with its one-line explanation in italics inside the button.</p>
+  <div class="device"><div class="scene home"></div><div class="grade"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,4,3,.78) 0,rgba(6,4,3,.2) 42%,rgba(6,4,3,0) 55%,rgba(6,4,3,.55) 72%,rgba(6,4,3,.82) 100%)"></div>
+    <div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="logo" style="position:absolute;left:71px;top:84px"><div class="geez">ገበጣ</div><div class="lat">GEBETA</div><div class="tag">The Ethiopian game of stones and holes</div></div>
+      <div class="panel" style="left:469px;top:70px;width:316px;height:236px;padding:18px 22px">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <div class="medal" style="left:10px;top:10px;width:30px;height:30px"><svg style="width:14px;height:14px"><use href="#i-back"/></svg></div>
+        <p class="ttl" style="font-size:13px;margin-top:6px">What kind of game?</p>
+        <div class="divider"><i></i></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="btn primary choice">Quick game<small>One round. Whoever takes more stones wins.</small></div>
+          <div class="btn choice">Full match<small>Up to 5 rounds, played for homes (ቤት).</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Toss call -->
+<section class="shot">
+  <h2>5 · Coin toss · the call</h2>
+  <p>The camera rises to look straight down on the board. A gold coin waits on the mat, in 3D, between the rows. The call panel sits low so the coin stays in view. Its faces are the words አንበሳ and ሰው in raised Ge'ez letters ringed with a sun-ray border, with no emblems.</p>
+  <div class="device"><div class="scene top"></div><div class="grade"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="coin" style="left:376px;top:120px"><span>አንበሳ</span></div>
+      <div class="panel" style="left:242px;top:252px;width:360px;height:92px;padding:12px 18px">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <p class="ttl" style="font-size:12px">Call the coin</p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:12px">
+          <div class="btn primary" style="width:150px"><span style="font:600 14px var(--f-geez);letter-spacing:0">አንበሳ</span> · Lion</div>
+          <div class="btn primary" style="width:150px"><span style="font:600 14px var(--f-geez);letter-spacing:0">ሰው</span> · Person</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Toss result -->
+<section class="shot">
+  <h2>6 · Coin toss · the result</h2>
+  <p>The coin spins up into the firelight (1.2 s), lands with a ring and settles on its face. A banner states the side and who starts. "Play" lowers the camera to the starter's seat.</p>
+  <div class="device"><div class="scene top"></div><div class="grade"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="coin" style="left:376px;top:104px;transform:rotate(-8deg)"><span>ሰው</span></div>
+      <div class="panel" style="left:262px;top:226px;width:320px;height:118px;padding:14px 18px;text-align:center">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <p class="ttl" style="font-size:13px">It landed on <span style="font:600 15px var(--f-geez);letter-spacing:0">ሰው</span></p>
+        <p class="note" style="margin-top:6px">You start.</p>
+        <div class="btn primary" style="margin-top:10px;width:160px">Play</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Your turn -->
+<section class="shot">
+  <h2>7 · Play · your turn</h2>
+  <p>The near player's plate is at the bottom left, the far player's at the top left, which is how they sit at the board. The round sits in the cartouche, and Menu is top right. Your playable cups glow ember-gold in the 3D scene and their count discs light up. Firelight swells a little on your side.</p>
+  <div class="device" id="turn"><div class="scene game"></div><div class="grade"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="plate b" style="left:59px;top:12px"><div class="av"><svg><use href="#i-knot"/></svg></div><div><div class="nm">Computer</div><div class="st"><span><svg><use href="#i-pebble"/></svg>8</span><span><svg><use href="#i-hut"/></svg>6</span></div></div></div>
+      <div class="cart"><div class="t">ROUND II OF V</div><div class="pips"><i class="done"></i><i class="now"></i><i></i><i></i><i></i></div></div>
+      <div class="caption">Your turn · tap a glowing cup</div>
+      <div class="medal" style="left:745px;top:12px"><svg><use href="#i-menu"/></svg></div>
+      <div class="plate a active" style="left:59px;top:313px"><div class="av"><svg><use href="#i-ibex"/></svg></div><div><div class="nm">You</div><div class="st"><span><svg><use href="#i-pebble"/></svg>12</span><span><svg><use href="#i-hut"/></svg>6</span></div></div><i class="turn"></i></div>
+      <div class="cups" data-state="turn"></div>
+    </div>
+  </div>
+  <pre class="spec">Far plate   x 59  y 12   188 × 44 · Menu medallion x 745 y 12 (40)
+Cartouche   x 338 y 12   168 × 32 · caption centred y 52, Cinzel 600 10, tracking .3em, ember-300
+Near plate  x 59  y 313  188 × 44 · active: ember border, ember glow, diamond marker at its right edge
+Count disc  24 (store 30), centred 20 px above each cup's rim; playable = ember ring + glow</pre>
+</section>
+
+<!-- 8 · Computer playing -->
+<section class="shot">
+  <h2>8 · Play · the computer sows</h2>
+  <p>The caption turns moon-blue and its diamonds pulse. The far plate is now active. Stones arc one by one from cup to cup, each landing with a click and a puff of dust, and the count discs tick as they land. The camera does not move.</p>
+  <div class="device"><div class="scene game"></div><div class="grade"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="plate b active" style="left:59px;top:12px;--acc:var(--moon-300)"><div class="av"><svg><use href="#i-knot"/></svg></div><div><div class="nm">Computer</div><div class="st"><span><svg><use href="#i-pebble"/></svg>8</span><span><svg><use href="#i-hut"/></svg>6</span></div></div><i class="turn" style="background:var(--moon-300);box-shadow:0 0 8px var(--moon-300)"></i></div>
+      <div class="cart"><div class="t">ROUND II OF V</div><div class="pips"><i class="done"></i><i class="now"></i><i></i><i></i><i></i></div></div>
+      <div class="caption cool">The computer is playing<span class="dots"><i></i><i></i><i></i></span></div>
+      <div class="medal" style="left:745px;top:12px"><svg><use href="#i-menu"/></svg></div>
+      <div class="plate a" style="left:59px;top:313px"><div class="av"><svg><use href="#i-ibex"/></svg></div><div><div class="nm">You</div><div class="st"><span><svg><use href="#i-pebble"/></svg>12</span><span><svg><use href="#i-hut"/></svg>6</span></div></div></div>
+      <div class="cups" data-state="idle"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · Pause -->
+<section class="shot">
+  <h2>9 · Paused</h2>
+  <p>The scene keeps burning behind, blurred and darkened, while the game holds still. Settings are rows of toggles. "Keep the view fixed" appears only in two-player games.</p>
+  <div class="device"><div class="scene game dim"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="panel" style="left:232px;top:28px;width:380px;height:318px;padding:18px 26px">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <p class="ttl">Paused</p><div class="divider"><i></i></div>
+        <div style="display:flex;justify-content:center"><div class="btn primary" style="width:200px">Continue</div></div>
+        <div style="margin-top:10px">
+          <div class="row2"><span>Speed</span><span class="v"><b class="tg on">Normal</b><b class="tg">Fast</b><b class="tg">Skip</b></span></div>
+          <div class="row2"><span>Stone counts</span><span class="v"><b class="tg on">On</b></span></div>
+          <div class="row2"><span>Sound</span><span class="v"><b class="tg on">On</b></span></div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:14px"><div class="btn">Start again</div><div class="btn quiet" style="height:40px">Quit to home</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · Round summary -->
+<section class="shot">
+  <h2>10 · End of a round</h2>
+  <p>The camera rises to look straight down. Each cup's rim is inlaid in gold (yours) or silver-blue (theirs), so you see the homes change hands on the board itself. A compact panel along the bottom keeps the board visible.</p>
+  <div class="device"><div class="scene owners"></div><div class="grade"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="cart"><div class="t">END OF ROUND II</div><div class="pips"><i class="done"></i><i class="done"></i><i></i><i></i><i></i></div></div>
+      <div class="panel" style="left:122px;top:262px;width:600px;height:95px;padding:12px 20px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <div style="text-align:center"><div style="font:600 10px var(--f-display);letter-spacing:.2em;color:var(--ember-300)">YOU · 28 STONES</div><div class="homes"><svg><use href="#i-hut"/></svg><svg><use href="#i-hut"/></svg><svg><use href="#i-hut"/></svg><svg><use href="#i-hut"/></svg><svg><use href="#i-hut"/></svg><svg><use href="#i-hut"/></svg><svg><use href="#i-hut"/></svg></div><div class="note" style="font-size:12.5px;margin-top:3px">7 homes next round</div></div>
+        <div class="btn primary" style="width:170px">Next round</div>
+        <div style="text-align:center"><div style="font:600 10px var(--f-display);letter-spacing:.2em;color:var(--moon-300)">COMPUTER · 20 STONES</div><div class="homes"><svg class="b"><use href="#i-hut"/></svg><svg class="b"><use href="#i-hut"/></svg><svg class="b"><use href="#i-hut"/></svg><svg class="b"><use href="#i-hut"/></svg><svg class="b"><use href="#i-hut"/></svg></div><div class="note" style="font-size:12.5px;margin-top:3px">5 homes next round</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · Result -->
+<section class="shot">
+  <h2>11 · The result</h2>
+  <p>The camera circles the board slowly while embers burst upward from the fire. The headline is large; underneath come the score, the reason and the number of rounds.</p>
+  <div class="device"><div class="scene game dim"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="panel" style="left:262px;top:46px;width:320px;height:288px;padding:22px 24px;text-align:center">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <svg class="emblem" viewBox="0 0 56 56" style="width:44px;height:44px"><circle cx="28" cy="28" r="26"/><path d="M24 44V35l-5-5 3-5h5l3 3M27 23c-2-8 4-13 10-11 5 2 5 9 2 12M30 25c0-5 3-8 7-7"/></svg>
+        <div class="big" style="margin-top:8px">You won!</div>
+        <div class="score">31<i>–</i>17</div>
+        <p class="note" style="font-size:13px">The computer has no homes left. · 4 rounds played</p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:18px"><div class="btn primary" style="width:140px">Play again</div><div class="btn" style="width:110px">Home</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · Guided -->
+<section class="shot">
+  <h2>12 · Learning to play · hint and lesson card</h2>
+  <p>The hint runs as a ribbon along the bottom. The suggested cup pulses brighter than the rest. "Leave lesson" takes the place of Menu. Lesson cards use the standard panel.</p>
+  <div class="device"><div class="scene game"></div><div class="grade"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="plate b" style="left:59px;top:12px"><div class="av"><svg><use href="#i-knot"/></svg></div><div><div class="nm">Computer</div><div class="st"><span><svg><use href="#i-pebble"/></svg>0</span></div></div></div>
+      <div class="btn" style="position:absolute;left:653px;top:12px;height:34px;padding:0 14px">Leave lesson</div>
+      <div class="plate a active" style="left:59px;top:313px"><div class="av"><svg><use href="#i-ibex"/></svg></div><div><div class="nm">You</div><div class="st"><span><svg><use href="#i-pebble"/></svg>0</span></div></div><i class="turn"></i></div>
+      <div class="cups" data-state="guided"></div>
+      <div class="ribbon" style="bottom:72px">Try the <b>pulsing hole</b>: its last stone makes four, a ቤት for you.</div>
+    </div>
+  </div>
+  <div class="device" style="margin-top:22px"><div class="scene game dim"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="panel" style="left:242px;top:66px;width:360px;height:236px;padding:20px 26px;text-align:center">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <p class="ttl">Taking a <span style="font:600 18px var(--f-geez);letter-spacing:0">ቤት</span></p><div class="divider"><i></i></div>
+        <p class="note">If your last stone makes exactly four, you take those four, wherever the hole is. Four stones are a ቤት. Your turn ends.</p>
+        <div class="btn primary" style="margin-top:16px;width:160px">Got it</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · About -->
+<section class="shot">
+  <h2>13 · About Gebeta</h2>
+  <p>A reading panel over the home scene, with the title in both scripts.</p>
+  <div class="device"><div class="scene home dim"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="panel" style="left:182px;top:26px;width:480px;height:322px;padding:20px 30px">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <div class="medal" style="left:12px;top:12px;width:30px;height:30px"><svg style="width:14px;height:14px"><use href="#i-back"/></svg></div>
+        <p class="ttl">About Gebeta · <span style="font:600 18px var(--f-geez);letter-spacing:0">ገበጣ</span></p><div class="divider"><i></i></div>
+        <p class="note" style="text-align:left;font-size:14.5px">Gebeta is played across Ethiopia. In the 12-hole version there are two rows of six holes, one row for each player.</p>
+        <p class="note" style="text-align:left;font-size:14.5px;margin-top:8px">Children scoop the holes into the earth and play with small pebbles, four in every hole to start.</p>
+        <p class="note" style="text-align:left;font-size:14.5px;margin-top:8px">You sow the stones around the board one by one. Stones are taken in fours, and four stones together are called a ቤት (bet, "home").</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · Turn your phone -->
+<section class="shot">
+  <h2>14 · Held upright · "turn your phone"</h2>
+  <p>This shows whenever the screen is taller than it is wide, and the game pauses behind it. The phone icon rocks 90° every 2 s. It also shows on a desktop window narrowed to portrait.</p>
+  <div class="device portrait" style="transform:scale(.62);transform-origin:top left;margin-bottom:-320px"><div class="scene" style="background:radial-gradient(ellipse at 50% 40%,#2a1c10,#070504 70%)"></div><div class="grain"></div>
+    <div class="ui" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding:0 40px">
+      <svg class="emblem" viewBox="0 0 56 56" style="width:72px;height:72px"><circle cx="28" cy="28" r="26"/><circle cx="28" cy="28" r="22" style="opacity:.35"/><path d="M24 44V35l-5-5 3-5h5l3 3M27 23c-2-8 4-13 10-11 5 2 5 9 2 12M30 25c0-5 3-8 7-7"/></svg>
+      <svg viewBox="0 0 24 24" style="width:54px;height:54px;stroke:var(--gold-300);fill:none;stroke-width:1.2;transform:rotate(-30deg)"><use href="#i-phone"/></svg>
+      <div style="font:600 16px var(--f-display);letter-spacing:.2em;color:var(--gold-300)">TURN YOUR PHONE</div>
+      <div style="font:italic 17px/1.4 var(--f-text);color:var(--text-300)">Gebeta is played sideways, the way the board lies in front of you.</div>
+      <div style="font:600 17px var(--f-geez);color:var(--text-300)">ስልክዎን ያዙሩ</div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 · No WebGL -->
+<section class="shot">
+  <h2>15 · This device can't show the 3D board</h2>
+  <p>The only screen without the live scene behind it. Instead it sits on a still of the home scene, saved in the app (60 KB WebP).</p>
+  <div class="device"><div class="scene home dim"></div><div class="grain"></div><div class="safe"></div>
+    <div class="ui">
+      <div class="panel" style="left:222px;top:96px;width:400px;height:180px;padding:22px 30px;text-align:center">
+        <i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i>
+        <p class="ttl" style="font-size:14px">Can't show the 3D board</p><div class="divider"><i></i></div>
+        <p class="note">Gebeta needs WebGL 2, which this browser doesn't offer. Try an up-to-date Chrome, Safari, Edge or Firefox.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Count discs over the stand-in picture's cups (percent of the frame). Index order: holes 0-11, then stores B, A.
+  const CUPS = [[306.6,247.7,309.9,229.1],[352.7,247.7,354.8,229.1],[398.9,247.7,399.6,229.1],[445.1,247.7,444.4,229.1],[491.3,247.7,489.2,229.1],[537.4,247.7,534.1,229.1],[527,169.6,529,191],[485,169.6,486.2,191],[443,169.6,443.4,191],[401,169.6,400.6,191],[359,169.6,357.8,191],[317,169.6,315,191],[584,192.1,586.2,209.6],[260,192.1,257.8,209.6]]; // [disc x, disc y, cup x, cup y] in px, from the seat camera
+  const COUNTS = [4, 5, 1, 6, 2, 4, 3, 4, 0, 7, 4, 2, 8, 12];
+  document.querySelectorAll('.cups').forEach((layer) => {
+    const state = layer.dataset.state;
+    CUPS.forEach(([x, y, cx, cy], i) => {
+      const store = i >= 12;
+      const mine = i < 6;
+      const playable = state === 'turn' && mine && COUNTS[i] > 0;
+      const suggested = state === 'guided' && i === 3;
+      if (playable || (state === 'guided' && mine)) {
+        const g = document.createElement('div');
+        g.className = 'glow' + (suggested ? ' strong' : '');
+        g.style.left = cx + 'px'; g.style.top = cy + 'px';
+        layer.appendChild(g);
+      }
+      const d = document.createElement('div');
+      d.className = 'cnt' + (store ? ' store' : '') + (playable || suggested ? ' play' : '');
+      d.style.left = x + 'px'; d.style.top = y + 'px';
+      d.textContent = state === 'guided' ? (mine ? [4, 3, 4, 3, 2, 4][i] : 4) : COUNTS[i];
+      layer.appendChild(d);
+    });
+  });
+</script>
+</body>
+</html>
