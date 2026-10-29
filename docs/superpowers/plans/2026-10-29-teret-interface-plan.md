@@ -46,7 +46,7 @@
 - `tokens.css` declares on `:root` every token of spec §9 as `--ink-950 … --line-soft`, `--f-display: 'Cinzel', serif`, `--f-text: 'EB Garamond', Georgia, serif`, `--f-geez: 'Noto Serif Ethiopic', serif`, `--ui: 1` (the scale), `--safe-x`, `--safe-b`.
 - `tokens.test.ts`: `import { TOKENS } from './tokens'` — `apps/web/src/ui/tokens.ts` exports the same values as a typed object (`TOKENS.gold400 === '#d6ae6a'`), used by the 3D feedback for its colours.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```js
 // tools/assets/fonts.test.mjs
@@ -60,10 +60,10 @@ test('subset files exist and are small', async () => { await subsetAll(); const 
 test('tokens match the spec', () => { expect(TOKENS.ink950).toBe('#0a0806'); expect(TOKENS.ember400).toBe('#ff9a3c'); expect(TOKENS.moon300).toBe('#b9cfee'); expect(TOKENS.panel).toBe('rgba(13, 10, 7, 0.84)'); });
 ```
 
-- [ ] **Step 2: Run** `pnpm --filter @etg/assets test` and `pnpm --filter @etg/web test tokens` → FAIL.
-- [ ] **Step 3: Implement**; `fonts.css` has seven `@font-face` rules with `font-display: swap` and `unicode-range` (Ethiopic `U+1200-137F, U+1380-139F, U+2D80-2DDF, U+AB00-AB2F`).
-- [ ] **Step 4: Run** → PASS; `pnpm --filter @etg/web build`; `check:size` → fonts total reported.
-- [ ] **Step 5: Commit** — `feat(web): Teret fonts, subset, and the design tokens`.
+- [x] **Step 2: Run** `pnpm --filter @etg/assets test` and `pnpm --filter @etg/web test tokens` → FAIL.
+- [x] **Step 3: Implement**; `fonts.css` has seven `@font-face` rules with `font-display: swap` and `unicode-range` (Ethiopic `U+1200-137F, U+1380-139F, U+2D80-2DDF, U+AB00-AB2F`).
+- [x] **Step 4: Run** → PASS; `pnpm --filter @etg/web build`; `check:size` → fonts total reported.
+- [x] **Step 5: Commit** — `feat(web): Teret fonts, subset, and the design tokens`.
 
 ---
 
@@ -80,7 +80,7 @@ test('tokens match the spec', () => { expect(TOKENS.ink950).toBe('#0a0806'); exp
 - Kit props: `Panel({ title?, width, height?, x?, y?, center?, children, labelledBy })` (title gets the 150 px divider with a diamond; corners are four `.k` diamonds; min inner line inset 4 px); `Button({ kind: 'primary' | 'secondary' | 'quiet' | 'choice', hint?, autoFocus?, children, ...buttonProps })`; `Medallion({ icon, label, size?: 40 | 30, ...buttonProps })`; `Icon({ name, size? })`.
 - States and motion per spec §9 "States" and "Motion" in `kit.css` (`.panel-enter` 220 ms rise 12 px, `.panel-exit` 160 ms; `@media (prefers-reduced-motion: reduce)` fades only).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
 test.each([[844, 390, 1, false, 56, 313], [750, 300, 0.82, true, 36.08, 254.08], [1920, 1080, 1.6, false, 89.6, 956.8]])('uiMetrics %i×%i', (w, h, scale, compact, top, bottom) => {
@@ -91,10 +91,10 @@ test('kit renders its roles', () => { render(<Panel title="Pause" labelledBy="t"
   expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument(); expect(screen.getByRole('button', { name: 'Menu' })).toBeInTheDocument(); expect(screen.getByText('Pause')).toBeInTheDocument(); });
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement** the kit and the metrics; mount `<UiLayer>` in `App.tsx` around the screen switch.
-- [ ] **Step 4: Run** → PASS; visually check a sample panel at 844 × 390 against `renders/09-paused.jpg`.
-- [ ] **Step 5: Commit** — `feat(web): interface kit, scale and safe areas`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement** the kit and the metrics; mount `<UiLayer>` in `App.tsx` around the screen switch.
+- [x] **Step 4: Run** → PASS; visually check a sample panel at 844 × 390 against `renders/09-paused.jpg`.
+- [x] **Step 5: Commit** — `feat(web): interface kit, scale and safe areas`.
 
 ---
 
