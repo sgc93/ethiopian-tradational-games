@@ -50,7 +50,7 @@ This prototype has to prove two things:
 ## 3. Decided by the owner
 
 - **Web first**, built with **React + TypeScript + Vite + React Three Fiber (three.js)**. Later wrapped as a phone app with **Capacitor** from the same code.
-- **Look:** the board is the earth (holes in the ground) or a flat stone; the seeds are small collected stones. No carved wooden board.
+- **Look (changed by the owner on 2026-10-29):** a carved wooden Gebeta board with a Walia ibex head at each end, wooden texture for now. It has two rows of six cups plus one store cup at each end for captured stones. The seeds are still small collected stones. The board's design is in `docs/design/board/`: the reference images (see `image-brief.md`) and the dimensioned blueprint in `blueprint/`. It replaces the original look of holes scooped in the earth.
 - **Rules:** section 4, including the resolutions of the points the sources left unclear.
 - **How a round ends:** as written in 4.3, the way the sources describe it.
 - **How a match ends:** when a player has no homes left, or after 5 rounds, whichever comes first; then whoever owns more homes wins (4.4). The owner chose this after a simulation showed that, with "no homes left" as the only ending, matches between evenly matched players almost never finish.
@@ -116,6 +116,8 @@ The game screen always shows which round it is out of 5.
 ## 5. Experience
 
 ### 5.1 The board scene
+
+> Superseded in part on 2026-10-29: the board becomes a carved wooden board with Walia ibex heads (§3), and captured stones go into the end store cups. The points below still apply except where they describe the earth.
 
 - A patch of red-brown earth with 12 scooped, half-sphere holes in two rows of six.
 - 48 small, irregular pebbles in natural colours (greys, browns, a few pale ones). No identical spheres, no glossy plastic.
