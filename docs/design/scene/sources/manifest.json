@@ -1,7 +1,86 @@
 {
   "note": "Every texture the scene uses: where its original came from and how it was accepted. Processed outputs are in apps/web/public/textures (built by tools/assets).",
   "textures": [
-    { "id": "wood", "source": "docs/design/board/images/17-wood-texture.jpg", "tool": "owner reference image", "date": "2026-10-29", "status": "accepted", "check": "tiled 3 x 3, no seam" },
-    { "id": "band", "source": "docs/design/board/blueprint/band-height-tile.svg", "tool": "blueprint height map", "date": "2026-10-29", "status": "accepted", "check": "tiled 3 x 3, repeats align" }
+    {
+      "id": "wood",
+      "source": "docs/design/board/images/17-wood-texture.jpg",
+      "tool": "owner reference image",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "check": "tiled 3 x 3, no seam"
+    },
+    {
+      "id": "band",
+      "source": "docs/design/board/blueprint/band-height-tile.svg",
+      "tool": "blueprint height map",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "check": "tiled 3 x 3, repeats align"
+    },
+    {
+      "id": "earth",
+      "source": "docs/design/board/images/20-ground-under-the-board.jpg",
+      "tool": "owner reference image",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "check": "already tiles cleanly"
+    },
+    {
+      "id": "mat",
+      "source": "tools/assets/procedural.mjs weave()",
+      "tool": "code",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "check": "tiled 3 x 3, no seam",
+      "note": "The Freepik connector was unreachable, so the mat is the code-made fallback; regenerate from the spec prompt when it is back."
+    },
+    {
+      "id": "basalt",
+      "source": "tools/assets/procedural.mjs basalt()",
+      "tool": "code",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "note": "Code-made fallback while the Freepik connector was unreachable; regenerate from the spec prompt when it is back."
+    },
+    {
+      "id": "bark",
+      "source": "tools/assets/procedural.mjs bark()",
+      "tool": "code",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "note": "Code-made fallback while the Freepik connector was unreachable; regenerate from the spec prompt when it is back."
+    },
+    {
+      "id": "thatch",
+      "source": "tools/assets/procedural.mjs thatch()",
+      "tool": "code",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "note": "Code-made fallback while the Freepik connector was unreachable; regenerate from the spec prompt when it is back."
+    },
+    {
+      "id": "plaster",
+      "source": "tools/assets/procedural.mjs plaster()",
+      "tool": "code",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "note": "Code-made fallback while the Freepik connector was unreachable; regenerate from the spec prompt when it is back."
+    },
+    {
+      "id": "ridge",
+      "source": "tools/assets/procedural.mjs ridge()",
+      "tool": "code",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "note": "Code-made fallback while the Freepik connector was unreachable; regenerate from the spec prompt when it is back."
+    },
+    {
+      "id": "trees",
+      "source": "tools/assets/procedural.mjs trees()",
+      "tool": "code",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "note": "Code-made fallback while the Freepik connector was unreachable; regenerate from the spec prompt when it is back."
+    }
   ]
 }

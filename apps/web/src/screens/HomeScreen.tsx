@@ -1,9 +1,10 @@
 import type { Format, Level } from '@etg/gebeta-rules';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { controller } from '../game/instance';
 import type { Mode } from '../game/session';
 import { loadSession } from '../persistence/storage';
+import { useScene } from '../scene/sceneStore';
 import { LANGUAGES } from '../state/settings';
 import { useApp } from '../state/store';
 import { FormatPicker, LevelPicker } from '../ui/FormatPicker';
@@ -15,6 +16,7 @@ export function HomeScreen() {
   const { settings, updateSettings, setScreen } = useApp();
   const saved = useMemo(() => loadSession(), []);
   const [step, setStep] = useState<Step>(null);
+  useEffect(() => useScene.getState().setMode('home'), []);
 
   const begin = (mode: Mode, format: Format) => {
     controller.start(mode, format);

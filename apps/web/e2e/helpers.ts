@@ -1,6 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 
-export const GAME_URL = '/?speed=skip&seed=42';
+// The minimal tier keeps headless Chrome's software renderer from starving the page under test.
+export const GAME_URL = '/?speed=skip&seed=42&tier=minimal';
 
 /** From the home screen (English), start a game against the easy computer and call the coin. */
 export async function startComputerGame(page: Page, format: 'Quick game' | 'Full match') {

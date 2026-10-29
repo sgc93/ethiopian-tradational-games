@@ -37,5 +37,105 @@
       "normal"
     ],
     "normalStrength": 3
+  },
+  {
+    "id": "earth",
+    "source": "../../docs/design/board/images/20-ground-under-the-board.jpg",
+    "size": 1024,
+    "seamless": false,
+    "grade": {
+      "tint": [
+        0.58,
+        0.47,
+        0.38
+      ],
+      "saturation": 0.85
+    },
+    "outputs": [
+      "color",
+      "normal"
+    ],
+    "normalSize": 512,
+    "normalStrength": 1.4
+  },
+  {
+    "id": "mat",
+    "source": "procedural:weave",
+    "size": 512,
+    "seamless": false,
+    "outputs": [
+      "color",
+      "normal"
+    ],
+    "normalSize": 256,
+    "normalStrength": 2.5
+  },
+  {
+    "id": "basalt",
+    "source": "procedural:basalt",
+    "size": 512,
+    "seamless": false,
+    "outputs": [
+      "color",
+      "normal"
+    ],
+    "normalSize": 256,
+    "normalStrength": 2
+  },
+  {
+    "id": "bark",
+    "source": "procedural:bark",
+    "size": 512,
+    "seamless": false,
+    "outputs": [
+      "color"
+    ]
+  },
+  {
+    "id": "thatch",
+    "source": "procedural:thatch",
+    "size": 512,
+    "seamless": false,
+    "outputs": [
+      "color",
+      "normal"
+    ],
+    "normalSize": 256,
+    "normalStrength": 2
+  },
+  {
+    "id": "plaster",
+    "source": "procedural:plaster",
+    "size": 512,
+    "seamless": false,
+    "outputs": [
+      "color"
+    ]
+  },
+  {
+    "id": "ridge",
+    "source": "procedural:ridge",
+    "size": [
+      2048,
+      256
+    ],
+    "seamless": false,
+    "outputs": [
+      "color"
+    ],
+    "alpha": true
+  },
+  {
+    "id": "trees",
+    "source": "procedural:trees",
+    "size": [
+      1024,
+      512
+    ],
+    "seamless": false,
+    "outputs": [
+      "color"
+    ],
+    "alpha": true
   }
 ]

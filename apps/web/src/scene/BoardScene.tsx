@@ -3,22 +3,23 @@ import { useMemo, useRef, useState } from 'react';
 import type { Sfx } from '../audio/sfx';
 import type { Session } from '../game/session';
 import { playableHoles } from '../game/view';
-import type { Settings, Speed } from '../state/settings';
+import type { Speed } from '../state/settings';
+import { Board } from './board/Board';
 import { useBoardView } from './boardView';
 import { CameraRig } from './CameraRig';
-import { Earth } from './Earth';
 import { HoleAnchors } from './HoleAnchors';
 import { HoleHitAreas } from './HoleHitAreas';
 import { HoleMarkers } from './HoleMarkers';
 import type { Vec3 } from './layout';
+import { useScene } from './sceneStore';
 import { Stones } from './Stones';
+import { TIERS } from './tiers';
 import { usePlayback } from './usePlayback';
 
 interface Props {
   session: Session | null;
-  settings: Settings;
   speed: Speed;
-  sfx: Sfx;
+  sfx: Sfx | null;
   /** A hole to draw extra attention to (the guided game's suggestion). */
   suggested?: HoleIndex | null;
   onHoleTap(hole: HoleIndex): void;
@@ -26,40 +27,24 @@ interface Props {
 }
 
 const setCounts = (counts: number[]) => useBoardView.setState({ counts });
+const silent: Sfx = { pickup() {}, drop() {}, capture() {}, setEnabled() {}, unlock() {} };
 
 /** The board, its stones and the camera. Without a session it shows a fresh board at rest. */
-export function BoardScene({ session, settings, speed, sfx, suggested = null, onHoleTap, onAnimationDone }: Props) {
+export function BoardScene({ session, speed, sfx, suggested = null, onHoleTap, onAnimationDone }: Props) {
   const positions = useRef<Vec3[]>([]);
   const [owners, setOwners] = useState<readonly Player[]>(initialOwners);
-  usePlayback({ session, speed, sfx, positions, onDone: onAnimationDone, onCounts: setCounts, onOwners: setOwners });
-
-  const round = session?.match.round;
+  usePlayback({ session, speed, sfx: sfx ?? silent, positions, onDone: onAnimationDone, onCounts: setCounts, onOwners: setOwners });
   const playable = useMemo(() => playableHoles(session), [session]);
-
-  const seat = session?.humanSeat ?? (settings.fixedCamera ? 0 : (round?.toMove ?? 0));
+  const detail = useScene((s) => TIERS[s.tier].detail);
 
   return (
     <>
-      <color attach="background" args={['#24140d']} />
-      <hemisphereLight args={['#ffe9cc', '#5a3522', 1.5]} />
-      <directionalLight
-        position={[4, 8, 3]}
-        intensity={3.2}
-        color="#ffd9a8"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-camera-left={-4}
-        shadow-camera-right={4}
-        shadow-camera-top={3}
-        shadow-camera-bottom={-3}
-        shadow-bias={-0.0004}
-      />
-      <Earth />
+      <Board detail={detail} />
       <Stones positions={positions} />
       <HoleMarkers owners={owners} />
       <HoleHitAreas playable={playable} suggested={suggested} onTap={onHoleTap} />
       <HoleAnchors />
-      <CameraRig seat={seat} />
+      <CameraRig />
     </>
   );
 }

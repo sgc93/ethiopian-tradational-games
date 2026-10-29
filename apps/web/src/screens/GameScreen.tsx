@@ -1,10 +1,8 @@
-import { PerformanceMonitor, Stats } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
 import { useEffect, useMemo, useState } from 'react';
 import { createSfx } from '../audio/sfx';
 import { controller, useSession } from '../game/instance';
-import { BoardScene } from '../scene/BoardScene';
 import { CountLabels } from '../scene/CountLabels';
+import { useScene } from '../scene/sceneStore';
 import { useApp } from '../state/store';
 import { GuidedOverlay } from '../tutorial/GuidedOverlay';
 import { useGuide } from '../tutorial/useGuide';
@@ -16,13 +14,10 @@ import { RoundSummary } from '../ui/RoundSummary';
 import { urlOptions } from '../urlOptions';
 import { ResultScreen } from './ResultScreen';
 
-const showFps = typeof location !== 'undefined' && new URLSearchParams(location.search).has('fps');
-
 export function GameScreen() {
   const session = useSession((s) => s.session);
   const { settings, updateSettings, setScreen } = useApp();
   const speed = urlOptions.speed ?? settings.speed;
-  const [dpr, setDpr] = useState<number | [number, number]>([1, 2]);
   const [tossOpen, setTossOpen] = useState(false);
   const sfx = useMemo(() => createSfx(), []);
 
@@ -41,6 +36,23 @@ export function GameScreen() {
 
   const guide = useGuide(session, controller.setPaused);
 
+  // Tell the scene what to show: the game, whose seat the camera sits behind, and the moment.
+  const round = session?.match.round;
+  const seat = session?.humanSeat ?? (settings.fixedCamera ? 0 : (round?.toMove ?? 0));
+  useEffect(() => {
+    useScene.setState({
+      session,
+      speed,
+      sfx,
+      suggested: guide.suggested,
+      seat,
+      onHoleTap: controller.playHole,
+      onAnimationDone: controller.animationDone,
+      mode: tossOpen ? 'toss' : session?.phase === 'round-summary' ? 'round-end' : session?.phase === 'finished' ? 'result' : 'play',
+    });
+  }, [session, speed, sfx, guide.suggested, seat, tossOpen]);
+  useEffect(() => () => useScene.setState({ session: null, suggested: null, mode: 'home' }), []);
+
   const goHome = () => {
     controller.quit();
     setScreen('home');
@@ -48,19 +60,6 @@ export function GameScreen() {
 
   return (
     <div className="game-screen">
-      <Canvas shadows="percentage" dpr={dpr} camera={{ fov: 40, near: 0.1, far: 100, position: [0, 6, 5] }}>
-        <PerformanceMonitor onDecline={() => setDpr(1)} />
-        <BoardScene
-          session={session}
-          settings={settings}
-          speed={speed}
-          sfx={sfx}
-          suggested={guide.suggested}
-          onHoleTap={controller.playHole}
-          onAnimationDone={controller.animationDone}
-        />
-        {showFps && <Stats />}
-      </Canvas>
       {settings.showCounts && <CountLabels />}
       {session && (
         <>

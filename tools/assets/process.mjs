@@ -6,6 +6,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { grade, heightOf, heightToNormal, makeSeamless, roughnessFromHeight } from './lib.mjs';
+import { procedural } from './procedural.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(here, '../../apps/web/public/textures');
@@ -16,7 +17,9 @@ const dims = (size) => (Array.isArray(size) ? size : [size, size]);
 
 async function build(entry) {
   const [w, h] = dims(entry.size);
-  let image = sharp(resolve(here, entry.source), { density: 300 }).removeAlpha().resize(w, h, { fit: 'cover' });
+  let image = entry.source.startsWith('procedural:')
+    ? procedural[entry.source.slice('procedural:'.length)](w, h)
+    : sharp(resolve(here, entry.source), { density: 300 }).removeAlpha().resize(w, h, { fit: 'cover' });
   if (entry.seamless) image = await makeSeamless(image);
   if (entry.grade) {
     // Materialise the graded pixels: sharp orders operations itself, so a later greyscale would run first.

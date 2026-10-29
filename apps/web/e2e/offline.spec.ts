@@ -3,13 +3,11 @@ import { GAME_URL, openEnglish, playFirstOpenHole, startComputerGame, waitForTur
 
 test('works offline after the first visit', async ({ page, context }) => {
   await openEnglish(page);
-  // Wait until the service worker has installed and taken control of the page.
-  await page.evaluate(async () => {
-    await navigator.serviceWorker.ready;
-    if (!navigator.serviceWorker.controller) {
-      await new Promise((r) => navigator.serviceWorker.addEventListener('controllerchange', r, { once: true }));
-    }
-  });
+  // Wait until the service worker has installed, then visit again: a page loaded while the worker
+  // was still installing is not always claimed, but the next visit is controlled from the start.
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.goto(GAME_URL);
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)), { timeout: 30_000 }).toBe(true);
 
   await context.setOffline(true);
   await page.goto(GAME_URL);

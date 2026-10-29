@@ -47,6 +47,8 @@ button {
 }
 
 .screen {
+  position: relative;
+  z-index: 1;
   min-height: 100dvh;
   max-width: 34rem;
   margin: 0 auto;
@@ -231,10 +233,38 @@ button {
   margin-top: 0.5rem;
 }
 
+.scene-root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  touch-action: none;
+}
+
+.scene-root canvas {
+  display: block;
+}
+
+.scene-fade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
 .game-screen {
   position: fixed;
   inset: 0;
-  touch-action: none;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.game-screen > * {
+  pointer-events: auto;
+}
+
+.count-layer {
+  pointer-events: none !important;
 }
 
 /* --- In-game heads-up display --- */

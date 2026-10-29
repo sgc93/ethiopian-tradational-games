@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { expect, test } from 'vitest';
 import {
   bowlSurfaceY,
@@ -6,7 +5,6 @@ import {
   HOLE_DEPTH,
   HOLE_RADIUS,
   holeCenter,
-  seatCamera,
   STONE_SIZE,
   STORE_DEPTH,
   STORE_RADIUS,
@@ -16,15 +14,6 @@ import {
   storeSlot,
   type Vec3,
 } from './layout';
-
-function toThreeCamera(seat: { position: Vec3; target: Vec3; fov: number }, aspect: number) {
-  const cam = new THREE.PerspectiveCamera(seat.fov, aspect, 0.1, 100);
-  cam.position.set(...seat.position);
-  cam.lookAt(new THREE.Vector3(...seat.target));
-  cam.updateMatrixWorld();
-  cam.updateProjectionMatrix();
-  return cam;
-}
 
 const dist = (a: Vec3, b: Vec3) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
@@ -84,22 +73,4 @@ test('fit points cover the horns', () => {
   expect(Math.max(...pts.map((p) => Math.abs(p[2])))).toBeCloseTo(1.28, 2);
   expect(Math.max(...pts.map((p) => p[1]))).toBeGreaterThan(3.1);
   expect(Math.min(...pts.map((p) => p[1]))).toBe(-1.8);
-});
-
-test('seat camera frames the whole board', () => {
-  for (const aspect of [360 / 640, 16 / 9]) {
-    for (const p of [0, 1] as const) {
-      const cam = toThreeCamera(seatCamera(p, aspect), aspect);
-      for (const corner of fitPoints()) {
-        const v = new THREE.Vector3(...corner).project(cam);
-        expect(Math.abs(v.x)).toBeLessThanOrEqual(0.95);
-        expect(Math.abs(v.y)).toBeLessThanOrEqual(0.95);
-      }
-    }
-  }
-});
-
-test('each seat looks from its own side', () => {
-  expect(seatCamera(0, 1.5).position[2]).toBeGreaterThan(0);
-  expect(seatCamera(1, 1.5).position[2]).toBeLessThan(0);
 });

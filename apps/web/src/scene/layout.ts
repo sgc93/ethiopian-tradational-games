@@ -1,5 +1,4 @@
 import type { HoleIndex, Player } from '@etg/gebeta-rules';
-import * as THREE from 'three';
 import { BLUEPRINT } from './board/blueprint';
 
 // World units (p), y up: 1 p = one cup pitch = 50 mm. Player A sits at +z looking towards −z; player B
@@ -111,31 +110,4 @@ export function fitPoints(): Vec3[] {
     for (const z of [-body.halfWidth, body.halfWidth]) for (const y of [0, GROUND_Y]) pts.push([x, y, z]);
   }
   return pts;
-}
-
-const ELEVATION = (52 * Math.PI) / 180;
-const MARGIN = 0.9;
-
-/** Camera for a player's seat: behind their row, looking down at the board, close enough to fill the view. */
-export function seatCamera(player: Player, aspect: number): { position: Vec3; target: Vec3; fov: number } {
-  const fov = aspect < 1 ? 55 : 40;
-  const sign = player === 0 ? 1 : -1;
-  const target: Vec3 = [0, 0.3, 0];
-  const cam = new THREE.PerspectiveCamera(fov, aspect, 0.1, 200);
-  const v = new THREE.Vector3();
-  const points = fitPoints();
-  let position: Vec3 = [0, 0, 0];
-  for (let d = 3; d < 80; d += 0.25) {
-    position = [0, target[1] + d * Math.sin(ELEVATION), sign * d * Math.cos(ELEVATION)];
-    cam.position.set(...position);
-    cam.lookAt(...target);
-    cam.updateMatrixWorld();
-    cam.updateProjectionMatrix();
-    const fits = points.every((c) => {
-      v.set(...c).project(cam);
-      return Math.abs(v.x) <= MARGIN && Math.abs(v.y) <= MARGIN;
-    });
-    if (fits) break;
-  }
-  return { position, target, fov };
 }
