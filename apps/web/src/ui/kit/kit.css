@@ -1,0 +1,378 @@
+/*
+ * The interface kit (spec §9 "Parts", "States", "Motion"). Every size is in reference px at
+ * 844 × 390, multiplied by --ui (set on :root by the interface layer), with the spec's minimums:
+ * captions 9.5 px, body 12 px, buttons 36 px tall, medallions 34 px.
+ */
+
+/* ---------- the layer ---------- */
+.ui-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  padding: 12px calc(var(--safe-r) + 12px) calc(var(--safe-b) + 12px) calc(var(--safe-x) + 12px);
+  overflow: auto;
+  color: var(--text-100);
+  pointer-events: none;
+}
+
+.ui-layer > * {
+  pointer-events: auto;
+}
+
+/* ---------- type ---------- */
+.ui-layer .ttl {
+  margin: 0;
+  font: 600 calc(17px * var(--ui)) / 1.2 var(--f-display);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--gold-300);
+}
+
+.ui-layer .ttl :lang(am),
+.ui-layer .ttl[lang='am'] {
+  font: 600 calc(19px * var(--ui)) / 1.3 var(--f-geez);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.ui-layer .small-title {
+  margin: 0;
+  font: 600 calc(13px * var(--ui)) / 1.25 var(--f-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+.ui-layer .note {
+  margin: 0;
+  font: 400 max(12px, calc(14px * var(--ui))) / 1.45 var(--f-text);
+  color: var(--text-300);
+  text-align: center;
+}
+
+.ui-layer .caption {
+  font: 600 max(9.5px, calc(10px * var(--ui))) / 1 var(--f-display);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* ---------- panel ---------- */
+.ui-layer .panel {
+  position: relative;
+  box-sizing: border-box;
+  padding: calc(18px * var(--ui)) calc(24px * var(--ui));
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 4px rgba(10, 8, 6, 0.65),
+    inset 0 0 0 5px var(--line-soft);
+}
+
+.ui-layer .panel > .k {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: var(--gold-400);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.ui-layer .k.tl {
+  left: -4px;
+  top: -4px;
+}
+.ui-layer .k.tr {
+  right: -4px;
+  top: -4px;
+}
+.ui-layer .k.bl {
+  left: -4px;
+  bottom: -4px;
+}
+.ui-layer .k.br {
+  right: -4px;
+  bottom: -4px;
+}
+
+.ui-layer .divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(150px * var(--ui));
+  margin: calc(8px * var(--ui)) auto calc(12px * var(--ui));
+}
+
+.ui-layer .divider::before,
+.ui-layer .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line));
+}
+
+.ui-layer .divider::after {
+  transform: scaleX(-1);
+}
+
+.ui-layer .divider i {
+  width: 6px;
+  height: 6px;
+  background: var(--gold-400);
+  transform: rotate(45deg);
+}
+
+/* ---------- buttons ---------- */
+.ui-layer .btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: calc(10px * var(--ui));
+  min-height: 0;
+  height: max(36px, calc(40px * var(--ui)));
+  padding: 0 calc(22px * var(--ui));
+  margin: 0;
+  font: 600 calc(11.5px * var(--ui)) / 1 var(--f-display);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--gold-300);
+  background: rgba(16, 12, 9, 0.6);
+  border: 1px solid rgba(214, 174, 106, 0.42);
+  border-radius: 2px;
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    background 120ms ease,
+    transform 80ms ease,
+    opacity 120ms ease;
+}
+
+.ui-layer .btn :lang(am),
+.ui-layer .btn[lang='am'] {
+  font: 600 calc(13.5px * var(--ui)) / 1 var(--f-geez);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.ui-layer .btn-label {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(8px * var(--ui));
+}
+
+.ui-layer .btn-primary {
+  color: #fff1cf;
+  background: linear-gradient(180deg, #6e4517, #311d0b);
+  border-color: #e3b56b;
+  box-shadow:
+    0 0 22px rgba(255, 150, 60, 0.35),
+    inset 0 1px 0 rgba(255, 228, 170, 0.3);
+}
+
+.ui-layer .btn-quiet {
+  height: max(28px, calc(28px * var(--ui)));
+  padding: 0 calc(6px * var(--ui));
+  color: var(--gold-500);
+  background: none;
+  border-color: transparent;
+}
+
+.ui-layer .btn-choice {
+  flex-direction: column;
+  gap: calc(4px * var(--ui));
+  height: max(44px, calc(56px * var(--ui)));
+  white-space: normal;
+}
+
+.ui-layer .btn-hint {
+  display: block;
+  font: 400 italic max(12px, calc(12.5px * var(--ui))) / 1.2 var(--f-text);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-300);
+}
+
+.ui-layer .btn-primary .btn-hint {
+  color: var(--gold-200);
+}
+
+/* States: hover brightens the border and grows the glow; press moves 1 px down; focus is an
+   ember outline 3 px out; disabled is 40 % opacity with no glow. */
+.ui-layer .btn:hover:not(:disabled) {
+  border-color: rgba(230, 200, 142, 0.85);
+  background: rgba(24, 18, 13, 0.7);
+}
+
+.ui-layer .btn-primary:hover:not(:disabled) {
+  border-color: #f1dcaa;
+  background: linear-gradient(180deg, #7c4f1b, #3a220d);
+  box-shadow:
+    0 0 30px rgba(255, 150, 60, 0.5),
+    inset 0 1px 0 rgba(255, 228, 170, 0.35);
+}
+
+.ui-layer .btn-quiet:hover:not(:disabled) {
+  border-color: transparent;
+  background: none;
+  color: var(--gold-300);
+}
+
+.ui-layer .btn:active:not(:disabled),
+.ui-layer .medal:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.ui-layer .btn:focus-visible,
+.ui-layer .medal:focus-visible {
+  outline: 2px solid var(--ember-400);
+  outline-offset: 3px;
+}
+
+.ui-layer .btn:disabled,
+.ui-layer .medal:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+  cursor: default;
+}
+
+/* ---------- medallion ---------- */
+.ui-layer .medal {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: max(34px, calc(40px * var(--ui)));
+  height: max(34px, calc(40px * var(--ui)));
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  color: var(--gold-300);
+  background: rgba(12, 9, 7, 0.72);
+  border: 1px solid rgba(214, 174, 106, 0.6);
+  box-shadow:
+    inset 0 0 0 3px rgba(10, 8, 6, 0.8),
+    inset 0 0 0 4px rgba(214, 174, 106, 0.22);
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 80ms ease,
+    opacity 120ms ease;
+}
+
+.ui-layer .medal-small {
+  width: max(34px, calc(30px * var(--ui)));
+  height: max(34px, calc(30px * var(--ui)));
+}
+
+.ui-layer .medal:hover:not(:disabled) {
+  border-color: rgba(241, 220, 170, 0.9);
+  box-shadow:
+    0 0 14px rgba(255, 150, 60, 0.25),
+    inset 0 0 0 3px rgba(10, 8, 6, 0.8),
+    inset 0 0 0 4px rgba(214, 174, 106, 0.35);
+}
+
+.ui-layer .medal[aria-pressed='false'] {
+  color: var(--gold-700);
+}
+
+/* ---------- icons and the emblem ---------- */
+.ui-layer .icon {
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-layer .emblem {
+  display: block;
+  color: var(--gold-300);
+}
+
+.ui-layer .emblem circle,
+.ui-layer .emblem path {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- motion ---------- */
+.ui-layer .panel-enter {
+  animation: panel-enter 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.ui-layer .panel-exit {
+  animation: panel-exit 160ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  pointer-events: none;
+}
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes panel-exit {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+  to {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-layer .panel-enter {
+    animation: panel-fade-in 220ms ease both;
+  }
+  .ui-layer .panel-exit {
+    animation: panel-fade-out 160ms ease both;
+  }
+  .ui-layer .btn,
+  .ui-layer .medal {
+    transition: none;
+  }
+  .ui-layer .btn:active:not(:disabled),
+  .ui-layer .medal:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+@keyframes panel-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes panel-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

@@ -6,6 +6,7 @@ import { HomeScreen } from './screens/HomeScreen';
 import { NoWebGL } from './screens/NoWebGL';
 import { useApp } from './state/store';
 import { supportsWebGL2 } from './support';
+import { UiLayer } from './ui/UiLayer';
 
 export function App() {
   const screen = useApp((s) => s.screen);
@@ -14,7 +15,7 @@ export function App() {
   return (
     <>
       <SceneRoot />
-      {screen === 'about' ? <AboutScreen /> : screen === 'game' ? <GameScreen /> : <HomeScreen />}
+      <UiLayer>{screen === 'about' ? <AboutScreen /> : screen === 'game' ? <GameScreen /> : <HomeScreen />}</UiLayer>
     </>
   );
 }
