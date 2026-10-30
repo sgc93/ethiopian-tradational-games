@@ -28,7 +28,7 @@ interface Props {
 }
 
 const setCounts = (counts: number[]) => useBoardView.setState({ counts });
-const silent: Sfx = { pickup() {}, drop() {}, capture() {}, setEnabled() {}, unlock() {} };
+const silent: Sfx = { pickup() {}, drop() {}, capture() {}, coinWhoosh() {}, coinRing() {}, tick() {}, ambience() {}, duck() {}, setEnabled() {}, unlock() {} };
 
 /** The board, its stones and the camera. Without a session it shows a fresh board at rest. */
 export function BoardScene({ session, speed, sfx, suggested = null, onHoleTap, onAnimationDone }: Props) {

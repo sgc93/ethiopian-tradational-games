@@ -86,6 +86,7 @@ export function usePlayback(args: Args): void {
     const finish = (turnId: number) => {
       positions.current = tracker.current!.locations().map(locationToPosition);
       onCounts(allCounts(tracker.current!));
+      sfx.duck(false);
       onDone(turnId);
       turnTo(session?.match.round.toMove ?? null);
     };
@@ -109,6 +110,7 @@ export function usePlayback(args: Args): void {
     timeline.current?.kill();
     const tl = gsap.timeline({ paused: session.paused, onComplete: () => finish(turnId) });
     timeline.current = tl;
+    sfx.duck(true); // the ambience drops while stones move (spec §10 "Mix")
 
     /** Moves one stone along an arc; where it starts is read when the flight begins. */
     const fly = (id: number, to: () => Vec3, atSec: number, durSec: number, height: number) => {

@@ -1,6 +1,7 @@
 import type { Player } from '@etg/gebeta-rules';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { sfx } from '../audio/instance';
 import type { Session } from '../game/session';
 import { playerName } from '../game/view';
 import { useScene } from '../scene/sceneStore';
@@ -30,7 +31,10 @@ export function CoinToss({ session, speed, onCall, onDone }: Props) {
 
   useEffect(() => {
     if (stage !== 'flip') return;
-    const id = setTimeout(() => setStage('result'), FLIP_MS);
+    const id = setTimeout(() => {
+      sfx.coinRing(); // it lands
+      setStage('result');
+    }, FLIP_MS);
     return () => clearTimeout(id);
   }, [stage]);
 
@@ -49,6 +53,7 @@ export function CoinToss({ session, speed, onCall, onDone }: Props) {
       return;
     }
     useScene.setState({ coin: { lands: coin, startedAt: performance.now() / 1000 } });
+    sfx.coinWhoosh();
     setStage('flip');
   };
 

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { sfx } from './audio/instance';
 import { controller, useSession } from './game/instance';
 import { SceneRoot } from './scene/SceneRoot';
 import { useScene } from './scene/sceneStore';
@@ -35,8 +36,24 @@ function usePortraitPause(portrait: boolean) {
   }, [portrait]);
 }
 
+/**
+ * Sound everywhere after the first gesture (browsers allow none before one): every tap makes sure
+ * audio is running, the fireside ambience plays from then on, and all of it follows the setting.
+ */
+function useSound() {
+  const sound = useApp((s) => s.settings.sound);
+  useEffect(() => sfx.setEnabled(sound), [sound]);
+  useEffect(() => {
+    sfx.ambience(true);
+    const unlock = () => sfx.unlock();
+    window.addEventListener('pointerdown', unlock);
+    return () => window.removeEventListener('pointerdown', unlock);
+  }, []);
+}
+
 export function App() {
   const screen = useApp((s) => s.screen);
+  useSound();
   const webgl = useMemo(() => supportsWebGL2(), []);
   const portrait = usePortrait();
   // The scene loads behind the loading screen; the screens mount once the fire has flared.

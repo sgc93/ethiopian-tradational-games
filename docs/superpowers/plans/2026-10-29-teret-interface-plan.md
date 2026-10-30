@@ -347,7 +347,7 @@ test('every hint marks a key phrase in both languages', () => { for (const lang 
 - `ambience.ts`: `createAmbience(ctx: AudioContext, out: GainNode): { start(): void; stop(): void; duck(on: boolean): void }` — fire crackle: band-passed noise (800–3000 Hz) with random 30–80 ms bursts every 90–400 ms at −18 dB; wind: low-passed noise (200 Hz) swelling on a 9 s LFO at −26 dB; crickets: 4.2 kHz sine chirps in groups of 3 every 2–6 s at −30 dB; `duck` lowers the ambience bus by 6 dB over 150 ms.
 - `Sfx` additions: `coinWhoosh()` (filtered noise sweep 0.4 s), `coinRing()` (three detuned sines 2.1/3.3/5.6 kHz, 0.9 s decay), `tick()` (a 1.2 kHz 25 ms wooden tick); all honour `setEnabled`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
 test('new sounds exist and respect enabled', () => { const sfx = createSfx(fakeContextFactory); sfx.setEnabled(false); sfx.tick(); sfx.coinRing(); expect(fakeCtx.started).toBe(0); sfx.setEnabled(true); sfx.tick(); expect(fakeCtx.started).toBeGreaterThan(0); });
@@ -356,10 +356,10 @@ test('ambience ducks by 6 dB', () => { const a = createAmbience(fakeCtx, fakeCtx
 
 (Follow the fake-context pattern already in `sfx.test.ts`.)
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement.**
-- [ ] **Step 4: Run** → PASS; listen in the in-app browser once with sound on.
-- [ ] **Step 5: Commit** — `feat(web): fireside ambience, coin and button sounds`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement.**
+- [x] **Step 4: Run** → PASS; listen in the in-app browser once with sound on.
+- [x] **Step 5: Commit** — `feat(web): fireside ambience, coin and button sounds`.
 
 ---
 

@@ -1,7 +1,18 @@
+import { createAmbience, type Ambience } from './ambience';
+
 export interface Sfx {
   drop(countAfter: number): void;
   pickup(count: number): void;
   capture(): void;
+  /** The coin: a whoosh as it goes up, a metallic ring as it lands. */
+  coinWhoosh(): void;
+  coinRing(): void;
+  /** A soft wooden tick for buttons. */
+  tick(): void;
+  /** The fireside ambience (crackle, breeze, crickets); it follows the Sound setting. */
+  ambience(on: boolean): void;
+  /** Lowers the ambience while stones move. */
+  duck(on: boolean): void;
   setEnabled(on: boolean): void;
   /** Starts or resumes audio; call from a user gesture (iOS will not play sound before one). */
   unlock(): void;
@@ -21,8 +32,21 @@ export function createSfx(makeContext: () => AudioContext | null = defaultContex
   let tried = false;
   let enabled = true;
   let noise: AudioBuffer | null = null;
+  let ambience: Ambience | null = null;
+  let ambienceWanted = false;
+  let ducked = false;
 
   const ready = (): AudioContext | null => (enabled && ctx && ctx.state === 'running' ? ctx : null);
+
+  /** Starts the ambience when it is wanted, allowed and possible; stops it otherwise. */
+  const settleAmbience = () => {
+    const c = ready();
+    if (ambienceWanted && c) {
+      if (!ambience) ambience = createAmbience(c, c.destination);
+      ambience.start();
+      ambience.duck(ducked);
+    } else ambience?.stop();
+  };
 
   const noiseBuffer = (c: AudioContext) => {
     if (!noise) {
@@ -89,8 +113,76 @@ export function createSfx(makeContext: () => AudioContext | null = defaultContex
       thump(c, t + 0.03, 175, 90, 120, 0.22);
       grit(c, t, 1200, 90, 0.12);
     },
+    coinWhoosh() {
+      const c = ready();
+      if (!c) return;
+      const t = c.currentTime;
+      // Noise through a band-pass that sweeps up as the coin rises.
+      const src = c.createBufferSource();
+      const filter = c.createBiquadFilter();
+      const gain = c.createGain();
+      src.buffer = noiseBuffer(c);
+      src.loop = true;
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(400, t);
+      filter.frequency.exponentialRampToValueAtTime(2400, t + 0.4);
+      filter.Q.setValueAtTime(2, t);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.18, t + 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+      src.connect(filter).connect(gain).connect(c.destination);
+      src.start(t);
+      src.stop(t + 0.42);
+    },
+    coinRing() {
+      const c = ready();
+      if (!c) return;
+      const t = c.currentTime;
+      // Three partials, a touch out of tune with each other, dying away over 0.9 s.
+      for (const [hz, level] of [
+        [2100 * 1.002, 0.12],
+        [3300 * 0.998, 0.08],
+        [5600 * 1.003, 0.05],
+      ] as const) {
+        const osc = c.createOscillator();
+        const gain = c.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(hz, t);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.linearRampToValueAtTime(level, t + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+        osc.connect(gain).connect(c.destination);
+        osc.start(t);
+        osc.stop(t + 0.95);
+      }
+    },
+    tick() {
+      const c = ready();
+      if (!c) return;
+      const t = c.currentTime;
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, t);
+      osc.frequency.exponentialRampToValueAtTime(700, t + 0.025);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.08, t + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.025);
+      osc.connect(gain).connect(c.destination);
+      osc.start(t);
+      osc.stop(t + 0.04);
+    },
+    ambience(on) {
+      ambienceWanted = on;
+      settleAmbience();
+    },
+    duck(on) {
+      ducked = on;
+      ambience?.duck(on);
+    },
     setEnabled(on) {
       enabled = on;
+      settleAmbience();
     },
     unlock() {
       if (!tried) {
@@ -101,7 +193,8 @@ export function createSfx(makeContext: () => AudioContext | null = defaultContex
           ctx = null;
         }
       }
-      if (ctx && ctx.state !== 'running') void ctx.resume().catch(() => {});
+      if (ctx && ctx.state !== 'running') void ctx.resume().then(settleAmbience, () => {});
+      else settleAmbience();
     },
   };
 }

@@ -7,8 +7,10 @@ function fakeAudioContext(state: AudioContextState = 'suspended') {
     setValueAtTime: vi.fn(),
     linearRampToValueAtTime: vi.fn(),
     exponentialRampToValueAtTime: vi.fn(),
+    setTargetAtTime: vi.fn(),
+    cancelScheduledValues: vi.fn(),
   });
-  const node = () => ({ connect: vi.fn().mockReturnThis(), start: vi.fn(), stop: vi.fn() });
+  const node = () => ({ connect: vi.fn().mockReturnThis(), disconnect: vi.fn(), start: vi.fn(), stop: vi.fn() });
   const ctx = {
     state,
     currentTime: 0,
@@ -55,4 +57,47 @@ test('after unlock, a drop plays a thump and a burst of noise', async () => {
   sfx.setEnabled(false);
   sfx.drop(3);
   expect(ctx.createOscillator).toHaveBeenCalledTimes(1);
+});
+
+test('the coin, the tick and the ambience exist and respect enabled', async () => {
+  const ctx = fakeAudioContext();
+  const sfx = createSfx(() => ctx as unknown as AudioContext);
+  sfx.unlock();
+  await Promise.resolve();
+  sfx.setEnabled(false);
+  sfx.tick();
+  sfx.coinRing();
+  sfx.coinWhoosh();
+  sfx.ambience(true);
+  expect(ctx.createOscillator).not.toHaveBeenCalled();
+  expect(ctx.createBufferSource).not.toHaveBeenCalled();
+  sfx.setEnabled(true); // the ambience asked for while muted starts now
+  sfx.ambience(false);
+  let oscillators = ctx.createOscillator.mock.calls.length;
+  let sources = ctx.createBufferSource.mock.calls.length;
+  sfx.tick();
+  expect(ctx.createOscillator.mock.calls.length).toBe(oscillators + 1);
+  oscillators = ctx.createOscillator.mock.calls.length;
+  sfx.coinRing();
+  expect(ctx.createOscillator.mock.calls.length).toBe(oscillators + 3); // three detuned partials
+  sfx.coinWhoosh();
+  expect(ctx.createBufferSource.mock.calls.length).toBe(sources + 1);
+  sources = ctx.createBufferSource.mock.calls.length;
+  sfx.ambience(true);
+  expect(ctx.createBufferSource.mock.calls.length).toBeGreaterThan(sources); // the wind bed
+  expect(() => sfx.duck(true)).not.toThrow();
+  sfx.ambience(false);
+});
+
+test('turning sound off silences the ambience, and on brings it back', async () => {
+  const ctx = fakeAudioContext();
+  const sfx = createSfx(() => ctx as unknown as AudioContext);
+  sfx.unlock();
+  await Promise.resolve();
+  sfx.ambience(true);
+  const beds = ctx.createBufferSource.mock.calls.length;
+  sfx.setEnabled(false);
+  sfx.setEnabled(true);
+  expect(ctx.createBufferSource.mock.calls.length).toBeGreaterThan(beds); // restarted
+  sfx.ambience(false);
 });

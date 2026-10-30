@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { createSfx } from '../audio/sfx';
+import { useEffect, useState } from 'react';
+import { sfx } from '../audio/instance';
 import { controller, useSession } from '../game/instance';
 import { CountDiscs } from '../ui/hud/CountDiscs';
 import { useScene } from '../scene/sceneStore';
@@ -20,15 +20,6 @@ export function GameScreen() {
   const speed = urlOptions.speed ?? settings.speed;
   const [tossOpen, setTossOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const sfx = useMemo(() => createSfx(), []);
-
-  useEffect(() => sfx.setEnabled(settings.sound), [sfx, settings.sound]);
-  useEffect(() => {
-    // Browsers only allow sound after a gesture; every tap makes sure audio is running.
-    const unlock = () => sfx.unlock();
-    window.addEventListener('pointerdown', unlock);
-    return () => window.removeEventListener('pointerdown', unlock);
-  }, [sfx]);
 
   useEffect(() => {
     if (!session) setScreen('home');
@@ -51,7 +42,7 @@ export function GameScreen() {
       onAnimationDone: controller.animationDone,
       mode: tossOpen ? 'toss' : menuOpen ? 'paused' : session?.phase === 'round-summary' ? 'round-end' : session?.phase === 'finished' ? 'result' : 'play',
     });
-  }, [session, speed, sfx, guide.suggested, seat, tossOpen, menuOpen]);
+  }, [session, speed, guide.suggested, seat, tossOpen, menuOpen]);
   useEffect(() => () => useScene.setState({ session: null, suggested: null, mode: 'home' }), []);
 
   const goHome = () => {
