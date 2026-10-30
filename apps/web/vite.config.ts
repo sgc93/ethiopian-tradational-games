@@ -24,7 +24,7 @@ export default defineConfig({
       workbox: {
         // No webmanifest here: the plugin precaches the manifest itself, and listing it twice
         // (with different revisions) makes Workbox throw while the service worker starts.
-        globPatterns: ['**/*.{js,css,html,woff2,svg,png,webp,json}'],
+        globPatterns: ['**/*.{js,css,html,woff2,svg,png,webp,json,bin}'],
         // One self-contained sw.js, so a worker that fails to start fails registration loudly,
         // instead of running without caching anything.
         inlineWorkboxRuntime: true,

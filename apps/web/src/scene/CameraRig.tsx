@@ -11,8 +11,13 @@ import { holeCenter } from './layout';
 import { useScene, type SceneMode } from './sceneStore';
 
 const REDUCED_MOTION = typeof window !== 'undefined' && deviceEnv().reducedMotion;
-/** A look at the set from A's side, by the fire, for checking the world. */
-const FIRESIDE_LOOK: Pose = { position: [4, 3.5, 22], target: [-9, 0.5, -1], fov: 32 };
+/** Fixed looks for checking the set: by the fire, and at head B (at x = −5.25, facing +x) like the reference sheets. */
+const DEV_LOOKS: Record<NonNullable<typeof urlOptions.cam>, Pose> = {
+  home: { position: [4, 3.5, 22], target: [-9, 0.5, -1], fov: 32 },
+  head: { position: [-5.0, 1.9, 9.5], target: [-5.0, 1.7, 0], fov: 30 },
+  head34: { position: [1.5, 3.4, 7.5], target: [-5.0, 1.6, 0], fov: 30 },
+  headfront: { position: [4.5, 2.2, 0], target: [-5.0, 1.8, 0], fov: 30 },
+};
 
 const TURN_LIMIT = (15 * Math.PI) / 180;
 const TILT_MIN = (38 * Math.PI) / 180;
@@ -62,7 +67,7 @@ export function CameraRig() {
   const seat = useScene((s) => s.seat);
   const measured = useScene((s) => s.bands);
   const bands = measured ?? defaultBands(size.height);
-  const fixed = urlOptions.cam === 'home';
+  const fixed = urlOptions.cam !== undefined;
 
   const state = useRef({
     mode,
@@ -79,7 +84,7 @@ export function CameraRig() {
 
   // The pose the mode asks for right now.
   const livePose = (t: number): Pose => {
-    if (fixed) return FIRESIDE_LOOK;
+    if (urlOptions.cam) return DEV_LOOKS[urlOptions.cam];
     const s = state.current;
     switch (s.mode) {
       case 'home':

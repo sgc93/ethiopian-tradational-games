@@ -83,3 +83,17 @@ The end-to-end suite now runs every test at 844 × 390 (a full-height phone), 75
 2. Ownership is shown by inlay colour alone (gold / silver-blue) now that the prototype's pebble markers are gone; the hole buttons' labels still name the owner. Worth a look with a colour-blind eye.
 3. The sound mix was checked by instrumentation, not by ear: the balance of crackle, breeze, crickets, ticks and the coin wants one real listen.
 4. The "computer sows" moment (render 08) is not captured mid-sow; easy plays too quickly for a screenshot.
+
+## Part 3: the Walia heads reworked
+
+The owner asked for the heads to look like the carved references (`docs/design/board/images/07-side.jpg`, `11-three-quarter.jpg`, `08-front.jpg`, `12-one-horn.jpg`). The heads are now a signed-distance sculpt (`apps/web/src/scene/board/sculpt/sdf.ts`), proportioned from the side reference, meshed offline with marching cubes and trimmed to the triangle budgets by `apps/web/scripts/build-heads.ts`, and shipped prebuilt (`apps/web/public/models/ibex-head-{full,half}.bin`, 215 KB and 107 KB). The three developer looks `?cam=head`, `?cam=head34` and `?cam=headfront` (with `&still=1`) frame head B like the reference sheets.
+
+| Before | Side | Three-quarter | Front |
+|---|---|---|---|
+| [p3-heads-before.jpg](p3-heads-before.jpg) | [p3-heads-side.jpg](p3-heads-side.jpg) | [p3-heads-three-quarter.jpg](p3-heads-three-quarter.jpg) | [p3-heads-front.jpg](p3-heads-front.jpg) |
+
+In the game: [p3-heads-home-1920x1080.jpg](p3-heads-home-1920x1080.jpg) · [p3-heads-play-1920x1080.jpg](p3-heads-play-1920x1080.jpg).
+
+**Changes of design.** The horns' tips now sit 1.3 p apart, the master image's modest splay, instead of the blueprint's 2.27 p spread (the owner's earlier choice, set aside by the ask for the images' look). The head's own proportions follow image 07 rather than the blueprint's traced "head-only" outline: the nose at v ≈ 1.05 (the muzzle slopes down), the eye at (0.85, 1.65), the crown at 2.14, the ear tips at the blueprint's 2.33, the muzzle reaching the blueprint's 1.59.
+
+**Still to refine, by the owner's eye:** the eyelids (the eye is a ball in a socket), the cheek planes, the beard's shape, and the ridge height on the horns.
