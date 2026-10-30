@@ -1,6 +1,8 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { latest, now, useFeedback } from '../feedback/feedbackStore';
+import { turnSwell } from '../feedback/pulses';
 import { useScene } from '../sceneStore';
 import { TIERS } from '../tiers';
 import { flicker, jitter } from './flicker';
@@ -42,11 +44,15 @@ export function Lights() {
     const t = clock.elapsedTime;
     // The loading flare: every light rises from black with the fire (spec §9, screen 1).
     const flare = useScene.getState().flare;
-    const f = flicker(t) * flare;
+    // At a turn change the firelight swells about 10% for 0.8 s and leans towards that player's side (spec §7).
+    const turn = latest(useFeedback.getState().events, 'turn');
+    const swell = turn ? turnSwell(now() - turn.at) : 1;
+    const lean = turn ? (turn.player === 0 ? 1 : -1) * (swell - 1) * 20 : 0;
+    const f = flicker(t) * flare * swell;
     if (fire.current) {
       fire.current.intensity = FIRE_INTENSITY * f;
       const [jx, jy, jz] = jitter(t, 1);
-      fire.current.position.set(FIRE_POSITION[0] + jx, FIRE_POSITION[1] + jy, FIRE_POSITION[2] + jz);
+      fire.current.position.set(FIRE_POSITION[0] + jx, FIRE_POSITION[1] + jy, FIRE_POSITION[2] + jz + lean);
     }
     if (spot.current) spot.current.intensity = SPOT_INTENSITY * f;
     if (hut.current) hut.current.intensity = HUT_INTENSITY * (0.9 + 0.1 * Math.sin(0.7 * t)) * flare;

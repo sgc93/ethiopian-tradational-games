@@ -4,6 +4,7 @@ import { useEffect, useRef, type MutableRefObject } from 'react';
 import type { Sfx } from '../audio/sfx';
 import type { Session } from '../game/session';
 import type { Speed } from '../state/settings';
+import { now, useFeedback } from './feedback/feedbackStore';
 import { handSlot, stoneSlot, storeSlot, type Vec3 } from './layout';
 import { planPlayback } from './playbackPlan';
 import { StoneTracker, type StoneLocation } from './stoneTracker';
@@ -56,12 +57,21 @@ export function usePlayback(args: Args): void {
   const tracker = useRef<StoneTracker | null>(null);
   const shown = useRef<{ id: number; turnId: number } | null>(null);
   const timeline = useRef<gsap.core.Timeline | null>(null);
+  const lastTurn = useRef<Player | null>(null);
 
   const session = args.session;
   const key = session ? `${session.id}:${session.turnId}:${session.phase === 'animating'}` : 'idle';
 
   useEffect(() => {
     const { session, speed, sfx, positions, onDone, onCounts, onOwners } = live.current;
+    const feedback = useFeedback.getState();
+
+    /** The turn has passed to someone: the world answers (the firelight swells their way). */
+    const turnTo = (player: Player | null) => {
+      if (player === null || player === lastTurn.current) return;
+      lastTurn.current = player;
+      feedback.push({ kind: 'turn', player, at: now() });
+    };
 
     const sync = (round: RoundState) => {
       timeline.current?.kill();
@@ -70,12 +80,14 @@ export function usePlayback(args: Args): void {
       positions.current = tracker.current.locations().map(locationToPosition);
       onCounts(allCounts(tracker.current));
       onOwners(round.owners);
+      turnTo(session ? round.toMove : null);
     };
 
     const finish = (turnId: number) => {
       positions.current = tracker.current!.locations().map(locationToPosition);
       onCounts(allCounts(tracker.current!));
       onDone(turnId);
+      turnTo(session?.match.round.toMove ?? null);
     };
 
     if (!session) {
@@ -167,12 +179,13 @@ export function usePlayback(args: Args): void {
           fly(id, () => target, at, dur, 0.25);
           // The rest of the hand moves along above the hole just sown into.
           hand.forEach((rid, i) => fly(rid, () => handSlot(e.hole, i), at, dur, 0));
-          tl.call(() => (sfx.drop(e.countAfter), onCounts(counts)), [], at + dur * 0.9);
+          tl.call(() => (sfx.drop(e.countAfter), onCounts(counts), feedback.push({ kind: 'landed', hole: e.hole, at: now() })), [], at + dur * 0.9);
           break;
         }
         case 'capture':
-          tl.call(() => (sfx.capture(), onCounts(counts)), [], at);
-          moves.forEach((m, i) => fly(m.id, () => locationToPosition(m.to), at + i * dur * 0.08, dur * 0.75, 0.5));
+          tl.call(() => (sfx.capture(), onCounts(counts), feedback.push({ kind: 'captured', hole: e.hole, by: e.by, at: now() })), [], at);
+          // The four lift together in one arc into the store: 0.6 s at normal speed (1.5× the step).
+          moves.forEach((m) => fly(m.id, () => locationToPosition(m.to), at, dur * 1.5, 0.5));
           break;
         case 'round-end': {
           const per = DURATION_MS[speed].sweepStone / 1000;

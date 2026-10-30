@@ -5,6 +5,9 @@ import * as THREE from 'three';
 import { deviceEnv } from '../state/settings';
 import { urlOptions } from '../urlOptions';
 import { blendPose, defaultBands, homePose, orbitPose, playCamera, seatArc, topCamera, type Pose } from './camera/poses';
+import { latest, now, useFeedback } from './feedback/feedbackStore';
+import { nudge } from './feedback/pulses';
+import { holeCenter } from './layout';
 import { useScene, type SceneMode } from './sceneStore';
 
 const REDUCED_MOTION = typeof window !== 'undefined' && deviceEnv().reducedMotion;
@@ -179,6 +182,15 @@ export function CameraRig() {
     if (s.mode === 'play' && !REDUCED_MOTION && !fixed) {
       x += 0.04 * Math.sin((2 * Math.PI * t) / 7);
       y += 0.04 * Math.sin((2 * Math.PI * t) / 11);
+      // A capture eases the camera 3% towards the cup and back (spec §7 "Captures").
+      const captured = latest(useFeedback.getState().events, 'captured');
+      const n = captured ? nudge(now() - captured.at) : 0;
+      if (n > 0) {
+        const [hx, hy, hz] = holeCenter(captured!.hole);
+        x += (hx - x) * n;
+        y += (hy - y) * n;
+        z += (hz - z) * n;
+      }
     }
     cam.position.set(x, y, z);
     cam.lookAt(target.set(...pose.target));

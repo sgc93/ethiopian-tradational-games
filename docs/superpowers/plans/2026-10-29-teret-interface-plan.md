@@ -243,7 +243,7 @@ test('the cartouche reads QUICK GAME for a quick game', () => { render(<Hud sess
 - `feedbackStore.ts`: zustand `{ events: FeedbackEvent[]; push(e): void; prune(now): void }` with `type FeedbackEvent = { kind: 'landed'; hole: HoleIndex; at: number } | { kind: 'captured'; hole: HoleIndex; by: Player; at: number } | { kind: 'turn'; player: Player; at: number } | { kind: 'hover'; hole: HoleIndex | null } | { kind: 'press'; hole: HoleIndex | null }`; events older than 3 s are pruned.
 - `CupRings`: a `RingGeometry(HOLE_RADIUS + 0.01, HOLE_RADIUS + 0.06)` per playable cup at y 0.012, `#ff9a3c`, opacity from `ringPulse`; hover ×1.3 brightness; press scale `pressScale`. `Inlays`: rims for all 12 cups, gold `#d6ae6a` for A, silver-blue `#b9cfee` for B, opacity 0.25 during play and 0.9 at the end of a round, drawn in sequence 0–11 at 0.6 s each when `mode === 'round-end'`. `Dust`: 6–10 motes per `landed`, 0.4 s, rising 0.3. `Sparks`: ~20 gold points per `captured`, rising 1.2 over 0.8 s. `StoreGlow`: emissive ring on the owner's store, 0.6 s. `EyeGlint`: a 0.08 sprite at the owning head's eye (head-local (1.05, 1.85, ±0.32)), 0.4 s. Capture flight: the four stones fly together in one 0.6 s arc.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
 test('ring pulse stays within 0.4–1.0 with a 1.6 s period', () => { for (let t = 0; t < 4; t += 0.01) { const v = ringPulse(t); expect(v).toBeGreaterThanOrEqual(0.4); expect(v).toBeLessThanOrEqual(1); } expect(ringPulse(0)).toBeCloseTo(ringPulse(1.6)); });
@@ -251,10 +251,10 @@ test('turn swell peaks near 10% and ends at 1', () => { expect(turnSwell(0.4)).t
 test('feedback store prunes', () => { const s = useFeedback.getState(); s.push({ kind: 'landed', hole: 3, at: 0 }); s.push({ kind: 'landed', hole: 4, at: 5 }); s.prune(5); expect(useFeedback.getState().events).toHaveLength(1); });
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement**; `usePlayback` pushes `landed` at each drop's `at + dur·0.9` (where it already calls `sfx.drop`), `captured` at each capture's `at`, `turn` when the shown turn's player changes.
-- [ ] **Step 4: Run** → PASS; e2e → green; screenshot a capture moment with `?speed=normal` → `progress/p2-07-capture.png`.
-- [ ] **Step 5: Commit** — `feat(web): cup rings, inlays, dust, sparks and the firelight’s turn swell`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement**; `usePlayback` pushes `landed` at each drop's `at + dur·0.9` (where it already calls `sfx.drop`), `captured` at each capture's `at`, `turn` when the shown turn's player changes.
+- [x] **Step 4: Run** → PASS; e2e → green; screenshot a capture moment with `?speed=normal` → `progress/p2-07-capture.png`.
+- [x] **Step 5: Commit** — `feat(web): cup rings, inlays, dust, sparks and the firelight’s turn swell`.
 
 ---
 
