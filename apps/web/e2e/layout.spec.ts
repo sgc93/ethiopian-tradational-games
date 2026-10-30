@@ -72,4 +72,6 @@ test('no WebGL shows the message, not a crash', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.getByRole('alert')).toContainText(/WebGL 2/);
+  // The message sits over a still of the home scene (spec §9, screen 12).
+  await expect(page.locator('img[src*="home-still"]')).toBeVisible();
 });

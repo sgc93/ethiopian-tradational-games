@@ -1,0 +1,35 @@
+/* No WebGL (spec §9, screen 12): the message over a still of the home scene. */
+.nowebgl {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #0a0806;
+}
+
+.nowebgl-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(2px);
+}
+
+.nowebgl-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 4, 3, 0.45);
+}
+
+.ui-layer .nowebgl-panel {
+  padding: calc(22px * var(--ui)) calc(30px * var(--ui));
+  text-align: center;
+}
+
+.ui-layer .nowebgl-panel .ttl {
+  font-size: calc(14px * var(--ui));
+}
+
+.ui-layer .nowebgl-panel .note {
+  margin-top: calc(16px * var(--ui));
+}

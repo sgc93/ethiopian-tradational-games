@@ -329,11 +329,11 @@ test('every hint marks a key phrase in both languages', () => { for (const lang 
 - Create: `apps/web/public/home-still.webp` (a 1280 × 720 screenshot of the finished home scene, made with Playwright at `?still=1` which freezes the home camera at t = 12 s and hides the interface, processed by `tools/assets` to ≤ 60 KB), `docs/i18n-review.md`
 - Modify: `apps/web/src/screens/NoWebGL.tsx` (the message panel over the still; `role="alert"` kept), `apps/web/src/urlOptions.ts` (`still?: boolean`)
 
-- [ ] **Step 1: Write the failing test** (e2e `layout.spec` no-WebGL test: add `await expect(page.locator('img[src*="home-still"]')).toBeVisible()`).
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement**; `docs/i18n-review.md` lists every string added in part 2 with its Amharic, for the owner, together with the prototype's outstanding Amharic review.
-- [ ] **Step 4: Run** → PASS.
-- [ ] **Step 5: Commit** — `feat(web): the no-WebGL still and the Amharic review list`.
+- [x] **Step 1: Write the failing test** (e2e `layout.spec` no-WebGL test: add `await expect(page.locator('img[src*="home-still"]')).toBeVisible()`).
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement**; `docs/i18n-review.md` lists every string added in part 2 with its Amharic, for the owner, together with the prototype's outstanding Amharic review.
+- [x] **Step 4: Run** → PASS.
+- [x] **Step 5: Commit** — `feat(web): the no-WebGL still and the Amharic review list`.
 
 ---
 

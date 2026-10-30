@@ -12,6 +12,7 @@ import { useApp } from './state/store';
 import { supportsWebGL2 } from './support';
 import { usePortrait } from './ui/orientation';
 import { UiLayer } from './ui/UiLayer';
+import { urlOptions } from './urlOptions';
 
 /**
  * While the screen is portrait, "turn your phone" covers everything, the scene stops drawing and
@@ -41,7 +42,18 @@ export function App() {
   // The scene loads behind the loading screen; the screens mount once the fire has flared.
   const [loaded, setLoaded] = useState(false);
   usePortraitPause(portrait);
-  if (!webgl) return <NoWebGL />;
+  // `?still=1`: the lit scene alone, for the no-WebGL still (the loading flare is skipped).
+  useEffect(() => {
+    if (urlOptions.still) useScene.setState({ flare: 1 });
+  }, []);
+  if (!webgl) {
+    return (
+      <UiLayer>
+        <NoWebGL />
+      </UiLayer>
+    );
+  }
+  if (urlOptions.still) return <SceneRoot />;
   return (
     <>
       <SceneRoot />

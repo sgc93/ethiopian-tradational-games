@@ -83,7 +83,7 @@ export function CameraRig() {
     const s = state.current;
     switch (s.mode) {
       case 'home':
-        return homePose(t);
+        return homePose(urlOptions.still ? 12 : t);
       case 'toss':
       case 'round-end':
         return topCamera(size, bands);

@@ -152,7 +152,7 @@
     "close": "Close"
   },
   "noWebgl": {
-    "title": "This device can’t show the 3D board",
+    "title": "Can’t show the 3D board",
     "body": "Gebeta needs WebGL 2, which this browser doesn’t offer. Try an up-to-date Chrome, Safari, Edge or Firefox."
   },
   "terms": {

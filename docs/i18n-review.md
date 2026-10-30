@@ -14,4 +14,19 @@ Every string added by the Teret interface work (plan part 2) with the Amharic th
 | `hud.tapHint` | tap a glowing cup | የሚያበራውን ጉድጓድ ይንኩ | REVIEW |
 | `guide.hint.*` | key phrase marked <1>…</1> in each hint (glowing holes, pulsing hole, runs out of stones) | the Amharic phrase marked in each hint: ከሚያበሩት ጉድጓዶችዎ, የሚመታውን ጉድጓድ, ጠጠር እስኪያልቅበት, ማንኛውም የሚያበራ ጉድጓድ | REVIEW |
 
-The prototype's earlier Amharic (everything else in `am.json`) is still outstanding from the first design and belongs in the same reading.
+## English changed, Amharic untouched
+
+These keys' English was shortened to the mockup's wording; their Amharic was left as it was and may want the same trimming at the reading.
+
+| Key | English now | Amharic (unchanged) |
+|---|---|---|
+| `toss.prompt` | Call the coin | as before |
+| `toss.promptFriend` | Player 1, call the coin | as before |
+| `toss.sideLion` / `toss.sidePerson` | አንበሳ / ሰው (the bare words; the buttons gloss Lion / Person) | as before |
+| `toss.landed` | It landed on {{side}} | as before |
+| `summary.nextHomes` | {{count}} homes next round | as before |
+| `noWebgl.title` | Can’t show the 3D board | ይህ መሣሪያ ባለ 3D ሰሌዳውን ማሳየት አይችልም |
+
+## The prototype's Amharic
+
+Everything else in `am.json` is still outstanding from the first design and belongs in the same reading.
