@@ -38,15 +38,19 @@ export function createSfx(makeContext: () => AudioContext | null = defaultContex
 
   const ready = (): AudioContext | null => (enabled && ctx && ctx.state === 'running' ? ctx : null);
 
-  /** Starts the ambience when it is wanted, allowed and possible; stops it otherwise. */
+  /** Starts the ambience when it is wanted, allowed, possible and the page is in view; stops it otherwise. */
   const settleAmbience = () => {
     const c = ready();
-    if (ambienceWanted && c) {
+    const hidden = typeof document !== 'undefined' && document.hidden;
+    if (ambienceWanted && c && !hidden) {
       if (!ambience) ambience = createAmbience(c, c.destination);
       ambience.start();
       ambience.duck(ducked);
     } else ambience?.stop();
   };
+
+  // Switching apps or tabs: the fire falls silent, and crackles again when the page is back.
+  if (typeof document !== 'undefined') document.addEventListener('visibilitychange', settleAmbience);
 
   const noiseBuffer = (c: AudioContext) => {
     if (!noise) {

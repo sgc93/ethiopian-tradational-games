@@ -64,3 +64,23 @@ test('ambience starts its sources once and stops them all', () => {
     vi.useRealTimers();
   }
 });
+
+test('a suspended context books nothing, so nothing piles up to fire at once on resume', () => {
+  vi.useFakeTimers();
+  try {
+    const ctx = fakeAudioContext();
+    const a = createAmbience(ctx as unknown as AudioContext, ctx.createGain() as unknown as GainNode);
+    a.start();
+    vi.advanceTimersByTime(1000);
+    ctx.state = 'suspended';
+    const before = ctx.counts.started;
+    vi.advanceTimersByTime(5000);
+    expect(ctx.counts.started).toBe(before);
+    ctx.state = 'running';
+    vi.advanceTimersByTime(2000);
+    expect(ctx.counts.started).toBeGreaterThan(before); // it carries on once the context runs again
+    a.stop();
+  } finally {
+    vi.useRealTimers();
+  }
+});

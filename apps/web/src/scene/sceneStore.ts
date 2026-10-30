@@ -58,5 +58,7 @@ export const useScene = create<SceneState>((set) => ({
   coin: null,
   onHoleTap: () => {},
   onAnimationDone: () => {},
-  setMode: (mode) => set({ mode }),
+  // A new mode starts a camera move: say so in the same write, so nothing draws at stale positions
+  // in the render between the mode change and the rig's effect.
+  setMode: (mode) => set((s) => ({ mode, cameraMoving: s.cameraMoving || s.mode !== mode })),
 }));

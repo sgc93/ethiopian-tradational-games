@@ -76,6 +76,7 @@ export function usePlayback(args: Args): void {
     const sync = (round: RoundState) => {
       timeline.current?.kill();
       timeline.current = null;
+      sfx.duck(false); // a killed move must not leave the ambience down
       tracker.current = new StoneTracker(round);
       positions.current = tracker.current.locations().map(locationToPosition);
       onCounts(allCounts(tracker.current));
@@ -206,5 +207,11 @@ export function usePlayback(args: Args): void {
     else timeline.current?.resume();
   }, [paused]);
 
-  useEffect(() => () => void timeline.current?.kill(), []);
+  useEffect(
+    () => () => {
+      timeline.current?.kill();
+      live.current.sfx.duck(false);
+    },
+    [],
+  );
 }

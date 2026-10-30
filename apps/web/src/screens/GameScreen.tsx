@@ -12,6 +12,7 @@ import { HoleButtons } from '../ui/HoleButtons';
 import { Hud } from '../ui/Hud';
 import { RoundSummary } from '../ui/RoundSummary';
 import { urlOptions } from '../urlOptions';
+import { hudShown, menuShown } from './gameChrome';
 import { ResultScreen } from './ResultScreen';
 
 export function GameScreen() {
@@ -32,7 +33,8 @@ export function GameScreen() {
   const round = session?.match.round;
   const seat = session?.humanSeat ?? (settings.fixedCamera ? 0 : (round?.toMove ?? 0));
   useEffect(() => {
-    useScene.setState({
+    const mode = tossOpen ? 'toss' : menuOpen ? 'paused' : session?.phase === 'round-summary' ? 'round-end' : session?.phase === 'finished' ? 'result' : 'play';
+    useScene.setState((s) => ({
       session,
       speed,
       sfx,
@@ -40,8 +42,9 @@ export function GameScreen() {
       seat,
       onHoleTap: controller.playHole,
       onAnimationDone: controller.animationDone,
-      mode: tossOpen ? 'toss' : menuOpen ? 'paused' : session?.phase === 'round-summary' ? 'round-end' : session?.phase === 'finished' ? 'result' : 'play',
-    });
+      mode,
+      cameraMoving: s.cameraMoving || s.mode !== mode || s.seat !== seat,
+    }));
   }, [session, speed, guide.suggested, seat, tossOpen, menuOpen]);
   useEffect(() => () => useScene.setState({ session: null, suggested: null, mode: 'home' }), []);
 
@@ -55,8 +58,8 @@ export function GameScreen() {
       {settings.showCounts && <CountDiscs />}
       {session && (
         <>
-          {!tossOpen && session.phase !== 'finished' && !guide.card && <Hud session={session} />}
-          {session.phase !== 'finished' && !guide.active && (
+          {hudShown({ phase: session.phase, tossOpen, card: guide.card !== null }) && <Hud session={session} />}
+          {menuShown({ phase: session.phase, tossOpen, lesson: guide.active }) && (
           <GameMenu
             session={session}
             settings={settings}

@@ -4,6 +4,7 @@ import { FIRST_FLARE_S, RETURN_FLARE_S, flareCurve, hasVisited, loadingState, ma
 import { useScene } from '../scene/sceneStore';
 import { useSceneReadiness } from '../scene/useSceneReadiness';
 import { Emblem } from '../ui/kit';
+import { urlOptions } from '../urlOptions';
 import './Loading.css';
 
 /** localStorage, or something that throws like it when even touching it is refused. */
@@ -43,7 +44,8 @@ export function Loading({ onDone }: { onDone(): void }) {
   useEffect(() => {
     if (!ready) return;
     const storage = visitStorage();
-    const duration = hasVisited(storage) ? RETURN_FLARE_S : FIRST_FLARE_S;
+    // The test-only skip speed takes the flare to almost nothing, so the e2e suite does not wait on it.
+    const duration = urlOptions.speed === 'skip' ? 0.05 : hasVisited(storage) ? RETURN_FLARE_S : FIRST_FLARE_S;
     markVisited(storage);
     setExiting(true);
 

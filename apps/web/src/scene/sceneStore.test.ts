@@ -15,3 +15,12 @@ test('setMode changes the mode', () => {
   expect(useScene.getState().mode).toBe('play');
   useScene.getState().setMode('home');
 });
+
+test('a mode change marks the camera as moving in the same write, so nothing draws at stale positions', () => {
+  useScene.setState({ mode: 'home', cameraMoving: false });
+  useScene.getState().setMode('home');
+  expect(useScene.getState().cameraMoving).toBe(false);
+  useScene.getState().setMode('play');
+  expect(useScene.getState().cameraMoving).toBe(true);
+  useScene.setState({ mode: 'home', cameraMoving: false });
+});

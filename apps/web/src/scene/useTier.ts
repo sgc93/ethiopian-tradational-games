@@ -8,6 +8,14 @@ const MEASURE_SECONDS = 3;
 const MAX_ROUNDS = 3;
 
 /**
+ * Whether a frame counts towards the measurement: on the home screen, once the world is in and
+ * drawing (the loading screen's uploads and shader compiles would skew the first round).
+ */
+export function probing({ done, mode, worldReady }: { done: boolean; mode: string; worldReady: boolean }): boolean {
+  return !done && mode === 'home' && worldReady;
+}
+
+/**
  * Chooses the performance tier. It starts from the remembered tier (or mid), then, during the
  * first seconds of the home screen, measures the median frame time and steps the tier up or
  * down, measuring again after each step (at most three rounds). The result is remembered.
@@ -26,7 +34,7 @@ export function useTier(): Tier {
 
   useFrame((_, delta) => {
     const p = probe.current;
-    if (p.done || mode !== 'home') return;
+    if (!probing({ done: p.done, mode, worldReady: useScene.getState().worldReady })) return;
     p.samples.push(delta * 1000);
     p.elapsed += delta;
     if (p.elapsed < MEASURE_SECONDS) return;

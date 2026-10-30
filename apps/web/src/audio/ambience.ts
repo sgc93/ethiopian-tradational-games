@@ -42,7 +42,11 @@ export function createAmbience(ctx: AudioContext, out: AudioNode): Ambience {
   const later = (ms: number, fn: () => void) => {
     const id = setTimeout(() => {
       timers = timers.filter((t) => t !== id);
-      if (running) fn();
+      if (!running) return;
+      // A suspended context (the page hidden, an iOS interruption) has a frozen clock: booking a
+      // sound then would stack it on the same instant to fire with the rest on resume. Wait instead.
+      if (ctx.state !== 'running') later(500, fn);
+      else fn();
     }, ms);
     timers.push(id);
   };

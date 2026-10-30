@@ -101,3 +101,28 @@ test('turning sound off silences the ambience, and on brings it back', async () 
   expect(ctx.createBufferSource.mock.calls.length).toBeGreaterThan(beds); // restarted
   sfx.ambience(false);
 });
+
+test('the ambience stops when the page is hidden and comes back when it is shown', async () => {
+  vi.useFakeTimers();
+  try {
+    const ctx = fakeAudioContext();
+    const sfx = createSfx(() => ctx as unknown as AudioContext);
+    sfx.unlock();
+    await Promise.resolve();
+    sfx.ambience(true);
+    vi.advanceTimersByTime(1000);
+    Object.defineProperty(document, 'hidden', { value: true, configurable: true });
+    document.dispatchEvent(new Event('visibilitychange'));
+    const hidden = ctx.createBufferSource.mock.calls.length;
+    vi.advanceTimersByTime(3000);
+    expect(ctx.createBufferSource.mock.calls.length).toBe(hidden); // no crackle while hidden
+    Object.defineProperty(document, 'hidden', { value: false, configurable: true });
+    document.dispatchEvent(new Event('visibilitychange'));
+    vi.advanceTimersByTime(1500);
+    expect(ctx.createBufferSource.mock.calls.length).toBeGreaterThan(hidden); // and back
+    sfx.ambience(false);
+  } finally {
+    vi.useRealTimers();
+    Object.defineProperty(document, 'hidden', { value: false, configurable: true });
+  }
+});

@@ -16,6 +16,8 @@ export default defineConfig({
     { name: 'phone-full', use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 844, height: 390 }, hasTouch: true } },
     { name: 'phone-compact', use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 750, height: 300 }, hasTouch: true } },
     { name: 'desktop', use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1280, height: 720 } } },
+    // Spec §12 names 1920 × 1080 as an acceptance size: the interface at its ×1.6 cap over a wide frame.
+    { name: 'desktop-large', use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1920, height: 1080 } } },
   ],
   webServer: {
     command: 'pnpm build && pnpm preview',

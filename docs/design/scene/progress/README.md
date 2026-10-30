@@ -32,13 +32,14 @@ Every screen rebuilt in the Teret language over the living scene, captured from 
 
 ### The three sizes (spec §12)
 
-The end-to-end suite now runs every test at 844 × 390 (a full-height phone), 750 × 300 (a phone browser with its toolbars: the compact layout) and 1280 × 720 (a desktop window), and shoots home, play and the result at each.
+The end-to-end suite now runs every test at 844 × 390 (a full-height phone), 750 × 300 (a phone browser with its toolbars: the compact layout), 1280 × 720 (a desktop window) and 1920 × 1080 (the spec's large desktop, at the interface's ×1.6 cap), and shoots home, play and the result at each.
 
 | Size | Home | Play | Result |
 |---|---|---|---|
 | 844 × 390 | [p2-13-phone-full-home.jpg](p2-13-phone-full-home.jpg) | [p2-13-phone-full-play.jpg](p2-13-phone-full-play.jpg) | [p2-13-phone-full-result.jpg](p2-13-phone-full-result.jpg) |
 | 750 × 300 | [p2-13-phone-compact-home.jpg](p2-13-phone-compact-home.jpg) | [p2-13-phone-compact-play.jpg](p2-13-phone-compact-play.jpg) | [p2-13-phone-compact-result.jpg](p2-13-phone-compact-result.jpg) |
 | 1280 × 720 | [p2-13-desktop-home.jpg](p2-13-desktop-home.jpg) | [p2-13-desktop-play.jpg](p2-13-desktop-play.jpg) | [p2-13-desktop-result.jpg](p2-13-desktop-result.jpg) |
+| 1920 × 1080 | [p2-13-desktop-large-home.jpg](p2-13-desktop-large-home.jpg) | [p2-13-desktop-large-play.jpg](p2-13-desktop-large-play.jpg) | [p2-13-desktop-large-result.jpg](p2-13-desktop-large-result.jpg) |
 
 ### Every screen at the reference size
 
@@ -67,7 +68,7 @@ The end-to-end suite now runs every test at 844 × 390 (a full-height phone), 75
 | Item | Status |
 |---|---|
 | Layout: every screen at 844 × 390 beside the renders | captured above; positions follow `screens.html` to the pixel at the reference size, scaled by the interface elsewhere. **For the owner to judge.** |
-| Layout at 1920 × 1080 | the suite's largest size is 1280 × 720 (the plan's three); 1920 × 1080 scales the same way (×1.6, the cap). **Pending a desktop look by the owner.** |
+| Layout at 1920 × 1080 | captured above by the `desktop-large` project; the interface sits at its ×1.6 cap and the camera fit is the same rule. **For the owner to judge.** |
 | Look: play and home against the key art | the captures here are from a software renderer; part 1's notes on the wood's grade and the grass still stand. **For the owner on a real GPU.** |
 | Speed: 30 fps on the owner's Android phone, 60 on a desktop | **pending the owner's phone** (`?fps` shows the counter; `?tier=low` / `?tier=minimal` fix a tier). |
 | Size: `check:size` under 3 MB | 1,290.5 KB. **Done.** |

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { openEnglish, playToResult, startComputerGame, waitForTurn } from './helpers';
 
 /** The three landscape sizes the suite runs at (spec §12): full-height phone, compact phone, desktop. */
-const SIZES = ['phone-full', 'phone-compact', 'desktop'];
+const SIZES = ['phone-full', 'phone-compact', 'desktop', 'desktop-large'];
 
 /** Every hole centre projected on screen, as the scene reports it for tests. */
 async function holePositions(page: import('@playwright/test').Page) {
