@@ -252,69 +252,6 @@ button {
 
 /* --- Coin toss --- */
 
-.coin {
-  position: relative;
-  width: 6rem;
-  height: 6rem;
-  margin: 0 auto;
-  transform-style: preserve-3d;
-  transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-.coin.is-flipping.lands-lion {
-  animation: flip-to-lion 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-}
-
-.coin.is-flipping.lands-person {
-  animation: flip-to-person 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-}
-
-.coin.lands-person:not(.is-flipping) {
-  transform: rotateY(180deg);
-}
-
-.coin-face {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  backface-visibility: hidden;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #3a2216;
-  background: radial-gradient(circle at 35% 30%, #f3d9a0, #c9963f 70%, #8c6424);
-  box-shadow: inset 0 0 0 4px rgba(90, 60, 20, 0.35);
-}
-
-.coin-person {
-  transform: rotateY(180deg);
-}
-
-@keyframes flip-to-lion {
-  from {
-    transform: rotateY(0) translateY(0);
-  }
-  50% {
-    transform: rotateY(1080deg) translateY(-1.5rem);
-  }
-  to {
-    transform: rotateY(1800deg) translateY(0);
-  }
-}
-
-@keyframes flip-to-person {
-  from {
-    transform: rotateY(0) translateY(0);
-  }
-  50% {
-    transform: rotateY(1080deg) translateY(-1.5rem);
-  }
-  to {
-    transform: rotateY(1980deg) translateY(0);
-  }
-}
-
 /* --- Guided first game --- */
 
 .leave-lesson {
@@ -381,12 +318,7 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn,
-  .coin {
+  .btn {
     transition: none;
-  }
-  .coin.is-flipping.lands-lion,
-  .coin.is-flipping.lands-person {
-    animation-duration: 0.01s;
   }
 }

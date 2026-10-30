@@ -270,7 +270,7 @@ test('feedback store prunes', () => { const s = useFeedback.getState(); s.push({
 - `coinSpin.ts`: `coinSpin(t: number, lands: 'lion' | 'person', duration = 1.2): { y: number; rx: number; ry: number }` — rises on a parabola to 2.0 and lands at y 0.25 between the rows (0, ·, 0); `rx` spins `5·2π` for lion, `5.5·2π` for person (so the chosen face ends up), eased `cubic-bezier(0.2, 0.7, 0.2, 1)` approximated by `1 − (1 − k)³`; `ry` wobbles `0.15·sin(6πk)·(1 − k)`.
 - `Coin`: radius 0.9, thickness 0.12, `MeshPhysicalMaterial({ color: '#d6ae6a', metalness: 0.9, roughness: 0.3 })` with the two faces; waits flat at (0, 0.25, 0); visible only in `mode === 'toss'`; spins when `useScene.coin = { lands, startedAt }` is set by `CoinToss`; `sfx.coinWhoosh()` at the start and `sfx.coinRing()` at the landing (Task 12).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
 test('coin lands flat and face-up on the called side', () => { const l = coinSpin(1.2, 'lion'); expect(l.y).toBeCloseTo(0.25); expect((l.rx / (2 * Math.PI)) % 1).toBeCloseTo(0, 3); const p = coinSpin(1.2, 'person'); expect(((p.rx / (2 * Math.PI)) % 1 + 1) % 1).toBeCloseTo(0.5, 3); });
@@ -278,10 +278,10 @@ test('coin rises then falls', () => { expect(coinSpin(0.6, 'lion').y).toBeGreate
 test('face spec', () => expect(coinFaceSpec('ሰው')).toEqual({ rays: 24, fontPx: 225, word: 'ሰው' }));
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement**; the old CSS `.coin` rules and keyframes are deleted; `speed === 'skip'` still skips the flip (`CoinToss` calls `onDone` immediately).
-- [ ] **Step 4: Run** → PASS; e2e → green (`/Lion/` button, `Play` button); screenshots against `renders/05-toss-call.jpg` and `06-toss-result.jpg`.
-- [ ] **Step 5: Commit** — `feat(web): a real gold coin for the toss`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement**; the old CSS `.coin` rules and keyframes are deleted; `speed === 'skip'` still skips the flip (`CoinToss` calls `onDone` immediately).
+- [x] **Step 4: Run** → PASS; e2e → green (`/Lion/` button, `Play` button); screenshots against `renders/05-toss-call.jpg` and `06-toss-result.jpg`.
+- [x] **Step 5: Commit** — `feat(web): a real gold coin for the toss`.
 
 ---
 

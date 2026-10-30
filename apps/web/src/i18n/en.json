@@ -31,13 +31,13 @@
     "back": "Back"
   },
   "toss": {
-    "prompt": "Call the coin: አንበሳ or ሰው?",
-    "promptFriend": "Player 1, call the coin: አንበሳ or ሰው?",
+    "prompt": "Call the coin",
+    "promptFriend": "Player 1, call the coin",
     "lion": "አንበሳ · Lion",
     "person": "ሰው · Person",
-    "sideLion": "አንበሳ (lion)",
-    "sidePerson": "ሰው (person)",
-    "landed": "It landed on {{side}}.",
+    "sideLion": "አንበሳ",
+    "sidePerson": "ሰው",
+    "landed": "It landed on {{side}}",
     "youStart": "You start.",
     "computerStarts": "The computer starts.",
     "playerStarts": "{{player}} starts.",

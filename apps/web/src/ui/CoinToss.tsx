@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Session } from '../game/session';
 import { playerName } from '../game/view';
+import { useScene } from '../scene/sceneStore';
 import type { Speed } from '../state/settings';
+import { Button, Mixed, Panel } from './kit';
+import './CoinToss.css';
 
 type Call = 'lion' | 'person';
 const FLIP_MS = 1200;
@@ -16,7 +19,10 @@ interface Props {
   onDone(): void;
 }
 
-/** Who starts: the player calls አንበሳ (lion) or ሰው (person) and the coin is flipped. */
+/**
+ * Who starts (spec §9, screens 5–6): a low panel offers አንበሳ or ሰው; the coin in the scene spins
+ * up and lands; a panel names the side and who starts, with Play.
+ */
 export function CoinToss({ session, speed, onCall, onDone }: Props) {
   const { t } = useTranslation();
   const [stage, setStage] = useState<'call' | 'flip' | 'result'>('call');
@@ -28,12 +34,22 @@ export function CoinToss({ session, speed, onCall, onDone }: Props) {
     return () => clearTimeout(id);
   }, [stage]);
 
+  // The coin rests, face up, while the call is open.
+  useEffect(() => {
+    useScene.setState({ coin: null });
+  }, []);
+
   const call = (c: Call) => {
     const starter = onCall(c);
     // The caller sits in seat A, so they start exactly when their call matched the coin.
-    setOutcome({ coin: starter === 0 ? c : c === 'lion' ? 'person' : 'lion', starter });
-    if (speed === 'skip') onDone();
-    else setStage('flip');
+    const coin: Call = starter === 0 ? c : c === 'lion' ? 'person' : 'lion';
+    setOutcome({ coin, starter });
+    if (speed === 'skip') {
+      onDone();
+      return;
+    }
+    useScene.setState({ coin: { lands: coin, startedAt: performance.now() / 1000 } });
+    setStage('flip');
   };
 
   let starts = '';
@@ -43,41 +59,41 @@ export function CoinToss({ session, speed, onCall, onDone }: Props) {
   }
 
   return (
-    <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="toss-title">
-      <section className="card toss">
-        {stage === 'call' && (
-          <>
-            <h2 id="toss-title">{t(session.humanSeat === null ? 'toss.promptFriend' : 'toss.prompt')}</h2>
-            <div className="card-actions">
-              <button className="btn btn-primary" onClick={() => call('lion')} autoFocus>
-                {t('toss.lion')}
-              </button>
-              <button className="btn btn-primary" onClick={() => call('person')}>
-                {t('toss.person')}
-              </button>
-            </div>
-          </>
-        )}
-        {stage !== 'call' && outcome && (
-          <>
-            <div className={`coin${stage === 'flip' ? ' is-flipping' : ''} lands-${outcome.coin}`} aria-hidden="true">
-              <span className="coin-face coin-lion">አንበሳ</span>
-              <span className="coin-face coin-person">ሰው</span>
-            </div>
-            {stage === 'result' && (
-              <>
-                <h2 id="toss-title">
-                  {t('toss.landed', { side: t(outcome.coin === 'lion' ? 'toss.sideLion' : 'toss.sidePerson') })}
-                </h2>
-                <p className="card-note">{starts}</p>
-                <button className="btn btn-primary" onClick={onDone} autoFocus>
-                  {t('toss.go')}
-                </button>
-              </>
-            )}
-          </>
-        )}
-      </section>
+    <div className="toss" role="dialog" aria-modal="true" aria-labelledby="toss-title">
+      {stage === 'call' && (
+        <Panel
+          labelledBy="toss-title"
+          title={<Mixed text={t(session.humanSeat === null ? 'toss.promptFriend' : 'toss.prompt')} />}
+          center
+          y={252}
+          width={360}
+          className="panel-compact toss-panel"
+        >
+          <div className="toss-choices">
+            <Button onClick={() => call('lion')} autoFocus>
+              <Mixed text={t('toss.lion')} />
+            </Button>
+            <Button onClick={() => call('person')}>
+              <Mixed text={t('toss.person')} />
+            </Button>
+          </div>
+        </Panel>
+      )}
+      {stage === 'result' && outcome && (
+        <Panel
+          labelledBy="toss-title"
+          title={<Mixed text={t('toss.landed', { side: t(outcome.coin === 'lion' ? 'toss.sideLion' : 'toss.sidePerson') })} />}
+          center
+          y={226}
+          width={320}
+          className="panel-compact toss-panel toss-result"
+        >
+          <p className="note">{starts}</p>
+          <Button kind="primary" className="toss-go" onClick={onDone} autoFocus>
+            {t('toss.go')}
+          </Button>
+        </Panel>
+      )}
     </div>
   );
 }

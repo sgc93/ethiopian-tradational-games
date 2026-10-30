@@ -7,6 +7,7 @@ import type { Speed } from '../state/settings';
 import { Board } from './board/Board';
 import { useBoardView } from './boardView';
 import { CameraRig } from './CameraRig';
+import { Coin } from './Coin';
 import { DiscAnchors } from './DiscAnchors';
 import { Feedback } from './feedback/Feedback';
 import { HoleHitAreas } from './HoleHitAreas';
@@ -44,6 +45,7 @@ export function BoardScene({ session, speed, sfx, suggested = null, onHoleTap, o
       <Feedback owners={owners} playable={playable} suggested={suggested} />
       <HoleHitAreas playable={playable} onTap={onHoleTap} />
       <DiscAnchors />
+      <Coin />
       <CameraRig />
     </>
   );

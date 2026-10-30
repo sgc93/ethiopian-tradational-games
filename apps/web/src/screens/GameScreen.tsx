@@ -63,7 +63,7 @@ export function GameScreen() {
       {settings.showCounts && <CountDiscs />}
       {session && (
         <>
-          <Hud session={session} />
+          {!tossOpen && <Hud session={session} />}
           <GameMenu
             session={session}
             settings={settings}

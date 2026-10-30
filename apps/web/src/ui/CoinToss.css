@@ -1,0 +1,39 @@
+/* The coin toss (spec §9, screens 5–6): low panels under the coin in the scene. */
+.toss {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.toss > * {
+  pointer-events: auto;
+}
+
+.ui-layer .toss-panel {
+  padding: calc(12px * var(--ui)) calc(18px * var(--ui));
+}
+
+.ui-layer .toss-result {
+  padding: calc(14px * var(--ui)) calc(18px * var(--ui));
+  text-align: center;
+}
+
+.toss-choices {
+  display: flex;
+  gap: calc(12px * var(--ui));
+  justify-content: center;
+  margin-top: calc(12px * var(--ui));
+}
+
+.ui-layer .toss-choices .btn {
+  width: calc(150px * var(--ui));
+}
+
+.ui-layer .toss-result .note {
+  margin-top: calc(6px * var(--ui));
+}
+
+.ui-layer .toss-go {
+  width: calc(160px * var(--ui));
+  margin: calc(10px * var(--ui)) auto 0;
+}

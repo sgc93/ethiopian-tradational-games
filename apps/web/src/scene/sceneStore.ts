@@ -33,6 +33,8 @@ export interface SceneState {
   flare: number;
   /** True once the world and the board are in the scene and a frame has drawn quickly again. */
   worldReady: boolean;
+  /** The toss in flight: which face lands and when it was thrown (seconds on the page clock); null at rest. */
+  coin: { lands: 'lion' | 'person'; startedAt: number } | null;
   onHoleTap(hole: HoleIndex): void;
   onAnimationDone(turnId: number): void;
   setMode(mode: SceneMode): void;
@@ -53,6 +55,7 @@ export const useScene = create<SceneState>((set) => ({
   frameloop: 'always',
   flare: 0,
   worldReady: false,
+  coin: null,
   onHoleTap: () => {},
   onAnimationDone: () => {},
   setMode: (mode) => set({ mode }),
