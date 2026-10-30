@@ -342,6 +342,33 @@
   border: 0;
 }
 
+/* ---------- ribbon ---------- */
+/* The lesson hint: a band fading at both ends, above the near plate, key words in ember. */
+.ui-layer .ribbon {
+  position: absolute;
+  left: 50%;
+  bottom: calc(72px * var(--ui));
+  transform: translateX(-50%);
+  max-width: min(calc(540px * var(--ui)), calc(100% - 24px));
+  margin: 0;
+  padding: calc(10px * var(--ui)) calc(24px * var(--ui));
+  text-align: center;
+  font: 500 max(12px, calc(14.5px * var(--ui))) / 1.35 var(--f-text);
+  color: var(--text-100);
+  background: linear-gradient(90deg, transparent, rgba(12, 9, 7, 0.88) 12%, rgba(12, 9, 7, 0.88) 88%, transparent);
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.ui-layer .ribbon:lang(am) {
+  font: 500 max(12px, calc(16.5px * var(--ui))) / 1.45 var(--f-geez);
+}
+
+.ui-layer .ribbon b {
+  color: var(--ember-300);
+  font-weight: 600;
+}
+
 /* ---------- panel furniture ---------- */
 /* The small back or close medallion in a panel's top-left corner. */
 .ui-layer .panel-back {

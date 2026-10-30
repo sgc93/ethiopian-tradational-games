@@ -1,0 +1,36 @@
+/* Learning to play (spec §9, screen 9). */
+
+/* Leave lesson stands where the menu medallion would be. */
+.ui-layer .leave-lesson {
+  position: absolute;
+  right: calc(59px * var(--ui));
+  top: calc(12px * var(--ui));
+  height: max(34px, calc(34px * var(--ui)));
+  padding: 0 calc(14px * var(--ui));
+}
+
+.lesson {
+  position: absolute;
+  inset: 0;
+}
+
+.lesson-dim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(6, 4, 3, 0.45);
+}
+
+.ui-layer .lesson-panel {
+  padding: calc(20px * var(--ui)) calc(26px * var(--ui));
+  text-align: center;
+}
+
+.ui-layer .lesson-body {
+  margin-top: calc(14px * var(--ui));
+}
+
+.ui-layer .lesson-ok {
+  width: calc(160px * var(--ui));
+  margin: calc(16px * var(--ui)) auto 0;
+}

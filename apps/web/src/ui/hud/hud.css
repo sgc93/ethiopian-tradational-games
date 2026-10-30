@@ -130,6 +130,12 @@
   display: none;
 }
 
+/* In a lesson the ribbon does the talking: no cartouche, no caption (spec §9, screen 9). */
+.hud-lesson .cart,
+.hud-lesson .hud-caption {
+  display: none;
+}
+
 /* ---------- the round cartouche ---------- */
 .cart {
   position: absolute;

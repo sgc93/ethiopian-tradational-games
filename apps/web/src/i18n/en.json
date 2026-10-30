@@ -104,13 +104,13 @@
     "leave": "Leave lesson",
     "gotIt": "Got it",
     "hint": {
-      "sow": "Tap one of your glowing holes to pick up its stones and sow them.",
-      "relay": "Try the pulsing hole: its last stone lands on other stones, so you carry on.",
-      "stop-empty": "Try the pulsing hole: its sowing ends in an empty hole.",
-      "capture-last": "Try the pulsing hole: its last stone makes four, a ቤት for you.",
-      "capture-owner": "Try the pulsing hole: a stone on the way makes four for that hole’s owner.",
-      "round-end": "Keep playing until one side runs out of stones.",
-      "any": "Any glowing hole will do. Watch what the stones do."
+      "sow": "Tap one of your <1>glowing holes</1> to pick up its stones and sow them.",
+      "relay": "Try the <1>pulsing hole</1>: its last stone lands on other stones, so you carry on.",
+      "stop-empty": "Try the <1>pulsing hole</1>: its sowing ends in an empty hole.",
+      "capture-last": "Try the <1>pulsing hole</1>: its last stone makes four, a ቤት for you.",
+      "capture-owner": "Try the <1>pulsing hole</1>: a stone on the way makes four for that hole’s owner.",
+      "round-end": "Keep playing until one side <1>runs out of stones</1>.",
+      "any": "<1>Any glowing hole</1> will do. Watch what the stones do."
     },
     "card": {
       "sow": {

@@ -12,5 +12,6 @@ Every string added by the Teret interface work (plan part 2) with the Amharic th
 | `hud.quickGame` | Quick game | ፈጣን ጨዋታ | REVIEW |
 | `hud.endOfRound` | End of round {{n}} | የዙር {{n}} መጨረሻ | REVIEW |
 | `hud.tapHint` | tap a glowing cup | የሚያበራውን ጉድጓድ ይንኩ | REVIEW |
+| `guide.hint.*` | key phrase marked <1>…</1> in each hint (glowing holes, pulsing hole, runs out of stones) | the Amharic phrase marked in each hint: ከሚያበሩት ጉድጓዶችዎ, የሚመታውን ጉድጓድ, ጠጠር እስኪያልቅበት, ማንኛውም የሚያበራ ጉድጓድ | REVIEW |
 
 The prototype's earlier Amharic (everything else in `am.json`) is still outstanding from the first design and belongs in the same reading.

@@ -9,6 +9,8 @@ import { useFeedback } from '../scene/feedback/feedbackStore';
 import { useScene } from '../scene/sceneStore';
 import { ResultScreen } from '../screens/ResultScreen';
 import { useApp } from '../state/store';
+import { GuidedOverlay } from '../tutorial/GuidedOverlay';
+import type { Guide } from '../tutorial/useGuide';
 import { CountDiscs } from './hud/CountDiscs';
 import { PlayerPlate } from './hud/PlayerPlate';
 import { defaultSettings } from '../state/settings';
@@ -156,6 +158,25 @@ test('the result panel carries the emblem and sets off an ember burst', () => {
   render(<ResultScreen session={s} onPlayAgain={() => {}} onHome={() => {}} />);
   expect(document.querySelector('.panel .emblem')).toBeTruthy();
   expect(useFeedback.getState().events.some((e) => e.kind === 'burst')).toBe(true);
+});
+
+const guide = (patch: Partial<Guide> = {}): Guide => ({ active: true, card: null, hint: null, suggested: null, busy: false, dismiss() {}, ...patch });
+
+test('the lesson hint is a ribbon with its key phrase in bold', () => {
+  render(<GuidedOverlay guide={guide({ hint: 'guide.hint.capture-last', suggested: 3 })} session={session({ mode: { kind: 'guided' } })} onLeave={() => {}} />);
+  const ribbon = document.querySelector('.ribbon');
+  expect(ribbon).toBeTruthy();
+  expect(ribbon!.textContent).toContain('Try the pulsing hole');
+  expect(ribbon!.querySelector('b')!.textContent).toBe('pulsing hole');
+  expect(screen.getByRole('button', { name: 'Leave lesson' })).toBeTruthy();
+});
+
+test('a lesson card is a panel with one Got it button', () => {
+  render(<GuidedOverlay guide={guide({ card: 'capture-last' })} session={session({ mode: { kind: 'guided' } })} onLeave={() => {}} />);
+  expect(document.querySelector('.panel')).toBeTruthy();
+  expect(screen.getByRole('heading', { name: /Taking a/ })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Got it' }).className).toContain('btn-primary');
+  expect(document.querySelectorAll('.btn-primary')).toHaveLength(1);
 });
 
 test('result shows a quick-game draw', () => {

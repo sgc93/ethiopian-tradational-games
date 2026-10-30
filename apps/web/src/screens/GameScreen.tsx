@@ -64,8 +64,8 @@ export function GameScreen() {
       {settings.showCounts && <CountDiscs />}
       {session && (
         <>
-          {!tossOpen && session.phase !== 'finished' && <Hud session={session} />}
-          {session.phase !== 'finished' && (
+          {!tossOpen && session.phase !== 'finished' && !guide.card && <Hud session={session} />}
+          {session.phase !== 'finished' && !guide.active && (
           <GameMenu
             session={session}
             settings={settings}

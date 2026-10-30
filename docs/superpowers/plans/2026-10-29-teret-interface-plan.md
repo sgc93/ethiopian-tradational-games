@@ -310,16 +310,16 @@ test('round summary shows homes as huts', () => { render(<RoundSummary session={
 - Modify: `apps/web/src/tutorial/GuidedOverlay.tsx` (the hint becomes a `Ribbon` at bottom 33 px, key words wrapped in `<b>` through i18n `<1>…</1>` tags with `Trans`; lesson cards use `Panel` at (222, 96) 400 × 180; "Leave lesson" is a `Medallion icon="close"` in the menu medallion's place), `apps/web/src/ui/kit/Ribbon.tsx` (new), `apps/web/src/i18n/en.json` and `am.json` (hints gain `<1>` markup around the key words)
 - Test: `apps/web/src/ui/ui.test.tsx` (ribbon renders the bold key word), `src/i18n/i18n.test.ts` (every `guide.hint.*` in both languages has matching `<1>` tags)
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
 test('every hint marks a key phrase in both languages', () => { for (const lang of ['en', 'am']) for (const [k, v] of Object.entries(resources[lang].guide.hint)) expect(v, `${lang} ${k}`).toMatch(/<1>.+<\/1>/); });
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement**; the suggested cup's faster pulse already comes from Task 7 (`suggestedPulse`).
-- [ ] **Step 4: Run** → PASS; screenshots against `renders/12-guided-hint.jpg`, `13-guided-card.jpg`.
-- [ ] **Step 5: Commit** — `feat(web): lesson ribbon and cards`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement**; the suggested cup's faster pulse already comes from Task 7 (`suggestedPulse`).
+- [x] **Step 4: Run** → PASS; screenshots against `renders/12-guided-hint.jpg`, `13-guided-card.jpg`.
+- [x] **Step 5: Commit** — `feat(web): lesson ribbon and cards`.
 
 ---
 

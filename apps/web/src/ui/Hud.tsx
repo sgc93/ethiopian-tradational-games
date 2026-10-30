@@ -67,7 +67,7 @@ export function Hud({ session }: { session: Session }) {
   );
 
   return (
-    <header className={`hud${phase === 'round-summary' ? ' hud-summary' : ''}`}>
+    <header className={`hud${phase === 'round-summary' ? ' hud-summary' : ''}${session.mode.kind === 'guided' ? ' hud-lesson' : ''}`}>
       {plate(far, 'far')}
       <Cartouche text={cartouche.text} pips={cartouche.pips} />
       {caption ? <Caption tone={caption.tone} text={caption.text} thinking={caption.thinking} /> : <p className="hud-caption" aria-live="polite" />}
