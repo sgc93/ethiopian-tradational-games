@@ -36,6 +36,8 @@ export function useUiMetrics(): UiMetrics {
 
   useEffect(() => {
     document.documentElement.style.setProperty('--ui', formatScale(metrics.scale));
+    // The compact layout below 340 px tall (spec §9): stylesheets key off this class.
+    document.documentElement.classList.toggle('ui-compact', metrics.compact);
     useScene.setState({ bands: metrics.bands });
   }, [metrics]);
 

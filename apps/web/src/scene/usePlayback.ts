@@ -47,6 +47,9 @@ interface Args {
  * following holes (the rest of the hand following along), relay, and captured fours fly to their
  * pile. Between rounds every stone is dealt back out, four to a hole.
  */
+/** The fourteen counts the discs show: the cups, then the two piles (stores) as stones land in them. */
+const allCounts = (t: StoneTracker): number[] => [...t.holeCounts(), ...t.pileCounts()];
+
 export function usePlayback(args: Args): void {
   const live = useRef(args);
   live.current = args;
@@ -65,13 +68,13 @@ export function usePlayback(args: Args): void {
       timeline.current = null;
       tracker.current = new StoneTracker(round);
       positions.current = tracker.current.locations().map(locationToPosition);
-      onCounts(tracker.current.holeCounts());
+      onCounts(allCounts(tracker.current));
       onOwners(round.owners);
     };
 
     const finish = (turnId: number) => {
       positions.current = tracker.current!.locations().map(locationToPosition);
-      onCounts(tracker.current!.holeCounts());
+      onCounts(allCounts(tracker.current!));
       onDone(turnId);
     };
 
@@ -150,7 +153,7 @@ export function usePlayback(args: Args): void {
       const at = step.atMs / 1000;
       const dur = step.durationMs / 1000;
       const moves = t.apply(e);
-      const counts = t.holeCounts();
+      const counts = allCounts(t);
       switch (e.type) {
         case 'pickup':
           hand = moves.map((m) => m.id);

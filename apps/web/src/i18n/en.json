@@ -58,7 +58,10 @@
     "extraRound": "Extra round",
     "stones": "Stones",
     "homes": "Homes · ቤት",
-    "menu": "Menu"
+    "menu": "Menu",
+    "quickGame": "Quick game",
+    "endOfRound": "End of round {{n}}",
+    "tapHint": "tap a glowing cup"
   },
   "menu": {
     "title": "Paused",

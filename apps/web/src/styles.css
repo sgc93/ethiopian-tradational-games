@@ -164,94 +164,6 @@ button {
   pointer-events: auto;
 }
 
-.count-layer {
-  pointer-events: none !important;
-}
-
-/* --- In-game heads-up display --- */
-
-.hud {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: max(0.75rem, env(safe-area-inset-top)) 4.75rem 0.5rem 1rem;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(36, 20, 13, 0.75), rgba(36, 20, 13, 0));
-}
-
-.hud-top {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.hud-turn {
-  margin: 0;
-  font-size: 1.15rem;
-  font-weight: 600;
-  min-height: 1.6em;
-}
-
-.hud-round {
-  margin: 0;
-  color: var(--ochre-light);
-  font-size: 0.95rem;
-}
-
-.hud-players {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.35rem;
-  flex-wrap: wrap;
-}
-
-.hud-player {
-  display: flex;
-  gap: 0.6rem;
-  align-items: baseline;
-  padding: 0.2rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(36, 20, 13, 0.55);
-  border: 1px solid transparent;
-  font-size: 0.85rem;
-  color: var(--cream-dim);
-}
-
-.hud-player.seat-0 {
-  border-color: rgba(224, 168, 90, 0.5);
-}
-
-.hud-player.seat-1 {
-  border-color: rgba(120, 140, 160, 0.5);
-}
-
-.hud-player.is-active {
-  color: var(--cream);
-  background: rgba(36, 20, 13, 0.85);
-}
-
-.hud-name {
-  font-weight: 600;
-  color: var(--cream);
-}
-
-.hud-stat b {
-  color: var(--cream);
-}
-
-.menu-button {
-  position: absolute;
-  top: max(0.75rem, env(safe-area-inset-top));
-  right: 1rem;
-  min-height: 2.75rem;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  border: 1px solid rgba(244, 231, 209, 0.25);
-  background: rgba(36, 20, 13, 0.7);
-}
-
 /* --- Dialogs over the board --- */
 
 .overlay {
@@ -466,30 +378,6 @@ button {
 
 .hole-buttons button:disabled {
   opacity: 0.35;
-}
-
-.count-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.count-badge {
-  position: absolute;
-  top: 0;
-  left: 0;
-  will-change: transform;
-  display: inline-block;
-  min-width: 1.6em;
-  padding: 0.05em 0.4em;
-  border-radius: 999px;
-  background: rgba(36, 20, 13, 0.72);
-  color: var(--cream);
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-align: center;
-  user-select: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

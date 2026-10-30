@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createSfx } from '../audio/sfx';
 import { controller, useSession } from '../game/instance';
-import { CountLabels } from '../scene/CountLabels';
+import { CountDiscs } from '../ui/hud/CountDiscs';
 import { useScene } from '../scene/sceneStore';
 import { useApp } from '../state/store';
 import { GuidedOverlay } from '../tutorial/GuidedOverlay';
@@ -60,7 +60,7 @@ export function GameScreen() {
 
   return (
     <div className="game-screen">
-      {settings.showCounts && <CountLabels />}
+      {settings.showCounts && <CountDiscs />}
       {session && (
         <>
           <Hud session={session} />

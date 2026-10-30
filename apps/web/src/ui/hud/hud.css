@@ -1,0 +1,325 @@
+/* The play HUD (spec §9, screens 7–8). Positions are the mockup's reference pixels at 844 × 390, scaled by --ui. */
+.hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hud > * {
+  pointer-events: auto;
+}
+
+/* ---------- player plates ---------- */
+.plate {
+  --acc: var(--ember-400);
+  position: absolute;
+  left: calc(59px * var(--ui));
+  width: calc(188px * var(--ui));
+  height: calc(44px * var(--ui));
+  display: flex;
+  align-items: center;
+  gap: calc(10px * var(--ui));
+  padding: 0 calc(14px * var(--ui)) 0 calc(4px * var(--ui));
+  box-sizing: border-box;
+  background: linear-gradient(90deg, rgba(12, 9, 7, 0.88), rgba(12, 9, 7, 0.5));
+  border: 1px solid rgba(214, 174, 106, 0.3);
+  border-radius: 999px;
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.plate.b {
+  --acc: var(--moon-300);
+}
+
+.plate.far {
+  top: calc(12px * var(--ui));
+}
+
+.plate.near {
+  bottom: max(calc(33px * var(--ui)), calc(var(--safe-b) + 12px));
+}
+
+.plate.active {
+  border-color: rgba(255, 154, 60, 0.75);
+  box-shadow: 0 0 20px rgba(255, 140, 50, 0.28);
+}
+
+.plate.b.active {
+  border-color: rgba(185, 207, 238, 0.7);
+  box-shadow: 0 0 20px rgba(150, 180, 230, 0.25);
+}
+
+.plate .av {
+  flex: none;
+  width: calc(36px * var(--ui));
+  height: calc(36px * var(--ui));
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 40% 35%, #3a2a1a, #120d08);
+  border: 1.5px solid var(--acc);
+  color: var(--acc);
+}
+
+.plate.active .av {
+  box-shadow: 0 0 12px var(--acc);
+}
+
+.plate-text {
+  min-width: 0;
+}
+
+/* Names, including long Amharic ones, never spill past the plate. */
+.plate .nm {
+  font: 600 max(9.5px, calc(10.5px * var(--ui))) / 1 var(--f-display);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-200);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plate .nm:lang(am) {
+  font: 600 max(12px, calc(12.5px * var(--ui))) / 1.1 var(--f-geez);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.plate .st {
+  display: flex;
+  gap: calc(12px * var(--ui));
+  margin-top: calc(5px * var(--ui));
+  font: 600 max(12px, calc(13px * var(--ui))) / 1 var(--f-text);
+  color: var(--text-100);
+}
+
+.plate .st span {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(4px * var(--ui));
+}
+
+.plate .st .icon {
+  color: var(--gold-400);
+  stroke-width: 1.4;
+}
+
+.plate .st b {
+  font-weight: 600;
+}
+
+/* The diamond marker at the active plate's right edge. */
+.plate .turn {
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -5px;
+  background: var(--acc);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px var(--acc);
+}
+
+/* ---------- the round cartouche ---------- */
+.cart {
+  position: absolute;
+  left: 50%;
+  top: calc(12px * var(--ui));
+  transform: translateX(-50%);
+  width: calc(168px * var(--ui));
+  height: calc(32px * var(--ui));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(4px * var(--ui));
+  background: rgba(12, 9, 7, 0.72);
+  border: 1px solid rgba(214, 174, 106, 0.45);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+}
+
+.cart .t {
+  font: 600 max(9.5px, calc(10px * var(--ui))) / 1 var(--f-display);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+  white-space: nowrap;
+}
+
+.cart .t:lang(am) {
+  font: 600 max(12px, calc(12px * var(--ui))) / 1 var(--f-geez);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.cart .pips {
+  display: flex;
+  gap: calc(6px * var(--ui));
+}
+
+.cart .pips i {
+  width: 5px;
+  height: 5px;
+  transform: rotate(45deg);
+  border: 1px solid var(--gold-500);
+}
+
+.cart .pips i.done {
+  background: var(--gold-400);
+}
+
+.cart .pips i.now {
+  background: var(--ember-400);
+  border-color: var(--ember-400);
+  box-shadow: 0 0 6px var(--ember-400);
+}
+
+/* ---------- the turn caption ---------- */
+.hud-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(52px * var(--ui));
+  margin: 0;
+  padding: 0 calc(220px * var(--ui));
+  text-align: center;
+  font: 600 max(9.5px, calc(10px * var(--ui))) / 1.2 var(--f-display);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ember-300);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  min-height: 1.2em;
+}
+
+.hud-caption:lang(am) {
+  font: 600 max(12px, calc(12px * var(--ui))) / 1.3 var(--f-geez);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hud-caption.cool {
+  color: var(--moon-300);
+}
+
+.hud-caption .dots i {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 5px;
+  transform: rotate(45deg);
+  background: currentColor;
+  opacity: 0.35;
+  animation: hud-dot 1.2s ease-in-out infinite;
+}
+
+.hud-caption .dots i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.hud-caption .dots i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes hud-dot {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+/* ---------- menu medallion ---------- */
+.ui-layer .hud-menu {
+  position: absolute;
+  right: calc(59px * var(--ui));
+  top: calc(12px * var(--ui));
+}
+
+/* ---------- count discs ---------- */
+.discs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.discs[hidden] {
+  display: none;
+}
+
+.cnt {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: max(20px, calc(24px * var(--ui)));
+  height: max(20px, calc(24px * var(--ui)));
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 700 max(10px, calc(11.5px * var(--ui))) / 1 var(--f-display);
+  color: var(--gold-200);
+  background: rgba(9, 7, 5, 0.66);
+  border: 1px solid rgba(214, 174, 106, 0.45);
+  will-change: transform;
+  user-select: none;
+}
+
+.cnt.store {
+  width: max(26px, calc(30px * var(--ui)));
+  height: max(26px, calc(30px * var(--ui)));
+  font-size: max(11px, calc(13.5px * var(--ui)));
+}
+
+.cnt.play {
+  border-color: var(--ember-400);
+  color: #fff3da;
+  box-shadow: 0 0 10px rgba(255, 150, 60, 0.6);
+}
+
+/* A value change: the disc swells and flashes gold for 160 ms. */
+.cnt.tick {
+  animation: cnt-tick 160ms ease-out;
+}
+
+@keyframes cnt-tick {
+  0% {
+    scale: 1;
+    background: rgba(9, 7, 5, 0.66);
+  }
+  40% {
+    scale: 1.15;
+    background: rgba(214, 174, 106, 0.6);
+  }
+  100% {
+    scale: 1;
+    background: rgba(9, 7, 5, 0.66);
+  }
+}
+
+/* ---------- compact layout, below 340 px tall ---------- */
+.ui-compact .plate {
+  width: calc(164px * var(--ui));
+  height: calc(38px * var(--ui));
+}
+
+.ui-compact .cart {
+  width: calc(150px * var(--ui));
+  height: calc(28px * var(--ui));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-caption .dots i {
+    animation: none;
+    opacity: 0.7;
+  }
+  .cnt.tick {
+    animation: none;
+  }
+}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Session } from '../game/session';
 import { SPEEDS, type Settings } from '../state/settings';
+import { Medallion } from './kit';
 
 interface Props {
   session: Session;
@@ -28,9 +29,7 @@ export function GameMenu({ session, settings, onPause, onSettings, onRestart, on
 
   return (
     <>
-      <button className="menu-button" onClick={() => show(true)}>
-        {t('hud.menu')}
-      </button>
+      <Medallion icon="menu" label={t('hud.menu')} className="hud-menu" onClick={() => show(true)} />
       {open && (
         <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="menu-title">
           <section className="card menu">

@@ -208,7 +208,7 @@ test('level panel replaces the stack and goes back', async () => { render(<HomeS
 - `PlayerPlate({ player, name, stones, homes?, active, side: 'near' | 'far' })` at (59, 12) far and (59, 313) near; compact 164 × 38. `Cartouche({ text, pips?: { total, done, now } })` at x 338, y 12, 168 × 32 (compact 150 × 28, with the caption as its second line). `Caption({ tone: 'ember' | 'moon', text, thinking })` at y 52.
 - `Hud` reads `useScene.seat` to decide which player is "near".
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
 test('disc anchors match the mockup at 844×390', () => {
@@ -224,10 +224,10 @@ test('discs hide while the camera moves', () => { useScene.setState({ cameraMovi
 test('the cartouche reads QUICK GAME for a quick game', () => { render(<Hud session={quickSession} />); expect(screen.getByText('QUICK GAME')).toBeInTheDocument(); });
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement**; `useScene.cameraMoving` is set by part 1's `CameraRig` during gsap transitions (add the field there).
-- [ ] **Step 4: Run** → PASS; e2e → green (the `layout.spec` 844 × 390 positions still come from `__gebetaHolePositions`); screenshots against `renders/07-play-your-turn.jpg` and `08-play-computer.jpg` → `progress/p2-06-play-*.png`; also at 750 × 300 for the compact layout.
-- [ ] **Step 5: Commit** — `feat(web): play HUD with plates, cartouche, caption and pinned count discs`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement**; `useScene.cameraMoving` is set by part 1's `CameraRig` during gsap transitions (add the field there).
+- [x] **Step 4: Run** → PASS; e2e → green (the `layout.spec` 844 × 390 positions still come from `__gebetaHolePositions`); screenshots against `renders/07-play-your-turn.jpg` and `08-play-computer.jpg` → `progress/p2-06-play-*.png`; also at 750 × 300 for the compact layout.
+- [x] **Step 5: Commit** — `feat(web): play HUD with plates, cartouche, caption and pinned count discs`.
 
 ---
 

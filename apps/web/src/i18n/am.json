@@ -58,7 +58,10 @@
     "extraRound": "ተጨማሪ ዙር",
     "stones": "ጠጠሮች",
     "homes": "ቤቶች",
-    "menu": "ምናሌ"
+    "menu": "ምናሌ",
+    "quickGame": "ፈጣን ጨዋታ",
+    "endOfRound": "የዙር {{n}} መጨረሻ",
+    "tapHint": "የሚያበራውን ጉድጓድ ይንኩ"
   },
   "menu": {
     "title": "ቆሟል",

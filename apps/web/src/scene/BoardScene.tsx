@@ -7,7 +7,7 @@ import type { Speed } from '../state/settings';
 import { Board } from './board/Board';
 import { useBoardView } from './boardView';
 import { CameraRig } from './CameraRig';
-import { HoleAnchors } from './HoleAnchors';
+import { DiscAnchors } from './DiscAnchors';
 import { HoleHitAreas } from './HoleHitAreas';
 import { HoleMarkers } from './HoleMarkers';
 import type { Vec3 } from './layout';
@@ -43,7 +43,7 @@ export function BoardScene({ session, speed, sfx, suggested = null, onHoleTap, o
       <Stones positions={positions} />
       <HoleMarkers owners={owners} />
       <HoleHitAreas playable={playable} suggested={suggested} onTap={onHoleTap} />
-      <HoleAnchors />
+      <DiscAnchors />
       <CameraRig />
     </>
   );

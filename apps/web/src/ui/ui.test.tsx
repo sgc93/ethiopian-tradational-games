@@ -5,8 +5,11 @@ import type { Session } from '../game/session';
 import { setupI18n } from '../i18n';
 import { AboutScreen } from '../screens/AboutScreen';
 import { HomeScreen } from '../screens/HomeScreen';
+import { useScene } from '../scene/sceneStore';
 import { ResultScreen } from '../screens/ResultScreen';
 import { useApp } from '../state/store';
+import { CountDiscs } from './hud/CountDiscs';
+import { PlayerPlate } from './hud/PlayerPlate';
 import { defaultSettings } from '../state/settings';
 import { GameMenu } from './GameMenu';
 import { HoleButtons } from './HoleButtons';
@@ -32,16 +35,42 @@ const session = (patch: Partial<Session> = {}, match: Partial<MatchState> = {}):
 
 const sevenFive: Player[] = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1];
 
-test('HUD shows the round out of 5 and extra rounds', () => {
+test('HUD shows the round out of 5, in roman numerals, and extra rounds', () => {
   const { rerender } = render(<Hud session={session({}, { roundNumber: 2 })} />);
-  expect(screen.getByText('Round 2 of 5')).toBeTruthy();
+  expect(screen.getByText('Round II of V')).toBeTruthy();
   rerender(<Hud session={session({}, { roundNumber: 6 })} />);
   expect(screen.getByText('Extra round')).toBeTruthy();
 });
 
-test('HUD shows no round count in a quick game', () => {
+test('the cartouche reads QUICK GAME for a quick game', () => {
   render(<Hud session={session({}, { format: 'quick' })} />);
-  expect(screen.queryByText(/Round \d of 5/)).toBeNull();
+  expect(screen.queryByText(/Round \w+ of V/)).toBeNull();
+  expect(screen.getByText('Quick game').closest('.cart')).toBeTruthy();
+});
+
+test('the round pips mark the rounds done, the one now and the rest', () => {
+  render(<Hud session={session({}, { roundNumber: 2 })} />);
+  const pips = document.querySelectorAll('.cart .pips i');
+  expect(pips).toHaveLength(5);
+  expect(pips[0]!.className).toBe('done');
+  expect(pips[1]!.className).toBe('now');
+  expect(pips[2]!.className).toBe('');
+});
+
+test('long Amharic names do not overflow the plate', () => {
+  render(<PlayerPlate player={0} name="ተጫዋች አንድ እና ሁለት" stones={12} active side="near" />);
+  const name = screen.getByText(/ተጫዋች/);
+  expect(name.className).toContain('nm');
+  expect(name.closest('.plate')!.className).toContain('active');
+});
+
+test('discs hide while the camera moves', () => {
+  useScene.setState({ cameraMoving: true });
+  render(<CountDiscs />);
+  expect(document.querySelector('.discs')!.hasAttribute('hidden')).toBe(true);
+  expect(document.querySelectorAll('.discs .cnt')).toHaveLength(14);
+  expect(document.querySelectorAll('.discs [data-hole-label]')).toHaveLength(12);
+  useScene.setState({ cameraMoving: false });
 });
 
 test('HUD shows homes from ownership', () => {
