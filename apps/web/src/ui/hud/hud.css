@@ -124,6 +124,12 @@
   box-shadow: 0 0 8px var(--acc);
 }
 
+/* At the end of a round only the cartouche stays; the summary panel carries the players. */
+.hud-summary .plate,
+.hud-summary .hud-caption {
+  display: none;
+}
+
 /* ---------- the round cartouche ---------- */
 .cart {
   position: absolute;

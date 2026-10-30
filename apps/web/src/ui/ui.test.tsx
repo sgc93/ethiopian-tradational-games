@@ -5,6 +5,7 @@ import type { Session } from '../game/session';
 import { setupI18n } from '../i18n';
 import { AboutScreen } from '../screens/AboutScreen';
 import { HomeScreen } from '../screens/HomeScreen';
+import { useFeedback } from '../scene/feedback/feedbackStore';
 import { useScene } from '../scene/sceneStore';
 import { ResultScreen } from '../screens/ResultScreen';
 import { useApp } from '../state/store';
@@ -105,6 +106,56 @@ test('round summary shows totals and next homes', () => {
   expect(screen.getByTestId('summary-stones-1').textContent).toContain('20');
   expect(screen.getByTestId('summary-homes-0').textContent).toContain('7');
   expect(screen.getByTestId('summary-homes-1').textContent).toContain('5');
+});
+
+test('round summary shows homes as huts', () => {
+  const m = newMatch('match', 0);
+  const s = session(
+    { phase: 'round-summary' },
+    { roundNumber: 2, history: [{ totals: [28, 20], winner: 0, starter: 0 }], round: { ...m.round, owners: sevenFive } },
+  );
+  render(<RoundSummary session={s} onNext={() => {}} />);
+  expect(screen.getByTestId('summary-homes-0').textContent).toContain('7');
+  expect(document.querySelectorAll('[data-testid="summary-homes-0"] .hut')).toHaveLength(7);
+  expect(document.querySelectorAll('[data-testid="summary-homes-1"] .hut')).toHaveLength(5);
+  expect(screen.getByRole('button', { name: 'Next round' }).className).toContain('btn-primary');
+  expect(document.querySelector('.panel')).toBeTruthy();
+});
+
+test('the HUD cartouche reads the end of the round during the summary', () => {
+  render(<Hud session={session({ phase: 'round-summary' }, { roundNumber: 3 })} />);
+  expect(screen.getByText('End of round II').closest('.cart')).toBeTruthy();
+});
+
+test('the menu sets the scene to paused while open and back when closed', () => {
+  render(
+    <GameMenu
+      session={session()}
+      settings={defaultSettings({ languages: ['en'], reducedMotion: false })}
+      onPause={() => {}}
+      onSettings={() => {}}
+      onRestart={() => {}}
+      onQuit={() => {}}
+    />,
+  );
+  useScene.setState({ mode: 'play' });
+  fireEvent.click(screen.getByRole('button', { name: 'Menu' }));
+  expect(useScene.getState().mode).toBe('paused');
+  expect(document.querySelector('.panel')).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Continue' }).className).toContain('btn-primary');
+  fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+  expect(useScene.getState().mode).toBe('play');
+});
+
+test('the result panel carries the emblem and sets off an ember burst', () => {
+  useFeedback.setState({ events: [] });
+  const s = session(
+    { phase: 'finished' },
+    { format: 'quick', history: [{ totals: [24, 24], winner: null, starter: 0 }], result: { winner: null, reason: 'quick', rounds: 1 } },
+  );
+  render(<ResultScreen session={s} onPlayAgain={() => {}} onHome={() => {}} />);
+  expect(document.querySelector('.panel .emblem')).toBeTruthy();
+  expect(useFeedback.getState().events.some((e) => e.kind === 'burst')).toBe(true);
 });
 
 test('result shows a quick-game draw', () => {

@@ -35,12 +35,13 @@ function Disc({ index, value, playable }: { index: number; value: number; playab
 export function CountDiscs() {
   const counts = useBoardView((s) => s.counts);
   const moving = useScene((s) => s.cameraMoving);
-  const tossing = useScene((s) => s.mode === 'toss');
+  const quiet = useScene((s) => s.mode === 'toss' || s.mode === 'round-end' || s.mode === 'result');
   const session = useScene((s) => s.session);
   const playable = playableHoles(session);
-  // Hidden while the camera moves (never at stale positions) and during the toss, which is the coin's moment.
+  // Hidden while the camera moves (never at stale positions), and during the toss, the end of a
+  // round and the result, when the board speaks for itself.
   return (
-    <div className="discs" hidden={moving || tossing} aria-hidden="true">
+    <div className="discs" hidden={moving || quiet} aria-hidden="true">
       {Array.from({ length: DISCS }, (_, i) => (
         <Disc key={i} index={i} value={counts[i] ?? 0} playable={playable.has(i as 0)} />
       ))}

@@ -329,6 +329,19 @@
   stroke-linejoin: round;
 }
 
+/* A name for screen readers only, when the panel's title is carried elsewhere (the cartouche). */
+.ui-layer .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- panel furniture ---------- */
 /* The small back or close medallion in a panel's top-left corner. */
 .ui-layer .panel-back {

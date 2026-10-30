@@ -19,6 +19,7 @@ export function GameScreen() {
   const { settings, updateSettings, setScreen } = useApp();
   const speed = urlOptions.speed ?? settings.speed;
   const [tossOpen, setTossOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const sfx = useMemo(() => createSfx(), []);
 
   useEffect(() => sfx.setEnabled(settings.sound), [sfx, settings.sound]);
@@ -48,9 +49,9 @@ export function GameScreen() {
       seat,
       onHoleTap: controller.playHole,
       onAnimationDone: controller.animationDone,
-      mode: tossOpen ? 'toss' : session?.phase === 'round-summary' ? 'round-end' : session?.phase === 'finished' ? 'result' : 'play',
+      mode: tossOpen ? 'toss' : menuOpen ? 'paused' : session?.phase === 'round-summary' ? 'round-end' : session?.phase === 'finished' ? 'result' : 'play',
     });
-  }, [session, speed, sfx, guide.suggested, seat, tossOpen]);
+  }, [session, speed, sfx, guide.suggested, seat, tossOpen, menuOpen]);
   useEffect(() => () => useScene.setState({ session: null, suggested: null, mode: 'home' }), []);
 
   const goHome = () => {
@@ -63,15 +64,20 @@ export function GameScreen() {
       {settings.showCounts && <CountDiscs />}
       {session && (
         <>
-          {!tossOpen && <Hud session={session} />}
+          {!tossOpen && session.phase !== 'finished' && <Hud session={session} />}
+          {session.phase !== 'finished' && (
           <GameMenu
             session={session}
             settings={settings}
-            onPause={controller.setPaused}
+            onPause={(paused) => {
+              setMenuOpen(paused);
+              controller.setPaused(paused);
+            }}
             onSettings={updateSettings}
             onRestart={controller.restart}
             onQuit={goHome}
           />
+          )}
           <HoleButtons session={session} onPlay={controller.playHole} />
           {tossOpen && (
             <CoinToss

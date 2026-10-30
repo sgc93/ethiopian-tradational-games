@@ -48,7 +48,9 @@ export function Hud({ session }: { session: Session }) {
   const numeral = (n: number) => (i18n.resolvedLanguage?.startsWith('en') ? roman(n) : String(n));
   const cartouche =
     match.format === 'match'
-      ? match.roundNumber <= MAX_ROUNDS
+      ? phase === 'round-summary'
+        ? { text: t('hud.endOfRound', { n: numeral(match.roundNumber - 1) }), pips: { total: MAX_ROUNDS, done: Math.min(MAX_ROUNDS, match.roundNumber - 1), now: 0 } }
+        : match.roundNumber <= MAX_ROUNDS
         ? { text: t('hud.round', { n: numeral(match.roundNumber), total: numeral(MAX_ROUNDS) }), pips: { total: MAX_ROUNDS, done: match.roundNumber - 1, now: match.roundNumber } }
         : { text: t('hud.extraRound'), pips: { total: MAX_ROUNDS, done: MAX_ROUNDS, now: 0 } }
       : { text: t('hud.quickGame') };
@@ -65,7 +67,7 @@ export function Hud({ session }: { session: Session }) {
   );
 
   return (
-    <header className="hud">
+    <header className={`hud${phase === 'round-summary' ? ' hud-summary' : ''}`}>
       {plate(far, 'far')}
       <Cartouche text={cartouche.text} pips={cartouche.pips} />
       {caption ? <Caption tone={caption.tone} text={caption.text} thinking={caption.thinking} /> : <p className="hud-caption" aria-live="polite" />}

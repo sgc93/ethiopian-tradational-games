@@ -5,7 +5,9 @@ import { create } from 'zustand';
 export type FeedbackEvent =
   | { kind: 'landed'; hole: HoleIndex; at: number }
   | { kind: 'captured'; hole: HoleIndex; by: Player; at: number }
-  | { kind: 'turn'; player: Player; at: number };
+  | { kind: 'turn'; player: Player; at: number }
+  /** The result: embers burst up from the fire. */
+  | { kind: 'burst'; at: number };
 
 export type StampedEvent = FeedbackEvent & { id: number };
 

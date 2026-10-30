@@ -1,0 +1,85 @@
+/* The result (spec §9, screen 8): one centred panel over the orbiting scene. */
+.result {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.result > * {
+  pointer-events: auto;
+}
+
+/* The scene dims behind the panel (the reference's "dim"); the embers still burst through. */
+.result-dim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(6, 4, 3, 0.45);
+}
+
+.ui-layer .result-panel {
+  padding: calc(22px * var(--ui)) calc(24px * var(--ui));
+  text-align: center;
+}
+
+.ui-layer .result-panel .emblem {
+  display: block;
+  margin: 0 auto;
+  color: var(--gold-300);
+}
+
+.ui-layer .result-panel .emblem circle,
+.ui-layer .result-panel .emblem path {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The headline, large. */
+.ui-layer .big {
+  margin: calc(8px * var(--ui)) 0 0;
+  font: 700 calc(34px * var(--ui)) / 1.1 var(--f-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-200);
+  text-shadow: 0 0 30px rgba(255, 170, 70, 0.45);
+}
+
+/* A long headline ("The computer won", a friend's name) steps down so it holds to two lines. */
+.ui-layer .big-long {
+  font-size: calc(24px * var(--ui));
+}
+
+.ui-layer .big:lang(am) {
+  font: 700 calc(36px * var(--ui)) / 1.2 var(--f-geez);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.ui-layer .score {
+  margin: calc(10px * var(--ui)) 0 calc(2px * var(--ui));
+  font: 600 calc(26px * var(--ui)) / 1 var(--f-display);
+  letter-spacing: 0.1em;
+  color: var(--text-100);
+}
+
+.ui-layer .result-note {
+  font-size: max(12px, calc(13px * var(--ui)));
+}
+
+.result-actions {
+  display: flex;
+  gap: calc(12px * var(--ui));
+  justify-content: center;
+  margin-top: calc(18px * var(--ui));
+}
+
+.ui-layer .result-again {
+  width: calc(140px * var(--ui));
+}
+
+.ui-layer .result-home {
+  width: calc(110px * var(--ui));
+}

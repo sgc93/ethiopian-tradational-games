@@ -41,9 +41,12 @@ const fragmentShader = /* glsl */ `
 `;
 
 export interface BurstProps {
-  /** The event that sets a burst off, and where (the cup's centre). */
-  event: 'landed' | 'captured';
+  /** The event that sets a burst off, and where (the cup's centre, the fire). */
+  event: 'landed' | 'captured' | 'burst';
   origin(e: StampedEvent): Vec3;
+  /** How far from the origin particles are born, and over how many seconds. */
+  radius?: number;
+  spread?: number;
   /** Particles per burst, within [min, max]. */
   count: [number, number];
   /** Seconds each particle lives. */
@@ -68,7 +71,7 @@ export interface BurstProps {
  * sparks when four are captured (spec §7). The pool is a ring buffer; each spawn writes the next
  * slots' birth, velocity and size, and the shader does the rest.
  */
-export function Burst({ event, origin, count, life, up, out, gravity, size, color, brightness = 1, alpha = 1, additive = false, capacity = 160 }: BurstProps) {
+export function Burst({ event, origin, radius = 0.35, spread = 0.05, count, life, up, out, gravity, size, color, brightness = 1, alpha = 1, additive = false, capacity = 160 }: BurstProps) {
   const { geometry, material, attrs } = useMemo(() => {
     const g = new THREE.BufferGeometry();
     const attrs = {
@@ -117,11 +120,11 @@ export function Burst({ event, origin, count, life, up, out, gravity, size, colo
         const i = next.current;
         next.current = (i + 1) % capacity;
         const a = Math.random() * Math.PI * 2;
-        const r = Math.random() * 0.35;
+        const r = Math.sqrt(Math.random()) * radius;
         attrs.position.setXYZ(i, ox + r * Math.cos(a), oy, oz + r * Math.sin(a));
         const side = Math.random() * out;
         attrs.aVel.setXYZ(i, side * Math.cos(a), up[0] + Math.random() * (up[1] - up[0]), side * Math.sin(a));
-        attrs.aBirth.setX(i, t + Math.random() * 0.05);
+        attrs.aBirth.setX(i, t + Math.random() * spread);
         attrs.aLife.setX(i, life * (0.8 + Math.random() * 0.4));
         attrs.aSize.setX(i, size[0] + Math.random() * (size[1] - size[0]));
       }

@@ -1,0 +1,88 @@
+/* Paused (spec §9, screen 6): the scene blurred and darkened behind one panel. */
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  -webkit-backdrop-filter: blur(6px) brightness(0.6);
+  backdrop-filter: blur(6px) brightness(0.6);
+}
+
+.ui-layer .menu-panel {
+  padding: calc(18px * var(--ui)) calc(26px * var(--ui));
+}
+
+.menu-main {
+  display: flex;
+  justify-content: center;
+  margin-top: calc(14px * var(--ui));
+}
+
+.ui-layer .menu-continue {
+  width: calc(200px * var(--ui));
+}
+
+.menu-rows {
+  margin-top: calc(10px * var(--ui));
+}
+
+/* A settings row: the label at the left, its toggles at the right, a hairline under. */
+.row2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(9px * var(--ui)) 0;
+  border-bottom: 1px solid rgba(214, 174, 106, 0.14);
+  font: 500 max(12px, calc(14px * var(--ui))) / 1.2 var(--f-text);
+  color: var(--text-100);
+}
+
+.row2:lang(am) {
+  font: 500 max(12px, calc(16px * var(--ui))) / 1.3 var(--f-geez);
+}
+
+.row2 .v {
+  display: flex;
+  gap: calc(6px * var(--ui));
+}
+
+/* A toggle pill, 26 px: lit when on. */
+.tg {
+  appearance: none;
+  margin: 0;
+  height: max(26px, calc(26px * var(--ui)));
+  padding: 0 calc(12px * var(--ui));
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font: 600 max(9.5px, calc(9.5px * var(--ui))) / 1 var(--f-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-300);
+  background: none;
+  border: 1px solid rgba(214, 174, 106, 0.3);
+  cursor: pointer;
+}
+
+.tg:lang(am) {
+  font: 600 max(11.5px, calc(11.5px * var(--ui))) / 1 var(--f-geez);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.tg.on {
+  color: var(--gold-200);
+  background: rgba(214, 174, 106, 0.18);
+  border-color: rgba(214, 174, 106, 0.6);
+}
+
+.tg:focus-visible {
+  outline: 2px solid var(--ember-400);
+  outline-offset: 2px;
+}
+
+.menu-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: calc(12px * var(--ui));
+  margin-top: calc(14px * var(--ui));
+}

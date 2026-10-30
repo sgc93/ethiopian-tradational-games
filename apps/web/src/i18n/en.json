@@ -81,7 +81,7 @@
   "summary": {
     "title": "End of round {{n}}",
     "stones": "{{count}} stones",
-    "nextHomes": "Next round: {{count}} homes",
+    "nextHomes": "{{count}} homes next round",
     "draw": "A drawn round. Both start again with six homes.",
     "next": "Next round"
   },

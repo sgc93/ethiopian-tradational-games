@@ -291,16 +291,16 @@ test('face spec', () => expect(coinFaceSpec('ሰው')).toEqual({ rays: 24, fontP
 - Modify: `apps/web/src/ui/GameMenu.tsx` (panel at (232, 28) 380 × 318: Continue primary, toggle rows Speed / Stone counts / Keep the view fixed (two-player only) / Sound, then Start again and Quit to home quiet; sets `mode = 'paused'` while open; the overlay adds `backdrop-filter: blur(6px) brightness(0.6)`), `apps/web/src/ui/RoundSummary.tsx` (a low panel at (122, 262) 600 × 95: each side's stones and next-round homes as rows of small hut icons, Next round primary in the middle; the cartouche reads `hud.endOfRound`; `mode = 'round-end'`), `apps/web/src/screens/ResultScreen.tsx` (panel at (262, 46) 320 × 288 with the emblem, headline, score, reason, rounds; Play again primary and Home; `mode = 'result'`; an ember burst: `useFeedback.push({ kind: 'burst', at })` → `Embers` emits 200 extra embers over 1 s)
 - Test: `apps/web/src/ui/ui.test.tsx` (existing tests keep passing; add the hut rows count)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 test('round summary shows homes as huts', () => { render(<RoundSummary session={afterRoundOne} onNext={() => {}} />); expect(screen.getByTestId('summary-homes-0')).toHaveTextContent(String(homesA)); expect(document.querySelectorAll('[data-testid="summary-homes-0"] .hut')).toHaveLength(homesA); });
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement** the three screens with the kit; keep the `data-testid`s and `#result-title`; the result's `.result-score` keeps `{{a}} – {{b}}`.
-- [ ] **Step 4: Run** unit tests and e2e → green; screenshots against `renders/09-paused.jpg`, `10-round-end.jpg`, `11-result.jpg`.
-- [ ] **Step 5: Commit** — `feat(web): pause, round end and result panels over the living scene`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement** the three screens with the kit; keep the `data-testid`s and `#result-title`; the result's `.result-score` keeps `{{a}} – {{b}}`.
+- [x] **Step 4: Run** unit tests and e2e → green; screenshots against `renders/09-paused.jpg`, `10-round-end.jpg`, `11-result.jpg`.
+- [x] **Step 5: Commit** — `feat(web): pause, round end and result panels over the living scene`.
 
 ---
 
