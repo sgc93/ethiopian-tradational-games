@@ -369,7 +369,7 @@ test('ambience ducks by 6 dB', () => { const a = createAmbience(fakeCtx, fakeCtx
 - Modify: `apps/web/playwright.config.ts` (projects: `phone-full` 844 × 390, `phone-compact` 750 × 300, `desktop` 1280 × 720, all `channel: 'chrome'`; the Pixel 7 project is removed), `apps/web/e2e/layout.spec.ts` (screenshots of home, play and result per project into `test-results/screens/<project>-<screen>.png`; assert every count disc lies inside the viewport and outside both bands)
 - Create: `docs/design/scene/progress/README.md` section "Part 2", with the three sizes' screenshots beside the renders and the `check:size` total
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 test('count discs sit between the interface bands', async ({ page }, info) => {
@@ -381,10 +381,10 @@ test('count discs sit between the interface bands', async ({ page }, info) => {
 });
 ```
 
-- [ ] **Step 2: Run** → FAIL (no `.disc` at the old sizes until the projects change).
-- [ ] **Step 3: Implement** the config and the test; run `pnpm test && pnpm typecheck && pnpm --filter @etg/web build && pnpm --filter @etg/web check:size && pnpm --filter @etg/web e2e`.
-- [ ] **Step 4: All green**; copy the screenshots into `docs/design/scene/progress/` and write the README section; list the owner's acceptance items from spec §12 with their status (phone fps: pending the owner's phone).
-- [ ] **Step 5: Commit** — `test(web): end-to-end at 844×390, 750×300 and 1280×720`.
+- [x] **Step 2: Run** → FAIL (no `.disc` at the old sizes until the projects change).
+- [x] **Step 3: Implement** the config and the test; run `pnpm test && pnpm typecheck && pnpm --filter @etg/web build && pnpm --filter @etg/web check:size && pnpm --filter @etg/web e2e`.
+- [x] **Step 4: All green**; copy the screenshots into `docs/design/scene/progress/` and write the README section; list the owner's acceptance items from spec §12 with their status (phone fps: pending the owner's phone).
+- [x] **Step 5: Commit** — `test(web): end-to-end at 844×390, 750×300 and 1280×720`.
 
 ---
 

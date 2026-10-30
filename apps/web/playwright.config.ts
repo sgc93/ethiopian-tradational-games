@@ -10,10 +10,12 @@ export default defineConfig({
     // The installed Chrome, so the tests need no browser download.
     channel: 'chrome',
   },
+  // The three landscape sizes of spec §12: a full-height phone, a phone browser with its toolbars
+  // (the compact layout below 340 px), and a desktop window. Portrait is its own test.
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },
-    // Held sideways: the game is landscape only, and portrait shows "turn your phone" (spec §9).
-    { name: 'phone', use: { ...devices['Pixel 7 landscape'], channel: 'chrome' } },
+    { name: 'phone-full', use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 844, height: 390 }, hasTouch: true } },
+    { name: 'phone-compact', use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 750, height: 300 }, hasTouch: true } },
+    { name: 'desktop', use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1280, height: 720 } } },
   ],
   webServer: {
     command: 'pnpm build && pnpm preview',
