@@ -86,14 +86,20 @@ The end-to-end suite now runs every test at 844 × 390 (a full-height phone), 75
 
 ## Part 3: the Walia heads reworked
 
-The owner asked for the heads to look like the carved references (`docs/design/board/images/07-side.jpg`, `11-three-quarter.jpg`, `08-front.jpg`, `12-one-horn.jpg`). The heads are now a signed-distance sculpt (`apps/web/src/scene/board/sculpt/sdf.ts`), proportioned from the side reference, meshed offline with marching cubes and trimmed to the triangle budgets by `apps/web/scripts/build-heads.ts`, and shipped prebuilt (`apps/web/public/models/ibex-head-{full,half}.bin`, 215 KB and 107 KB). The three developer looks `?cam=head`, `?cam=head34` and `?cam=headfront` (with `&still=1`) frame head B like the reference sheets.
+The owner asked for the heads to look like the carved references (`docs/design/board/images/07-side.jpg`, `08-front.jpg`, `11-three-quarter.jpg`, `12-one-horn.jpg`). A first pass sculpted them from hand-placed ellipsoids; the owner judged it still not good, and the second pass rebuilt them from the references themselves:
+
+- **The head** is the blueprint's traced side outline (`outlines.sideHeadOnly`, ear taken out) inflated sideways, the way a carver roughs a profile out of a block (`apps/web/src/scene/board/sculpt/sdf.ts`). Its width by height and the muzzle's taper are measured on the front photograph (image 08, 273 px a unit); the edges round fully on the neck and more crisply at the face. On it are cut the almond eyes with their lids, the brow, cheekbones, the jaw, the mouth line, the nostrils and the beard's locks; the ears are leaves of their own, cupped forward and out.
+- **The horns** are tubes swept along the blueprint's 41 stations (`sculpt/horn.ts`), with the 24 ridges as bold knuckles on the front face. Their roots are carried down into the skull until buried, which ends the first pass's fault of a horn root running down over the face.
+- **The meshes** are marching cubes trimmed by meshoptimizer's quadric simplifier (bundled with three) and shaded with the field's own normals, packed with them (`IBX2`) into `apps/web/public/models/ibex-head-{full,half}.bin` (282 KB and 134 KB) by `apps/web/scripts/build-heads.ts`. Budgets: 12,000 triangles a head and 6,000 a horn on the full tier (the spec said 8,000 a head; raised for the eyes and lids), half on the low tier.
+
+Studio comparison, each reference beside the model under neutral light: [p3-heads-studio.jpg](p3-heads-studio.jpg).
 
 | Before | Side | Three-quarter | Front |
 |---|---|---|---|
 | [p3-heads-before.jpg](p3-heads-before.jpg) | [p3-heads-side.jpg](p3-heads-side.jpg) | [p3-heads-three-quarter.jpg](p3-heads-three-quarter.jpg) | [p3-heads-front.jpg](p3-heads-front.jpg) |
 
-In the game: [p3-heads-home-1920x1080.jpg](p3-heads-home-1920x1080.jpg) · [p3-heads-play-1920x1080.jpg](p3-heads-play-1920x1080.jpg).
+In the game: [p3-heads-home-1920x1080.jpg](p3-heads-home-1920x1080.jpg) · [p3-heads-play-1920x1080.jpg](p3-heads-play-1920x1080.jpg). The three developer looks `?cam=head`, `?cam=head34` and `?cam=headfront` (with `&still=1`) frame head B like the reference sheets.
 
-**Changes of design.** The horns' tips now sit 1.3 p apart, the master image's modest splay, instead of the blueprint's 2.27 p spread (the owner's earlier choice, set aside by the ask for the images' look). The head's own proportions follow image 07 rather than the blueprint's traced "head-only" outline: the nose at v ≈ 1.05 (the muzzle slopes down), the eye at (0.85, 1.65), the crown at 2.14, the ear tips at the blueprint's 2.33, the muzzle reaching the blueprint's 1.59.
+**Changes of design, from the images over the blueprint.** The horns are a lyre as in images 08 and 14: close at the brow, out to 1.31 units either side, tips back in to 0.92 (the blueprint's stations ran straight out to 0.98; the first pass's 1.3 p tip spacing is withdrawn). The neck is as stout as the carving's, 0.47 either side at mid-height and 0.59 at the foot, against the blueprint front outline's 0.30 and 0.43. The ridges stand 1.8 times the blueprint's measure.
 
-**Still to refine, by the owner's eye:** the eyelids (the eye is a ball in a socket), the cheek planes, the beard's shape, and the ridge height on the horns.
+**Still to refine, by the owner's eye:** the fine transverse lines on the horns' sides and the hair on the forehead (both texture rather than shape), and how the heads read under the night firelight, which is darker than the studio.

@@ -3,7 +3,7 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { encodeHeadSet } from './sculpt/pack';
 import { useBoardGeometry } from './useBoardGeometry';
 
-const tri = { position: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), uv: new Float32Array([0, 0, 1, 0, 0, 1]), index: new Uint32Array([0, 1, 2]) };
+const tri = { position: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]), normal: new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1]), uv: new Float32Array([0, 0, 1, 0, 0, 1]), index: new Uint32Array([0, 1, 2]) };
 
 afterEach(() => vi.unstubAllGlobals());
 

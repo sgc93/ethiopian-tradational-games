@@ -15,6 +15,12 @@ test('a sphere meshes to a closed surface at its radius, trimmed to the budget',
     worst = Math.max(worst, d);
   }
   expect(worst).toBeLessThan(0.08); // within a cell or so of the true surface
+  // The normals are the field's: pointing straight out from the centre.
+  for (let i = 0; i < verts; i++) {
+    const [x, y, z] = [mesh.position[i * 3]! - 0.2, mesh.position[i * 3 + 1]! - 1.0, mesh.position[i * 3 + 2]! + 0.1];
+    const l = Math.hypot(x, y, z);
+    expect((x * mesh.normal[i * 3]! + y * mesh.normal[i * 3 + 1]! + z * mesh.normal[i * 3 + 2]!) / l).toBeGreaterThan(0.99);
+  }
   // Closed: every edge is shared by two triangles.
   const edges = new Map<string, number>();
   for (let i = 0; i < mesh.index.length; i += 3) {
