@@ -9,9 +9,16 @@ import { LANGUAGES } from '../state/settings';
 import { useApp } from '../state/store';
 import { FormatPicker, LevelPicker } from '../ui/FormatPicker';
 import { onFirstPlayTap } from '../ui/fullscreen';
+import { Button, Medallion, Mixed } from '../ui/kit';
+import './HomeScreen.css';
 
 type Step = null | { kind: 'level' } | { kind: 'format'; mode: Mode };
 
+/**
+ * Home (spec §9, screen 2): the live scene behind, the title block at the left, the menu stack at
+ * the right, the language switch and the sound medallion at the bottom left. The level and game
+ * type panels replace the stack in place.
+ */
 export function HomeScreen() {
   const { t } = useTranslation();
   const { settings, updateSettings, setScreen } = useApp();
@@ -25,19 +32,19 @@ export function HomeScreen() {
   };
 
   return (
-    <main className="screen home panel-enter">
+    <main className="home panel-enter">
+      <div className="home-grade" aria-hidden="true" />
       <header className="home-title">
         <h1 lang="am">{t('app.titleGeez')}</h1>
-        <p className="home-latin">Gebeta</p>
+        <p className="home-latin">GEBETA</p>
         <p className="home-tagline">{t('app.tagline')}</p>
-        <HoleRow />
       </header>
 
       {step === null && (
-        <nav className="home-actions">
+        <nav className="home-menu">
           {saved && (
-            <button
-              className="btn btn-primary"
+            <Button
+              kind="primary"
               onClick={() => {
                 onFirstPlayTap();
                 controller.resume(saved);
@@ -45,38 +52,36 @@ export function HomeScreen() {
               }}
             >
               {t('home.continue')}
-            </button>
+            </Button>
           )}
-          <button
-            className={`btn${saved ? '' : ' btn-primary'}`}
+          <Button
+            kind={saved ? 'secondary' : 'primary'}
             onClick={() => {
               onFirstPlayTap();
               setStep({ kind: 'level' });
             }}
           >
             {t('home.playComputer')}
-          </button>
-          <button
-            className="btn"
+          </Button>
+          <Button
             onClick={() => {
               onFirstPlayTap();
               setStep({ kind: 'format', mode: { kind: 'friend' } });
             }}
           >
             {t('home.playFriend')}
-          </button>
-          <button
-            className="btn"
+          </Button>
+          <Button
             onClick={() => {
               onFirstPlayTap();
               begin({ kind: 'guided' }, 'quick');
             }}
           >
             {t('home.learn')}
-          </button>
-          <button className="btn btn-quiet" onClick={() => setScreen('about')}>
-            {t('home.about')}
-          </button>
+          </Button>
+          <Button kind="quiet" className="home-about" onClick={() => setScreen('about')}>
+            <Mixed text={t('home.about')} />
+          </Button>
         </nav>
       )}
       {step?.kind === 'level' && (
@@ -87,11 +92,12 @@ export function HomeScreen() {
       )}
       {step?.kind === 'format' && <FormatPicker onPick={(f) => begin(step.mode, f)} onBack={() => setStep(null)} />}
 
-      <footer className="home-settings">
-        <div className="segmented" role="group" aria-label={t('languages.label')}>
+      <footer className="home-footer">
+        <div className="seg" role="group" aria-label={t('languages.label')}>
           {LANGUAGES.map((lang) => (
             <button
               key={lang}
+              type="button"
               lang={lang}
               aria-pressed={settings.language === lang}
               onClick={() => updateSettings({ language: lang })}
@@ -100,25 +106,13 @@ export function HomeScreen() {
             </button>
           ))}
         </div>
-        <button className="toggle" aria-pressed={settings.sound} onClick={() => updateSettings({ sound: !settings.sound })}>
-          {settings.sound ? t('home.soundOn') : t('home.soundOff')}
-        </button>
+        <Medallion
+          icon={settings.sound ? 'sound' : 'soundOff'}
+          label={settings.sound ? t('home.soundOn') : t('home.soundOff')}
+          pressed={settings.sound}
+          onClick={() => updateSettings({ sound: !settings.sound })}
+        />
       </footer>
     </main>
-  );
-}
-
-/** Six earth holes with four pebbles each: the board in miniature. */
-function HoleRow() {
-  return (
-    <div className="hole-row" aria-hidden="true">
-      {Array.from({ length: 6 }, (_, i) => (
-        <span key={i} className="hole">
-          {Array.from({ length: 4 }, (_, j) => (
-            <span key={j} className={`pebble pebble-${(i + j) % 4}`} />
-          ))}
-        </span>
-      ))}
-    </div>
   );
 }

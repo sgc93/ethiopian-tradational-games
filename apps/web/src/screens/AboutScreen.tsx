@@ -1,18 +1,27 @@
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../state/store';
+import { Medallion, Mixed, Panel } from '../ui/kit';
+import './AboutScreen.css';
 
+/** About Gebeta (spec §9, screen 13): a reading panel over the dimmed home scene. */
 export function AboutScreen() {
   const { t } = useTranslation();
   const setScreen = useApp((s) => s.setScreen);
   return (
-    <main className="screen about">
-      <h1>{t('about.title')}</h1>
-      <p>{t('about.p1')}</p>
-      <p>{t('about.p2')}</p>
-      <p>{t('about.p3')}</p>
-      <button className="btn" onClick={() => setScreen('home')}>
-        {t('about.back')}
-      </button>
+    <main className="about">
+      <div className="about-dim" aria-hidden="true" />
+      <Panel labelledBy="about-title" title={<Mixed text={t('about.title')} />} center y={26} width={480} className="about-panel">
+        <Medallion icon="close" size={30} label={t('about.close')} className="panel-back" onClick={() => setScreen('home')} />
+        <p className="note about-p">
+          <Mixed text={t('about.p1')} />
+        </p>
+        <p className="note about-p">
+          <Mixed text={t('about.p2')} />
+        </p>
+        <p className="note about-p">
+          <Mixed text={t('about.p3')} />
+        </p>
+      </Panel>
     </main>
   );
 }

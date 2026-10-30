@@ -11,6 +11,8 @@ export interface PanelProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   height?: number;
   x?: number;
   y?: number;
+  /** Anchored to the right edge instead of the left: the home panels keep their margin on wide screens. */
+  right?: number;
   /** Centred horizontally (and vertically when `y` is not given) instead of anchored at `x`. */
   center?: boolean;
   /** Playing its exit motion. */
@@ -21,12 +23,13 @@ export interface PanelProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
 const px = (n: number) => `calc(${n}px * var(--ui))`;
 
 /** A framed panel: the panel ground, a line, an inner line and four corner diamonds (spec §9 "Panel"). */
-export function Panel({ title, labelledBy, width, height, x, y, center, exiting, className, style, children, ...rest }: PanelProps) {
-  const placed = x !== undefined || y !== undefined || center;
+export function Panel({ title, labelledBy, width, height, x, y, right, center, exiting, className, style, children, ...rest }: PanelProps) {
+  const placed = x !== undefined || y !== undefined || right !== undefined || center;
   const position: CSSProperties = placed
     ? {
         position: 'absolute',
         left: center ? '50%' : x !== undefined ? px(x) : undefined,
+        right: right !== undefined ? px(right) : undefined,
         top: y !== undefined ? px(y) : center ? '50%' : undefined,
         transform: center ? (y !== undefined ? 'translateX(-50%)' : 'translate(-50%, -50%)') : undefined,
       }

@@ -19,7 +19,7 @@
     "soundOff": "Sound off"
   },
   "picker": {
-    "level": "How strong should the computer be?",
+    "level": "How strong?",
     "easy": "Easy",
     "medium": "Medium",
     "hard": "Hard",
@@ -145,7 +145,8 @@
     "p1": "Gebeta is played across Ethiopia. In the 12-hole version there are two rows of six holes, one row for each player.",
     "p2": "Children scoop the holes into the earth and play with small pebbles, four in every hole to start.",
     "p3": "You sow the stones around the board one by one. Stones are taken in fours, and four stones together are called a ቤት (bet, “home”).",
-    "back": "Back"
+    "back": "Back",
+    "close": "Close"
   },
   "noWebgl": {
     "title": "This device can’t show the 3D board",

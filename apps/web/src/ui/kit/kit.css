@@ -34,10 +34,20 @@
   color: var(--gold-300);
 }
 
+.ui-layer .ttl:lang(am),
 .ui-layer .ttl :lang(am),
 .ui-layer .ttl[lang='am'] {
   font: 600 calc(19px * var(--ui)) / 1.3 var(--f-geez);
   letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+/* A Ge’ez run inside Latin text (see `Mixed`): its own face, 2 px larger, never spaced or uppercased. */
+.ui-layer span[lang='am'] {
+  font-family: var(--f-geez);
+  font-size: calc(1em + 2px);
+  font-weight: 600;
+  letter-spacing: 0;
   text-transform: none;
 }
 
@@ -192,10 +202,14 @@
   border-color: transparent;
 }
 
+/* 56 px tall in the reference; a hint that wraps (Amharic) grows the button rather than spilling. */
 .ui-layer .btn-choice {
   flex-direction: column;
   gap: calc(4px * var(--ui));
-  height: max(44px, calc(56px * var(--ui)));
+  height: auto;
+  min-height: max(44px, calc(56px * var(--ui)));
+  padding-top: calc(8px * var(--ui));
+  padding-bottom: calc(8px * var(--ui));
   white-space: normal;
 }
 
@@ -313,6 +327,39 @@
   stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/* ---------- panel furniture ---------- */
+/* The small back or close medallion in a panel's top-left corner. */
+.ui-layer .panel-back {
+  position: absolute;
+  left: calc(10px * var(--ui));
+  top: calc(10px * var(--ui));
+}
+
+/* The home pickers: a smaller title with room for the medallion, and tighter padding. */
+.ui-layer .panel-compact .ttl {
+  margin-top: calc(6px * var(--ui));
+  font-size: calc(13px * var(--ui));
+}
+
+.ui-layer .panel-compact .ttl:lang(am) {
+  font-size: calc(15px * var(--ui));
+}
+
+.ui-layer .btn-hint:lang(am) {
+  font: 400 max(12px, calc(14.5px * var(--ui))) / 1.2 var(--f-geez);
+}
+
+.ui-layer .home-panel {
+  padding: calc(18px * var(--ui)) calc(22px * var(--ui));
+}
+
+/* Buttons stacked in a panel. */
+.ui-layer .panel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: calc(9px * var(--ui));
 }
 
 /* ---------- motion ---------- */

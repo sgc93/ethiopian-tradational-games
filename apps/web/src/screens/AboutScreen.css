@@ -1,0 +1,34 @@
+/* About (spec §9, screen 13): the home scene dimmed, with one reading panel. */
+.about {
+  position: absolute;
+  inset: 0;
+}
+
+.about-dim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(6, 4, 3, 0.45);
+}
+
+/* 322 px tall in the reference; longer text (Amharic) grows it, and a short screen scrolls it. */
+.ui-layer .about-panel {
+  padding: calc(20px * var(--ui)) calc(30px * var(--ui));
+  min-height: calc(322px * var(--ui));
+  max-height: calc(100% - 2 * 26px * var(--ui));
+  overflow-y: auto;
+}
+
+.ui-layer .about-panel .about-p {
+  margin: calc(8px * var(--ui)) 0 0;
+  text-align: left;
+  font-size: max(12px, calc(14.5px * var(--ui)));
+}
+
+.ui-layer .about-panel .about-p:lang(am) {
+  font: 500 max(12px, calc(16.5px * var(--ui))) / 1.5 var(--f-geez);
+}
+
+.ui-layer .about-panel .about-p:first-of-type {
+  margin-top: calc(16px * var(--ui));
+}

@@ -180,17 +180,17 @@ test('visited flag survives a throwing storage', () => { const bad = { getItem()
 - `HomeScreen` sets `useScene.mode = 'home'` on mount; its Play buttons call `onFirstPlayTap()` (Task 3) before `controller.start`.
 - `AboutScreen`: a reading `Panel` (x 182, y 26, 480 × 322) over the home scene with `Medallion icon="close"`.
 
-- [ ] **Step 1: Write the failing tests** (ui.test.tsx)
+- [x] **Step 1: Write the failing tests** (ui.test.tsx)
 
 ```tsx
 test('home shows the menu stack with one primary button', () => { render(<HomeScreen />); const primary = document.querySelectorAll('.btn-primary'); expect(primary).toHaveLength(1); expect(screen.getByRole('button', { name: 'Play against the computer' })).toBeInTheDocument(); expect(screen.getByRole('heading', { name: 'ገበጣ' })).toBeInTheDocument(); });
 test('level panel replaces the stack and goes back', async () => { render(<HomeScreen />); await userEvent.click(screen.getByRole('button', { name: 'Play against the computer' })); expect(screen.getByRole('button', { name: 'Easy' })).toBeInTheDocument(); await userEvent.click(screen.getByRole('button', { name: /back/i })); expect(screen.getByRole('button', { name: 'Play against the computer' })).toBeInTheDocument(); });
 ```
 
-- [ ] **Step 2: Run** → FAIL.
-- [ ] **Step 3: Implement**; the language control's Amharic label uses `lang="am"`.
-- [ ] **Step 4: Run** unit tests and e2e → green; screenshot at 844 × 390 against `renders/02-home.jpg`, `03-home-level.jpg`, `04-home-format.jpg`, `14-about.jpg` → `progress/p2-05-home-*.png`.
-- [ ] **Step 5: Commit** — `feat(web): home, pickers and about in the Teret interface`.
+- [x] **Step 2: Run** → FAIL.
+- [x] **Step 3: Implement**; the language control's Amharic label uses `lang="am"`.
+- [x] **Step 4: Run** unit tests and e2e → green; screenshot at 844 × 390 against `renders/02-home.jpg`, `03-home-level.jpg`, `04-home-format.jpg`, `14-about.jpg` → `progress/p2-05-home-*.png`.
+- [x] **Step 5: Commit** — `feat(web): home, pickers and about in the Teret interface`.
 
 ---
 

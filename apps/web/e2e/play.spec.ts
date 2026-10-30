@@ -25,7 +25,8 @@ test('language switch changes the home screen to Amharic', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'ገበጣ' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'ከኮምፒውተር ጋር ይጫወቱ' })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole('button', { name: 'ከኮምፒውተር ጋር ይጫወቱ' })).toBeVisible();
+  // Through the loading screen and the fire's flare again: the usual 5 s is short on a software renderer.
+  await expect(page.getByRole('button', { name: 'ከኮምፒውተር ጋር ይጫወቱ' })).toBeVisible({ timeout: 30_000 });
 });
 
 test('continue your game after reload', async ({ page }) => {

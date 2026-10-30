@@ -3,7 +3,10 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
 import type { Session } from '../game/session';
 import { setupI18n } from '../i18n';
+import { AboutScreen } from '../screens/AboutScreen';
+import { HomeScreen } from '../screens/HomeScreen';
 import { ResultScreen } from '../screens/ResultScreen';
+import { useApp } from '../state/store';
 import { defaultSettings } from '../state/settings';
 import { GameMenu } from './GameMenu';
 import { HoleButtons } from './HoleButtons';
@@ -116,6 +119,52 @@ test('hole buttons are enabled only for playable holes', () => {
 
   rerender(<HoleButtons session={{ ...s, phase: 'animating' }} onPlay={onPlay} />);
   expect(screen.getAllByRole('button').every((b) => (b as HTMLButtonElement).disabled)).toBe(true);
+});
+
+test('home shows the title block, the menu stack with one primary button and the footer', () => {
+  render(<HomeScreen />);
+  expect(document.querySelectorAll('.btn-primary')).toHaveLength(1);
+  expect(screen.getByRole('button', { name: 'Play against the computer' }).className).toContain('btn-primary');
+  expect(screen.getByRole('heading', { name: 'ገበጣ' })).toBeTruthy();
+  expect(screen.getByText('GEBETA')).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Play with a friend' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Learn to play' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'About Gebeta · ገበጣ' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'አማርኛ' }).getAttribute('lang')).toBe('am');
+  expect(screen.getByRole('button', { name: 'English' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Sound on' }).className).toContain('medal');
+});
+
+test('the level panel replaces the stack in place and its back medallion returns', () => {
+  render(<HomeScreen />);
+  fireEvent.click(screen.getByRole('button', { name: 'Play against the computer' }));
+  expect(screen.getByRole('button', { name: 'Easy' }).className).toContain('btn-primary');
+  expect(screen.getByRole('button', { name: 'Medium' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Hard' })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: 'Play with a friend' })).toBeNull();
+  expect(document.querySelector('.panel')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: /back/i }));
+  expect(screen.getByRole('button', { name: 'Play against the computer' })).toBeTruthy();
+  expect(document.querySelector('.panel')).toBeNull();
+});
+
+test('the game type panel offers two choices with their hints', () => {
+  render(<HomeScreen />);
+  fireEvent.click(screen.getByRole('button', { name: 'Play with a friend' }));
+  const quick = screen.getByRole('button', { name: /Quick game/ });
+  expect(quick.className).toContain('btn-choice');
+  expect(quick.className).toContain('btn-primary');
+  expect(quick.textContent).toContain('One round. Whoever takes more stones wins.');
+  expect(screen.getByRole('button', { name: /Full match/ }).className).toContain('btn-choice');
+});
+
+test('about is a reading panel with a close medallion that returns home', () => {
+  useApp.setState({ screen: 'about' });
+  render(<AboutScreen />);
+  expect(document.querySelector('.panel')).toBeTruthy();
+  expect(screen.getByRole('heading', { name: /About Gebeta/ })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: /close/i }));
+  expect(useApp.getState().screen).toBe('home');
 });
 
 test('opening the menu pauses the session and closing it resumes', () => {
