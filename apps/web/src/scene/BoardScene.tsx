@@ -10,6 +10,7 @@ import { CameraRig } from './CameraRig';
 import { Coin } from './Coin';
 import { DiscAnchors } from './DiscAnchors';
 import { Feedback } from './feedback/Feedback';
+import { LandingMark } from './feedback/LandingMark';
 import { HoleHitAreas } from './HoleHitAreas';
 import type { Vec3 } from './layout';
 import { useScene } from './sceneStore';
@@ -28,7 +29,7 @@ interface Props {
 }
 
 const setCounts = (counts: number[]) => useBoardView.setState({ counts });
-const silent: Sfx = { pickup() {}, drop() {}, capture() {}, coinWhoosh() {}, coinRing() {}, tick() {}, ambience() {}, duck() {}, setEnabled() {}, unlock() {} };
+const silent: Sfx = { pickup() {}, drop() {}, capture() {}, sting() {}, coinWhoosh() {}, coinRing() {}, tick() {}, ambience() {}, duck() {}, setEnabled() {}, unlock() {} };
 
 /** The board, its stones and the camera. Without a session it shows a fresh board at rest. */
 export function BoardScene({ session, speed, sfx, suggested = null, onHoleTap, onAnimationDone }: Props) {
@@ -44,6 +45,7 @@ export function BoardScene({ session, speed, sfx, suggested = null, onHoleTap, o
       <Board detail={detail} />
       <Stones positions={positions} spins={spins} />
       <Feedback owners={owners} playable={playable} suggested={suggested} />
+      <LandingMark round={session?.match.round ?? null} playable={playable} />
       <HoleHitAreas playable={playable} onTap={onHoleTap} />
       <DiscAnchors />
       <Coin />

@@ -186,6 +186,7 @@ How each kind of move looks is in `scene/stoneMotion.ts`, with tests.
 - A ring snaps out from a cup where four are captured, and where a hand relays.
 - The player's plate counts a capture when its stones land, not when the move is made.
 - Gold dust goes up from the board at the result.
+- While the pointer, or the keyboard's focus, is on a cup that can be played, the cup its hand of stones will run out in carries a pale ring and a small bone diamond ([p6-landing.jpg](p6-landing.jpg): cup 1 in focus, cup 5 marked). It shows the first lap only.
 
 ### Interface motion
 
@@ -200,13 +201,14 @@ How each kind of move looks is in `scene/stoneMotion.ts`, with tests.
 - The tiers below the high one are multisampled, so edges are no longer stair-stepped there.
 - A count disc used to jump sideways for a moment whenever its number changed. It now flashes in place.
 - The ambience is a breeze, leaves and birds in place of the fire and the crickets.
+- A stone landing in a cup is a knock on wood, not a thump on earth. A capture adds two rising plucked notes; the end of a round, and a game won, lost or drawn, each have a short phrase on a plucked string, in the five notes of the tizita major scale.
 
 | Home | A capture | Result | Phone |
 |---|---|---|---|
 | [p6-home.jpg](p6-home.jpg) | [p6-capture.jpg](p6-capture.jpg) | [p6-result.jpg](p6-result.jpg) | [p6-phone-home.jpg](p6-phone-home.jpg) |
 
-**Checked:** typecheck, 209 unit tests, 36 of 36 end-to-end tests, and the download at 1,614.7 KB gzip of the 2,929.7 KB budget.
+**Checked:** typecheck, 211 unit tests, 36 of 36 end-to-end tests, and the download at 1,630.2 KB gzip of the 2,929.7 KB budget.
 
 **Not judged here:** the sound, which cannot be heard from this machine's test browser; the frame rate on a phone, now that the scene holds a yard; and the final colour, since the captures are from headless Chrome's software renderer.
 
-**Still open from the review:** a mark on the cup where a move's first lap will end; a wooden knock for stones and plucked-string stings for a capture, a round and a win; trees and props with more shape than cut-outs and lathes. The night scene's modules (hearth, flame, embers, smoke, night sky, its lights) are still in `scene/world/` and nothing mounts them.
+**Still open from the review:** trees and props with more shape than cut-outs and lathes. The night scene's modules (hearth, flame, embers, smoke, night sky, its lights) are still in `scene/world/` and nothing mounts them.

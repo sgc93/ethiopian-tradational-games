@@ -2,6 +2,7 @@ import { HOLES, type HoleIndex } from '@etg/gebeta-rules';
 import { useTranslation } from 'react-i18next';
 import type { Session } from '../game/session';
 import { playableHoles, playerName } from '../game/view';
+import { useFeedback } from '../scene/feedback/feedbackStore';
 
 /**
  * One button per hole for keyboards and screen readers (and the end-to-end tests). Hidden until
@@ -20,6 +21,8 @@ export function HoleButtons({ session, onPlay }: { session: Session; onPlay(hole
           aria-label={t('holes.label', { n: h + 1, count: board[h], owner: playerName(t, session, owners[h]!) })}
           disabled={!playable.has(h)}
           onClick={() => onPlay(h)}
+          onFocus={() => useFeedback.getState().setHover(playable.has(h) ? h : null)}
+          onBlur={() => useFeedback.getState().setHover(null)}
         >
           {h + 1}
         </button>

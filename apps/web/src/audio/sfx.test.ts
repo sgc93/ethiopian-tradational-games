@@ -126,3 +126,16 @@ test('the ambience stops when the page is hidden and comes back when it is shown
     Object.defineProperty(document, 'hidden', { value: false, configurable: true });
   }
 });
+
+test('the stings are short rising or falling phrases and never throw without audio', async () => {
+  const { STINGS } = await import('./sfx');
+  // A win climbs, a loss falls, and every phrase is over within a second.
+  expect(STINGS.won.at(-2)![0]).toBeGreaterThan(STINGS.won[0]![0]);
+  expect(STINGS.lost.at(-1)![0]).toBeLessThan(STINGS.lost[0]![0]);
+  for (const phrase of Object.values(STINGS)) for (const [hz, after] of phrase) {
+    expect(hz).toBeGreaterThan(200);
+    expect(after).toBeLessThan(1);
+  }
+  const none = createSfx(() => null);
+  expect(() => (none.sting('won'), none.sting('lost'), none.sting('draw'), none.sting('round'))).not.toThrow();
+});

@@ -4,6 +4,8 @@ export interface Sfx {
   drop(countAfter: number): void;
   pickup(count: number): void;
   capture(): void;
+  /** A short phrase on a plucked string: the end of a round, and a game won, lost or drawn. */
+  sting(kind: Sting): void;
   /** The coin: a whoosh as it goes up, a metallic ring as it lands. */
   coinWhoosh(): void;
   coinRing(): void;
@@ -18,14 +20,50 @@ export interface Sfx {
   unlock(): void;
 }
 
+export type Sting = 'round' | 'won' | 'lost' | 'draw';
+
+/** The five notes of the tizita major scale over two octaves, in Hz: the tuning of a krar. */
+const NOTE = { c4: 261.63, d4: 293.66, e4: 329.63, g4: 392.0, a4: 440.0, c5: 523.25, d5: 587.33, e5: 659.25 };
+
+/** The stings as (note, seconds after the start) pairs. */
+export const STINGS: Record<Sting, readonly (readonly [number, number])[]> = {
+  round: [
+    [NOTE.e4, 0],
+    [NOTE.g4, 0.14],
+    [NOTE.a4, 0.28],
+    [NOTE.g4, 0.48],
+  ],
+  won: [
+    [NOTE.c4, 0],
+    [NOTE.e4, 0.11],
+    [NOTE.g4, 0.22],
+    [NOTE.a4, 0.33],
+    [NOTE.c5, 0.44],
+    [NOTE.e5, 0.6],
+    [NOTE.c5, 0.6],
+  ],
+  lost: [
+    [NOTE.a4, 0],
+    [NOTE.g4, 0.2],
+    [NOTE.e4, 0.4],
+    [NOTE.c4, 0.64],
+  ],
+  draw: [
+    [NOTE.e4, 0],
+    [NOTE.g4, 0.16],
+    [NOTE.e4, 0.34],
+  ],
+};
+
 function defaultContext(): AudioContext | null {
   const Ctor = typeof window !== 'undefined' ? window.AudioContext : undefined;
   return Ctor ? new Ctor() : null;
 }
 
 /**
- * Stone sounds made with the Web Audio API, so there are no sound files to download or license:
- * a soft earthy thump when a stone lands, a rattle when stones are lifted, a fuller thump for a capture.
+ * Sounds made with the Web Audio API, so there are no sound files to download or license: a
+ * wooden knock when a stone lands in a cup, a rattle when stones are lifted, a fuller knock and two
+ * plucked notes for a capture, and short plucked phrases for the end of a round and of a game.
  */
 export function createSfx(makeContext: () => AudioContext | null = defaultContext): Sfx {
   let ctx: AudioContext | null = null;
@@ -94,15 +132,43 @@ export function createSfx(makeContext: () => AudioContext | null = defaultContex
 
   const vary = (base: number, spread: number) => base + (Math.random() - 0.5) * spread;
 
+  /**
+   * One plucked string: a bright start that dulls quickly as the note rings on, the way a gut
+   * string does. A triangle wave and its octave through a low-pass that closes over a quarter second.
+   */
+  const pluck = (c: AudioContext, at: number, hz: number, level: number) => {
+    const filter = c.createBiquadFilter();
+    const gain = c.createGain();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(hz * 6, at);
+    filter.frequency.exponentialRampToValueAtTime(hz * 1.5, at + 0.25);
+    filter.Q.setValueAtTime(0.8, at);
+    gain.gain.setValueAtTime(0.0001, at);
+    gain.gain.linearRampToValueAtTime(level, at + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.9);
+    for (const [ratio, type] of [
+      [1, 'triangle'],
+      [2.003, 'sine'],
+    ] as const) {
+      const osc = c.createOscillator();
+      osc.type = type;
+      osc.frequency.setValueAtTime(hz * ratio, at);
+      osc.connect(filter);
+      osc.start(at);
+      osc.stop(at + 0.95);
+    }
+    filter.connect(gain).connect(c.destination);
+  };
+
   return {
     drop(countAfter) {
       const c = ready();
       if (!c) return;
       const t = c.currentTime;
-      // A stone landing on others sounds a little higher and drier than one landing on earth.
-      const from = vary(countAfter > 1 ? 185 : 150, 25);
-      thump(c, t, from, from * 0.5, 80, 0.32);
-      grit(c, t, vary(countAfter > 1 ? 1600 : 1000, 300), 45, countAfter > 1 ? 0.12 : 0.07);
+      // A knock on wood: short and pitched. A stone landing on others is higher and drier, with more click.
+      const from = vary(countAfter > 1 ? 330 : 270, 40);
+      thump(c, t, from, from * 0.62, 55, 0.3);
+      grit(c, t, vary(countAfter > 1 ? 2300 : 1500, 400), 30, countAfter > 1 ? 0.13 : 0.07);
     },
     pickup(count) {
       const c = ready();
@@ -116,6 +182,15 @@ export function createSfx(makeContext: () => AudioContext | null = defaultContex
       thump(c, t, 120, 60, 160, 0.4);
       thump(c, t + 0.03, 175, 90, 120, 0.22);
       grit(c, t, 1200, 90, 0.12);
+      // Two rising notes as the stones go up.
+      pluck(c, t + 0.05, NOTE.g4, 0.09);
+      pluck(c, t + 0.16, NOTE.c5, 0.1);
+    },
+    sting(kind) {
+      const c = ready();
+      if (!c) return;
+      const t = c.currentTime + 0.05;
+      for (const [hz, after] of STINGS[kind]) pluck(c, t + after, hz, 0.11);
     },
     coinWhoosh() {
       const c = ready();

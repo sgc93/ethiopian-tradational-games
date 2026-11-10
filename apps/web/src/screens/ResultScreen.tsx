@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { sfx } from '../audio/instance';
 import { useTranslation } from 'react-i18next';
 import type { Session } from '../game/session';
 import { playerName } from '../game/view';
@@ -21,8 +22,12 @@ export function ResultScreen({ session, onPlayAgain, onHome }: { session: Sessio
   const shownA = useCountUp(last?.totals[0] ?? 0, 900, 450);
   const shownB = useCountUp(last?.totals[1] ?? 0, 900, 450);
 
+  // Between friends somebody always wins; against the computer the player wins or loses.
+  const outcome = !result || result.winner === null ? 'draw' : session.humanSeat !== null && result.winner !== session.humanSeat ? 'lost' : 'won';
   useEffect(() => {
     useFeedback.getState().push({ kind: 'burst', at: now() });
+    sfx.sting(outcome);
+    // Once, as the result opens.
   }, []);
 
   if (!result || !last) return null;
@@ -32,8 +37,6 @@ export function ResultScreen({ session, onPlayAgain, onHome }: { session: Sessio
   else if (session.humanSeat === null) headline = t('result.playerWon', { player: playerName(t, session, result.winner) });
   else headline = t(result.winner === session.humanSeat ? 'result.youWon' : 'result.computerWon');
 
-  // Between friends somebody always wins; against the computer the player wins or loses.
-  const outcome = result.winner === null ? 'draw' : session.humanSeat !== null && result.winner !== session.humanSeat ? 'lost' : 'won';
   const loser = result.winner === null ? null : result.winner === 0 ? 1 : 0;
   const notes: string[] = [];
   if (result.reason === 'no-homes' && loser !== null) notes.push(t('result.noHomes', { player: playerName(t, session, loser) }));

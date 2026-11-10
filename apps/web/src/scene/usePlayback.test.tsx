@@ -26,6 +26,7 @@ function fakeSfx(): Sfx & { ducks: boolean[] } {
     drop() {},
     pickup() {},
     capture() {},
+    sting() {},
     coinWhoosh() {},
     coinRing() {},
     tick() {},

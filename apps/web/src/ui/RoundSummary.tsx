@@ -1,5 +1,7 @@
 import { homesOf, type Player } from '@etg/gebeta-rules';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { sfx } from '../audio/instance';
 import type { Session } from '../game/session';
 import { playerName } from '../game/view';
 import { useScene } from '../scene/sceneStore';
@@ -16,6 +18,7 @@ export function RoundSummary({ session, onNext }: { session: Session; onNext(): 
   const near = useScene((s) => s.seat);
   const { match } = session;
   const last = match.history.at(-1);
+  useEffect(() => sfx.sting('round'), []);
   if (!last) return null;
 
   const side = (p: Player) => {
