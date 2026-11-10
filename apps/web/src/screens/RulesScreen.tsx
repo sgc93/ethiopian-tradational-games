@@ -24,7 +24,7 @@ export function RulesScreen() {
   return (
     <main className="rules">
       <div className="rules-dim" aria-hidden="true" />
-      <Panel labelledBy="rules-title" title={t('rules.title')} center width={560} className="rules-panel">
+      <Panel labelledBy="rules-title" title={t('rules.title')} center width={660} className="rules-panel">
         <Medallion icon="close" size={30} label={t('about.close')} className="panel-back" onClick={() => setScreen('home')} />
         <div className="rules-rows">
           {RULES.map((key) => (

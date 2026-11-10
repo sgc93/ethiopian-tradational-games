@@ -174,27 +174,27 @@
   },
   "rules": {
     "title": "Rules of play",
-    "note": "These apply to the next game you start. A game already under way keeps the rules it began with.",
+    "note": "For the next game you start. A game under way keeps its own rules.",
     "reset": "The usual rules",
     "done": "Done",
     "direction": {
-      "label": "Which way the stones are sown",
+      "label": "Sowing direction",
       "counter-clockwise": "Counter-clockwise",
       "clockwise": "Clockwise"
     },
     "stranded": {
-      "label": "When a player has no stones left to play",
-      "sweep": "The other takes what is left",
-      "pass": "They miss the turn; the other plays on",
-      "pass-above-four": "They miss the turn while more than four are left"
+      "label": "A player with no stones to play",
+      "sweep": "The other takes the rest",
+      "pass": "Misses the turn",
+      "pass-above-four": "Misses it while over four remain"
     },
     "passingFour": {
-      "label": "A cup brought to four while sowing passes over it",
-      "owner": "Its owner takes it",
-      "sower": "The player sowing takes it"
+      "label": "A cup that reaches four in passing goes to",
+      "owner": "Its owner",
+      "sower": "The sower"
     },
     "nextStarter": {
-      "label": "Who starts the next round",
+      "label": "The next round is started by",
       "winner": "The winner",
       "loser": "The loser"
     }

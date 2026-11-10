@@ -232,3 +232,27 @@ The owner's four points of 2026-11-10 after seeing part 6.
 **Not judged here:** how the drag and the pinch feel under a finger, and the frame rate with the heavier heads, both of which want a real phone.
 
 **Still open:** the necks stand on the board as posts; in the reference they flow into it. The muzzle's length follows the traced outline and was not changed.
+
+## Part 8: rules a household can choose
+
+The owner asked on 2026-11-10 for the rules to be settable: the direction of play, what happens when a player is out of stones while the other still has some (above all when more than four are left), and the like.
+
+Four rules can be chosen, on a new Rules screen reached from the home bar. The first choice of each is the rule the game has always played.
+
+| Rule | Choices |
+|---|---|
+| Sowing direction | Counter-clockwise · Clockwise |
+| A player with no stones to play | The other takes the rest · Misses the turn · Misses it while over four remain |
+| A cup that reaches four in passing goes to | Its owner · The sower |
+| The next round is started by | The winner · The loser |
+
+- **Out of stones.** Under "Misses the turn" the player with nothing to play is passed over and the other plays on, until stones come round or the board is empty. Under "Misses it while over four remain" that holds only while more than four stones are left; the last four go to the player holding them. The caption says when a player had no stones to play.
+- **Clockwise.** The sowing, the landing mark and the homes won at the end of a round (taken in sowing order) all go the other way round.
+- **A game carries its rules.** They are chosen for the next game started. A game under way, saved or restarted keeps the rules it began with; games saved before this play the usual rules. A lesson is always under the usual rules.
+- **The computer** plays under whatever rules the game has. Its search no longer assumes that turns alternate, since under the passing rules a player may move twice running.
+
+[p8-rules.jpg](p8-rules.jpg) · [p8-rules-phone-am.jpg](p8-rules-phone-am.jpg)
+
+**Checked:** 58 tests in the rules package (14 new, among them whole matches played to a finish under every combination of direction, out-of-stones rule and passing-four rule), 217 unit tests in the app, 36 of 36 end-to-end tests, and the download at 1,682.4 KB gzip of the 2,929.7 KB budget.
+
+**For the owner:** the Amharic for the screen is in `docs/i18n-review.md`. Whether these are the variants households really play, and what each is called, is the owner's to say; a rule is one entry in `RULE_CHOICES` in `packages/gebeta-rules/src/types.ts` and a branch in `applyMove`.

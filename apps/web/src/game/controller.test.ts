@@ -1,4 +1,5 @@
 import {
+  DEFAULT_RULES,
   initialOwners,
   legalMoves,
   newMatch,
@@ -221,4 +222,24 @@ test('restart begins the same kind of game again', () => {
   expect(c.get()!.phase).toBe('toss');
   expect(c.get()!.match.format).toBe('match');
   expect(c.get()!.mode).toEqual({ kind: 'friend' });
+});
+
+test('a game is started under the rules given, and keeps them through the toss and a restart', () => {
+  const rules = { ...DEFAULT_RULES, direction: 'clockwise', stranded: 'pass' } as const;
+  c.start({ kind: 'computer', level: 'easy' }, 'match', rules);
+  expect(c.get()?.match.round.rules).toEqual(rules);
+  c.toss('lion');
+  expect(c.get()?.match.round.rules).toEqual(rules);
+  // Sown clockwise from cup 2: the first stone goes to cup 1.
+  expect(c.playHole(2)).toBe(true);
+  expect(c.get()!.turnEvents.find((e) => e.type === 'drop')).toMatchObject({ hole: 1 });
+  c.restart();
+  expect(c.get()?.match.round.rules).toEqual(rules);
+});
+
+test('with no rules given a game is under the usual ones, and a lesson always is', () => {
+  c.start({ kind: 'friend' }, 'quick');
+  expect(c.get()?.match.round.rules).toEqual(DEFAULT_RULES);
+  c.start({ kind: 'guided' }, 'quick', { ...DEFAULT_RULES, direction: 'clockwise' });
+  expect(c.get()?.match.round.rules).toEqual(DEFAULT_RULES);
 });

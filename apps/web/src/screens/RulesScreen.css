@@ -20,11 +20,13 @@
   gap: calc(2px * var(--ui));
 }
 
-/* A rule: what it decides, with its choices under it. The choices wrap on a narrow screen. */
+/* A rule: what it decides at the left, its choices at the right. The choices wrap when they must. */
 .rules-row {
   display: grid;
-  gap: calc(5px * var(--ui));
-  padding: calc(7px * var(--ui)) 0;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 9fr);
+  align-items: center;
+  column-gap: calc(14px * var(--ui));
+  padding: calc(6px * var(--ui)) 0;
   border-bottom: 1px solid var(--line-soft);
 }
 
@@ -33,7 +35,7 @@
 }
 
 .rules-label {
-  font: 500 max(12px, calc(14px * var(--ui))) / 1.25 var(--f-text);
+  font: 500 max(12px, calc(13.5px * var(--ui))) / 1.25 var(--f-text);
   color: var(--text-100);
 }
 
@@ -44,22 +46,22 @@
 .rules-choices {
   display: flex;
   flex-wrap: wrap;
-  gap: calc(6px * var(--ui));
+  gap: calc(5px * var(--ui));
 }
 
 /* The choices are whole phrases, so the plaques are as wide as their words. */
 .rules-choices .tg {
   min-width: 0;
   height: auto;
-  min-height: max(28px, calc(28px * var(--ui)));
-  padding: calc(4px * var(--ui)) calc(11px * var(--ui));
+  min-height: max(26px, calc(26px * var(--ui)));
+  padding: calc(3px * var(--ui)) calc(9px * var(--ui));
   letter-spacing: 0.08em;
   white-space: normal;
   text-align: center;
 }
 
 .ui-layer .rules-panel .rules-note {
-  margin: calc(8px * var(--ui)) 0 0;
+  margin: calc(6px * var(--ui)) 0 0;
   text-align: left;
   font-size: max(11.5px, calc(12.5px * var(--ui)));
   color: var(--text-500);
@@ -70,5 +72,5 @@
   justify-content: flex-end;
   align-items: center;
   gap: calc(10px * var(--ui));
-  margin-top: calc(10px * var(--ui));
+  margin-top: calc(6px * var(--ui));
 }

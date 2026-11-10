@@ -72,3 +72,15 @@ test('invalid, old-version, finished or guided sessions are not resumed', () => 
   clearSession(m);
   expect(loadSession(m)).toBeNull();
 });
+
+test('rules are kept with the settings, and a broken rule falls back on its own', () => {
+  const m = memoryStorage();
+  const d = defaultSettings({ languages: ['en'], reducedMotion: false });
+  saveSettings({ ...d, rules: { ...d.rules, direction: 'clockwise', nextStarter: 'loser' } }, m);
+  expect(loadSettings(d, m).rules).toEqual({ ...d.rules, direction: 'clockwise', nextStarter: 'loser' });
+  // Settings saved before there were rules: the usual ones.
+  m.setItem('gebeta.settings.v1', JSON.stringify({ sound: false }));
+  expect(loadSettings(d, m).rules).toEqual(d.rules);
+  m.setItem('gebeta.settings.v1', JSON.stringify({ rules: { direction: 'clockwise', stranded: 'upwards' } }));
+  expect(loadSettings(d, m).rules).toEqual({ ...d.rules, direction: 'clockwise' });
+});

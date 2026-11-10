@@ -13,20 +13,20 @@ Every string added by the Teret interface work (plan part 2) with the Amharic th
 | `home.rules` | Rules | ደንቦች | REVIEW |
 | `hud.noStones` | {{player}} has no stones to play | {{player}} የሚጫወትበት ጠጠር የለም | REVIEW |
 | `rules.title` | Rules of play | የጨዋታ ደንቦች | REVIEW |
-| `rules.note` | These apply to the next game you start. A game already under way keeps the rules it began with. | እነዚህ ለሚቀጥለው አዲስ ጨዋታ ይሠራሉ። የተጀመረ ጨዋታ በጀመረበት ደንብ ይቀጥላል። | REVIEW |
+| `rules.note` | For the next game you start. A game under way keeps its own rules. | ለሚቀጥለው አዲስ ጨዋታ ነው። የተጀመረ ጨዋታ በራሱ ደንብ ይቀጥላል። | REVIEW |
 | `rules.reset` | The usual rules | የተለመዱት ደንቦች | REVIEW |
 | `rules.done` | Done | ጨርሻለሁ | REVIEW |
-| `rules.direction.label` | Which way the stones are sown | ጠጠሮቹ የሚዘሩበት አቅጣጫ | REVIEW |
+| `rules.direction.label` | Sowing direction | የመዝራት አቅጣጫ | REVIEW |
 | `rules.direction.counter-clockwise` | Counter-clockwise | ከሰዓት አቆጣጠር በተቃራኒ | REVIEW |
 | `rules.direction.clockwise` | Clockwise | በሰዓት አቆጣጠር | REVIEW |
-| `rules.stranded.label` | When a player has no stones left to play | ተጫዋች የሚጫወትበት ጠጠር ሲያልቅበት | REVIEW |
-| `rules.stranded.sweep` | The other takes what is left | ሌላው የቀረውን ይወስዳል | REVIEW |
-| `rules.stranded.pass` | They miss the turn; the other plays on | ተራው ያልፈዋል፤ ሌላው ይቀጥላል | REVIEW |
-| `rules.stranded.pass-above-four` | They miss the turn while more than four are left | ከአራት በላይ እስከቀረ ተራው ያልፈዋል | REVIEW |
-| `rules.passingFour.label` | A cup brought to four while sowing passes over it | በመዝራት ላይ አራት የሞላ ጉድጓድ | REVIEW |
-| `rules.passingFour.owner` | Its owner takes it | ባለቤቱ ይወስደዋል | REVIEW |
-| `rules.passingFour.sower` | The player sowing takes it | የሚዘራው ይወስደዋል | REVIEW |
-| `rules.nextStarter.label` | Who starts the next round | ቀጣዩን ዙር የሚጀምረው | REVIEW |
+| `rules.stranded.label` | A player with no stones to play | የሚጫወትበት ጠጠር የሌለው ተጫዋች | REVIEW |
+| `rules.stranded.sweep` | The other takes the rest | ሌላው የቀረውን ይወስዳል | REVIEW |
+| `rules.stranded.pass` | Misses the turn | ተራው ያልፈዋል | REVIEW |
+| `rules.stranded.pass-above-four` | Misses it while over four remain | ከአራት በላይ እስከቀረ ያልፈዋል | REVIEW |
+| `rules.passingFour.label` | A cup that reaches four in passing goes to | በመዝራት ላይ አራት የሞላ ጉድጓድ የሚወስደው | REVIEW |
+| `rules.passingFour.owner` | Its owner | ባለቤቱ | REVIEW |
+| `rules.passingFour.sower` | The sower | የሚዘራው | REVIEW |
+| `rules.nextStarter.label` | The next round is started by | ቀጣዩን ዙር የሚጀምረው | REVIEW |
 | `rules.nextStarter.winner` | The winner | አሸናፊው | REVIEW |
 | `rules.nextStarter.loser` | The loser | ተሸናፊው | REVIEW |
 | `picker.level` | How strong? | ምን ያህል ጠንካራ? | REVIEW |
