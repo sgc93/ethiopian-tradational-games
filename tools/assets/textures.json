@@ -6,24 +6,32 @@
     "seamless": true,
     "grade": {
       "tint": [
-        0.82,
+        0.74,
         0.66,
-        0.5
+        0.6
       ],
-      "saturation": 1.15
+      "saturation": 0.98
     },
     "outputs": [
-      "color",
-      "normal",
-      "rough"
-    ],
-    "normalSize": 512,
-    "normalStrength": 1.6,
-    "roughSize": 512,
-    "rough": {
-      "base": 0.45,
-      "range": 0.2
-    }
+      "color"
+    ]
+  },
+  {
+    "id": "endgrain",
+    "source": "../../docs/design/board/images/18-end-grain-texture.jpg",
+    "size": 512,
+    "seamless": false,
+    "grade": {
+      "tint": [
+        0.7,
+        0.62,
+        0.56
+      ],
+      "saturation": 0.98
+    },
+    "outputs": [
+      "color"
+    ]
   },
   {
     "id": "band",
@@ -34,7 +42,8 @@
     ],
     "seamless": false,
     "outputs": [
-      "normal"
+      "normal",
+      "height"
     ],
     "normalStrength": 3
   },

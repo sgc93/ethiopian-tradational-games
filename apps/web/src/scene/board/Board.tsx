@@ -7,10 +7,12 @@ import { placeHead } from './headGeometry';
 import { useBoardGeometry, type BoardGeometry } from './useBoardGeometry';
 import { woodMaterial } from './woodMaterial';
 
-type Materials = [THREE.Material, THREE.Material, THREE.Material];
+/** The body's three (wood, sides, bowls), then the heads' and the horns'. */
+type Materials = [THREE.Material, THREE.Material, THREE.Material, THREE.Material, THREE.Material];
 
 function BoardMeshes({ geometry, materials }: { geometry: BoardGeometry; materials: Materials }) {
-  const [wood] = materials;
+  const body = materials.slice(0, 3);
+  const [, , , headWood, hornWood] = materials;
   const heads = useMemo(
     () =>
       (['A', 'B'] as const).map((end) => ({
@@ -23,12 +25,12 @@ function BoardMeshes({ geometry, materials }: { geometry: BoardGeometry; materia
   );
   return (
     <group>
-      <mesh geometry={geometry.body} material={materials} castShadow receiveShadow />
+      <mesh geometry={geometry.body} material={body} castShadow receiveShadow />
       {heads.map((h) => (
         <group key={h.end}>
-          <mesh geometry={h.head} material={wood} castShadow receiveShadow />
-          <mesh geometry={h.hornL} material={wood} castShadow receiveShadow />
-          <mesh geometry={h.hornR} material={wood} castShadow receiveShadow />
+          <mesh geometry={h.head} material={headWood} castShadow receiveShadow />
+          <mesh geometry={h.hornL} material={hornWood} castShadow receiveShadow />
+          <mesh geometry={h.hornR} material={hornWood} castShadow receiveShadow />
         </group>
       ))}
     </group>
@@ -44,9 +46,9 @@ function TexturedBoard({ geometry }: { geometry: BoardGeometry }) {
 /** Plain wanza-coloured wood, for when the textures cannot be loaded (offline before they were cached). */
 function PlainBoard({ geometry }: { geometry: BoardGeometry }) {
   const materials = useMemo((): Materials => {
-    const wood = new THREE.MeshPhysicalMaterial({ color: '#7a4a24', roughness: 0.55, clearcoat: 0.25, clearcoatRoughness: 0.35 });
-    const bowls = new THREE.MeshStandardMaterial({ color: '#4a2a14', roughness: 0.45 });
-    return [wood, wood, bowls];
+    const wood = new THREE.MeshPhysicalMaterial({ color: '#8a5a34', roughness: 0.52, clearcoat: 0.28, clearcoatRoughness: 0.42 });
+    const bowls = new THREE.MeshStandardMaterial({ color: '#5e3b20', roughness: 0.5 });
+    return [wood, wood, bowls, wood, wood];
   }, []);
   return <BoardMeshes geometry={geometry} materials={materials} />;
 }

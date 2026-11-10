@@ -25,6 +25,36 @@ function stonePose(id: number): StonePose & { colour: THREE.Color } {
   };
 }
 
+/**
+ * River pebbles: smooth and a little glossy, with the fine speckle of the reference stones. The
+ * speckle is worked out in the shader from each pebble's own shape, so no texture is needed.
+ */
+function pebbleMaterial(): THREE.MeshStandardMaterial {
+  const material = new THREE.MeshStandardMaterial({ roughness: 0.42, metalness: 0 });
+  material.onBeforeCompile = (shader) => {
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\n  varying vec3 vPebble;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n  vPebble = position;');
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <common>',
+        `#include <common>
+  varying vec3 vPebble;
+  float pebbleGrain(vec3 p) { return fract(sin(dot(floor(p), vec3(127.1, 311.7, 74.7))) * 43758.5453); }`,
+      )
+      .replace(
+        '#include <color_fragment>',
+        `#include <color_fragment>
+  // Fine dark and light grains, and a slower mottle under them.
+  float fine = pebbleGrain(vPebble * 160.0);
+  float mottle = pebbleGrain(vPebble * 38.0 + 7.0);
+  diffuseColor.rgb *= 0.86 + 0.2 * fine + 0.1 * mottle;`,
+      );
+  };
+  material.customProgramCacheKey = () => 'pebble';
+  return material;
+}
+
 const poses = Array.from({ length: TOTAL_STONES }, (_, id) => stonePose(id));
 const tmp = new THREE.Vector3();
 
@@ -44,7 +74,7 @@ export function stoneMatrices(positions: readonly (Vec3 | undefined)[], count: n
  */
 export function Stones({ positions }: { positions: MutableRefObject<Vec3[]> }) {
   const meshes = useMemo(() => {
-    const material = new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0 });
+    const material = pebbleMaterial();
     return makePebbleGeometries(SHAPES, 3).map((g) => {
       const mesh = new THREE.InstancedMesh(g, material, PER_SHAPE);
       mesh.castShadow = true;

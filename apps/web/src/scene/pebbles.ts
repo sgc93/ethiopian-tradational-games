@@ -3,8 +3,11 @@ import * as THREE from 'three';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { STONE_SIZE } from './layout';
 
-/** Six tones sampled from the reference pebbles (`docs/design/board/images/19-pebbles.jpg`). */
-export const PEBBLE_COLOURS: readonly string[] = ['#a89a86', '#7d6f61', '#c8bba8', '#5b534b', '#9b8468', '#b5aca0'];
+/**
+ * Eight tones sampled from the reference pebbles (`docs/design/board/images/19-pebbles.jpg`): two
+ * greys of speckled granite, two dark browns, two sandy tans and two creams.
+ */
+export const PEBBLE_COLOURS: readonly string[] = ['#a2a5a3', '#8c949a', '#5d4737', '#4c3a2e', '#ab8558', '#bd9767', '#e2d2b4', '#dcd4c6'];
 
 /** Irregular, slightly flattened pebble shapes, each about STONE_SIZE across. */
 export function makePebbleGeometries(count: number, seed: number): THREE.BufferGeometry[] {

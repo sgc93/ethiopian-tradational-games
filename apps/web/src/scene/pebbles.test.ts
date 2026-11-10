@@ -18,7 +18,7 @@ test('pebbles vary and stay pebble-sized', () => {
   expect(new Set(arrays).size).toBe(6);
 });
 
-test('six pebble tones from the reference pebbles', () => {
-  expect(PEBBLE_COLOURS).toHaveLength(6);
+test('eight pebble tones from the reference pebbles', () => {
+  expect(PEBBLE_COLOURS).toHaveLength(8);
   for (const c of PEBBLE_COLOURS) expect(c).toMatch(/^#[0-9a-f]{6}$/);
 });

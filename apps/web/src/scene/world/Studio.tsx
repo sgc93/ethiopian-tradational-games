@@ -13,7 +13,7 @@ export const BACKDROP = '#d9c6a7';
 
 /** Where the daylight comes from: above, in front and to the left of the near player, as in the reference. */
 export const KEY_POSITION: [number, number, number] = [-7, 14, 9];
-const KEY_INTENSITY = 3.1;
+const KEY_INTENSITY = 2.8;
 const SKY_INTENSITY = 0.85;
 const ENVIRONMENT_INTENSITY = 0.55;
 

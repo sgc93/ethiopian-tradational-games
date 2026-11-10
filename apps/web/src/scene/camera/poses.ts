@@ -95,7 +95,7 @@ export function topCamera(_size: Size, _bands: Bands): Pose {
 }
 
 const TAU = Math.PI * 2;
-const HOME_RADIUS = 21;
+const HOME_RADIUS = 15.5;
 const HOME_TARGET: Vec3 = [0, 0.8, 0];
 const HOME_AZIMUTH = (-30 * Math.PI) / 180;
 
@@ -106,7 +106,7 @@ const HOME_AZIMUTH = (-30 * Math.PI) / 180;
  */
 export function homePose(t: number): Pose {
   const az = HOME_AZIMUTH + ((10 * Math.PI) / 180) * Math.sin((TAU * t) / 60);
-  const y = 9 + 0.5 * Math.sin((TAU * t) / 60 + 1);
+  const y = 7 + 0.5 * Math.sin((TAU * t) / 60 + 1);
   return { position: [HOME_RADIUS * Math.sin(az), y, HOME_RADIUS * Math.cos(az)], target: HOME_TARGET, fov: 30 };
 }
 

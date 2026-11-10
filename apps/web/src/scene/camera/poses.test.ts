@@ -58,15 +58,15 @@ test('the top-down view looks almost straight down from 15.5', () => {
   expect(y).toBeCloseTo(S.height / 2, 0);
 });
 
-test('home view: the reference three-quarter, drifting ±10° about 30° left, 8.5–9.5 up, at radius 21', () => {
+test('home view: the reference three-quarter, drifting ±10° about 30° left, 6.5–7.5 up, at radius 15.5', () => {
   for (let t = 0; t < 60; t += 0.5) {
     const p = homePose(t);
     const az = (Math.atan2(p.position[0], p.position[2]) * 180) / Math.PI;
     expect(az).toBeLessThanOrEqual(-19.99);
     expect(az).toBeGreaterThanOrEqual(-40.01);
-    expect(p.position[1]).toBeGreaterThanOrEqual(8.5);
-    expect(p.position[1]).toBeLessThanOrEqual(9.5);
-    expect(Math.hypot(p.position[0], p.position[2])).toBeCloseTo(21, 1);
+    expect(p.position[1]).toBeGreaterThanOrEqual(6.5);
+    expect(p.position[1]).toBeLessThanOrEqual(7.5);
+    expect(Math.hypot(p.position[0], p.position[2])).toBeCloseTo(15.5, 1);
     expect(p.position[2]).toBeGreaterThan(0); // on A's side
   }
   homePose(0).position.forEach((v, i) => expect(v).toBeCloseTo(homePose(60).position[i]!, 9)); // once a minute

@@ -1,6 +1,6 @@
 // Builds the game's textures from textures.json: `node process.mjs [id ...]` (all when none are given).
 // Each source is made seamless, graded, resized and saved as WebP, with normal and roughness maps
-// derived from its luminance. Outputs go to apps/web/public/textures/<id>-<kind>.webp.
+// derived from its luminance (and the height itself where asked for). Outputs go to apps/web/public/textures/<id>-<kind>.webp.
 import { readFileSync, mkdirSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -37,6 +37,9 @@ async function build(entry) {
       if (kind === 'normal') {
         const data = heightToNormal(height, entry.normalStrength ?? 2);
         await sharp(data, { raw: { width: height.width, height: height.height, channels: 3 } }).webp({ quality: 80 }).toFile(file);
+      } else if (kind === 'height') {
+        // The grey height itself, for shading the cut parts of a carving darker.
+        await sharp(height.data, { raw: { width: height.width, height: height.height, channels: 1 } }).webp({ quality: 85 }).toFile(file);
       } else if (kind === 'rough') {
         const data = roughnessFromHeight(height, entry.rough ?? {});
         await sharp(data, { raw: { width: height.width, height: height.height, channels: 1 } }).webp({ quality: 85 }).toFile(file);
