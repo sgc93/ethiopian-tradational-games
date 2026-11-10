@@ -2,7 +2,8 @@ import { mulberry32 } from '@etg/gebeta-rules';
 import * as THREE from 'three';
 
 /**
- * Leaf shade: the yard's trees throw moving, dappled shade on the ground around the board. The
+ * Leaf shade, for a yard with trees in it (there are none at present, and `LEAF_SHADE_AMOUNT`
+ * below is 0): trees throw moving, dappled shade on the ground around the board. The
  * board itself sits in a sunlit clearing, so the cups and stones are always in plain light; the
  * shade begins beyond the mat and moves as the branches sway.
  *
@@ -58,6 +59,8 @@ export const LEAF_SHADE_GLSL = /* glsl */ `
   uniform sampler2D uLeaf;
   uniform float uLeafTime;
   const vec3 LEAF_SHADE_TINT = vec3(0.6, 0.65, 0.78);
+  // No trees stand in the yard now, so no shade falls; set to 1.0 when they do.
+  const float LEAF_SHADE_AMOUNT = 0.0;
   float leafShade(vec2 p) {
     vec2 sway = vec2(sin(uLeafTime * 0.45), cos(uLeafTime * 0.33)) * 0.4;
     float a = texture2D(uLeaf, (p + sway) / 19.0).r;
@@ -66,7 +69,7 @@ export const LEAF_SHADE_GLSL = /* glsl */ `
     // A sunlit clearing round the board, shade beyond it, and open ground again past the trees' reach.
     float r = length(p * vec2(1.0, 1.4));
     float ring = smoothstep(14.0, 25.0, r) * (1.0 - smoothstep(80.0, 150.0, r));
-    return canopy * ring;
+    return canopy * ring * LEAF_SHADE_AMOUNT;
   }
 `;
 

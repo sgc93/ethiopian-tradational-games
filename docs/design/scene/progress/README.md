@@ -217,7 +217,7 @@ How each kind of move looks is in `scene/stoneMotion.ts`, with tests.
 
 The owner's four points of 2026-11-10 after seeing part 6.
 
-- **The yard is cleared.** The coffee pot, the cups and the basket are gone; the board has the mat and the yard to itself. The house, the trees and the ridges stay as the setting.
+- **The yard is cleared.** The coffee pot, the cups and the basket went first; then, at the owner's word, the house and the trees, and with the trees their shade on the ground. What is left is the board on its mat, the earth and its dry grass, the ridges and the sky ([p7-yard.jpg](p7-yard.jpg), which is also the no-WebGL still). The modules for the house, the trees, the props and the leaf shade are still in `scene/world/`; nothing mounts them.
 - **The wood reads as wood** (`scene/board/woodMaterial.ts`). It is walnut-brown rather than orange. It has open pores, short dark dashes lying along the grain. The grain has fine relief, worked out from the photograph itself, so no normal map is downloaded. The finish is a hand-rubbed oil, satin and uneven, with the soft sheen wood has at a grazing angle. The carved band's cuts and the cups' depths are darker.
 - **The heads are carved more boldly** (`sculpt/sdf.ts`), after images 07 and 11. The eye is a full almond with heavy lids, a crease and a brow; the mouth line, the lips and the nostrils' wings are cut deeper; the beard and the forehead have chiselled locks; the ear is a broad hollowed leaf. Shade is baked into every cut when the head is built, so the carving shows in any light. A head is now 16,000 triangles.
 - **The horns are massive** (`sculpt/horn.ts`): deeper and wider than the traced stations along their length, with a squared section, and still slim at the root so nothing of them reaches down the face. Their sides carry the fine cut lines of the carving and one long line down their length.
@@ -227,7 +227,7 @@ The owner's four points of 2026-11-10 after seeing part 6.
 |---|---|---|---|
 | [p7-head-before.jpg](p7-head-before.jpg) | [p7-head-after.jpg](p7-head-after.jpg) | [p7-play.jpg](p7-play.jpg) | [p7-play-turned.jpg](p7-play-turned.jpg) |
 
-**Checked:** typecheck, 211 unit tests, 36 of 36 end-to-end tests, the download at 1,684.6 KB gzip of the 2,929.7 KB budget, and a scripted drag, zoom and reset in a live game.
+**Checked:** typecheck, 211 unit tests, 36 of 36 end-to-end tests, the download at 1,680.2 KB gzip of the 2,929.7 KB budget, and a scripted drag, zoom and reset in a live game.
 
 **Not judged here:** how the drag and the pinch feel under a finger, and the frame rate with the heavier heads, both of which want a real phone.
 
