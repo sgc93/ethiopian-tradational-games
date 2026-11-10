@@ -19,11 +19,33 @@ const DEV_LOOKS: Record<NonNullable<typeof urlOptions.cam>, Pose> = {
   headfront: { position: [4.5, 2.2, 0], target: [-5.0, 1.8, 0], fov: 30 },
 };
 
-const TURN_LIMIT = (15 * Math.PI) / 180;
-const TILT_MIN = (38 * Math.PI) / 180;
-const TILT_MAX = (58 * Math.PI) / 180;
-const PLAY_TILT = (48 * Math.PI) / 180;
-const RETURN_AFTER_MS = 2000;
+const DEG = Math.PI / 180;
+
+/** How far the player may take the view from where a mode puts it. */
+interface Reach {
+  /** Either way round the board, in radians; Infinity for all the way round. */
+  turn: number;
+  /** The lowest and highest the camera may look down from, in radians above the ground. */
+  tiltMin: number;
+  tiltMax: number;
+  /** The nearest and farthest, as a share of the mode's own distance. */
+  zoomMin: number;
+  zoomMax: number;
+  /** After this long untouched the view eases back by itself; 0 to stay where it was left. */
+  returnAfterMs: number;
+}
+
+/**
+ * In play the view stays where the player leaves it (a double tap, or the reset medallion, puts
+ * it back). On the home and result screens the board can be turned all the way round and the
+ * view drifts back after a few seconds.
+ */
+const REACH: Record<'play' | 'show', Reach> = {
+  play: { turn: 80 * DEG, tiltMin: 20 * DEG, tiltMax: 76 * DEG, zoomMin: 0.7, zoomMax: 1.4, returnAfterMs: 0 },
+  show: { turn: Infinity, tiltMin: 5 * DEG, tiltMax: 55 * DEG, zoomMin: 0.65, zoomMax: 1.5, returnAfterMs: 5000 },
+};
+const reachOf = (mode: SceneMode): Reach | null => (mode === 'play' ? REACH.play : mode === 'home' || mode === 'result' ? REACH.show : null);
+const clamp = (x: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, x));
 
 /** What the player did with a drag: a turn about the target, a change of tilt, and a zoom. */
 interface Nudge {
@@ -40,14 +62,16 @@ function moveSeconds(from: SceneMode, to: SceneMode, seatChanged: boolean): numb
   return 0.8;
 }
 
-/** A play pose with the player's drag applied: turned about the target, re-tilted and zoomed. */
-function nudged(base: Pose, n: Nudge): Pose {
+/** A pose with the player's hand applied: turned about its target, re-tilted and brought nearer or farther, within a reach. */
+function nudged(base: Pose, n: Nudge, reach: Reach): Pose {
   const dx = base.position[0] - base.target[0];
   const dy = base.position[1] - base.target[1];
   const dz = base.position[2] - base.target[2];
   const dist = Math.hypot(dx, dy, dz) * n.zoom;
   const az = Math.atan2(dx, dz) + n.turn;
-  const tilt = Math.min(TILT_MAX, Math.max(TILT_MIN, PLAY_TILT + n.tilt));
+  const own = Math.atan2(dy, Math.hypot(dx, dz));
+  // A mode's own view may already be outside the reach (the home view is lower than the play view's floor): never push it.
+  const tilt = n.tilt === 0 ? own : clamp(own + n.tilt, Math.min(own, reach.tiltMin), Math.max(own, reach.tiltMax));
   return {
     position: [base.target[0] + dist * Math.cos(tilt) * Math.sin(az), base.target[1] + dist * Math.sin(tilt), base.target[2] + dist * Math.cos(tilt) * Math.cos(az)],
     target: base.target,
@@ -58,8 +82,9 @@ function nudged(base: Pose, n: Nudge): Pose {
 /**
  * Drives the camera from the scene's mode: the play view for a seat, the home arc, the top-down
  * view, the result orbit. Mode changes ease between poses (the seat change swings round the fire
- * end); in play the player may drag a little and the view eases back after two seconds; the play
- * camera breathes slightly unless motion is reduced.
+ * end). The player's hand is on it too: a drag turns and tilts the view, a pinch or the wheel
+ * brings it nearer, a double tap puts it back, and with a mouse the view leans a little towards
+ * the pointer. The play camera breathes slightly unless motion is reduced.
  */
 export function CameraRig() {
   const { camera, size, gl } = useThree();
@@ -77,15 +102,24 @@ export function CameraRig() {
     arc: false,
     nudge: { turn: 0, tilt: 0, zoom: 1 } as Nudge,
     dragging: false,
+    /** Where the mouse is over the picture, −0.5 to 0.5 each way, and the lean it has eased into. */
+    look: { x: 0, y: 0 },
+    lean: { x: 0, y: 0 },
     returnTimer: 0 as ReturnType<typeof setTimeout> | 0,
     current: homePose(0),
   });
   const target = useMemo(() => new THREE.Vector3(), []);
 
-  // The pose the mode asks for right now.
+  // The pose the mode asks for right now, with the player's hand on it.
   const livePose = (t: number): Pose => {
     if (urlOptions.cam) return DEV_LOOKS[urlOptions.cam];
     const s = state.current;
+    const reach = reachOf(s.mode);
+    const held = (base: Pose): Pose => {
+      if (!reach || urlOptions.still) return base;
+      const n = { turn: s.nudge.turn + s.lean.x * 0.07, tilt: s.nudge.tilt + s.lean.y * 0.035, zoom: s.nudge.zoom };
+      return n.turn === 0 && n.tilt === 0 && n.zoom === 1 ? base : nudged(base, n, reach);
+    };
     switch (s.mode) {
       case 'home': {
         // The bare still has the whole height; otherwise the board fits between the interface's bars.
@@ -93,15 +127,15 @@ export function CameraRig() {
         const home = homePose(t, (bands.bottom - bands.top) / size.height, (bands.bottom + bands.top) / 2 / size.height, size.width / size.height);
         // The reveal: the loading screen runs `flare` from 0 to 1, and the camera cranes down from over the yard.
         const reveal = useScene.getState().flare;
-        return reveal < 1 && !REDUCED_MOTION ? blendPose(openingPose(home), home, reveal * reveal * (3 - 2 * reveal)) : home;
+        return reveal < 1 && !REDUCED_MOTION ? blendPose(openingPose(home), home, reveal * reveal * (3 - 2 * reveal)) : held(home);
       }
       case 'toss':
       case 'round-end':
         return topCamera(size, bands);
       case 'result':
-        return REDUCED_MOTION ? orbitPose(0) : orbitPose(t);
+        return held(REDUCED_MOTION ? orbitPose(0) : orbitPose(t));
       default:
-        return nudged(playCamera(s.seat, size, bands), s.nudge);
+        return held(playCamera(s.seat, size, bands));
     }
   };
 
@@ -116,7 +150,7 @@ export function CameraRig() {
     s.mode = mode;
     s.seat = seat;
     s.nudge = { turn: 0, tilt: 0, zoom: 1 };
-    useScene.setState({ cameraMoving: true });
+    useScene.setState({ cameraMoving: true, viewMoved: false });
     if (REDUCED_MOTION) useScene.setState({ fade: 1 });
     const tween = gsap.to(s, {
       k: 1,
@@ -132,52 +166,93 @@ export function CameraRig() {
     };
   }, [mode, seat]);
 
-  // Dragging in play: a small turn, tilt and zoom, eased back after two seconds.
+  // The player's hand on the view: one finger or the mouse turns and tilts, two fingers or the
+  // wheel bring it nearer, a double tap puts it back.
+  const resetView = useScene((st) => st.resetView);
+  useEffect(() => {
+    const s = state.current;
+    gsap.to(s.nudge, { turn: 0, tilt: 0, zoom: 1, duration: 0.7, ease: 'power2.inOut', overwrite: true });
+    useScene.setState({ viewMoved: false });
+  }, [resetView]);
   useEffect(() => {
     const el = gl.domElement;
     const s = state.current;
-    let last: { x: number; y: number } | null = null;
+    const fingers = new Map<number, { x: number; y: number }>();
+    let spread = 0;
     const back = () => {
-      gsap.to(s.nudge, { turn: 0, tilt: 0, zoom: 1, duration: 0.8, ease: 'power2.inOut' });
+      gsap.to(s.nudge, { turn: 0, tilt: 0, zoom: 1, duration: 0.9, ease: 'power2.inOut', overwrite: true });
+      useScene.setState({ viewMoved: false });
+    };
+    const rest = () => {
+      if (s.returnTimer) clearTimeout(s.returnTimer);
+      const reach = reachOf(s.mode);
+      s.returnTimer = reach && reach.returnAfterMs > 0 ? setTimeout(back, reach.returnAfterMs) : 0;
+    };
+    const moved = () => {
+      if (s.mode === 'play' && !useScene.getState().viewMoved) useScene.setState({ viewMoved: true });
+    };
+    const gap = () => {
+      const [a, b] = [...fingers.values()];
+      return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
     };
     const down = (e: PointerEvent) => {
-      if (s.mode !== 'play' || fixed) return;
-      last = { x: e.clientX, y: e.clientY };
+      if (!reachOf(s.mode) || fixed) return;
+      fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       s.dragging = true;
+      spread = gap();
       if (s.returnTimer) clearTimeout(s.returnTimer);
       gsap.killTweensOf(s.nudge);
     };
     const move = (e: PointerEvent) => {
-      if (!last || !s.dragging) return;
+      if (e.pointerType === 'mouse' && !s.dragging) s.look = { x: e.clientX / window.innerWidth - 0.5, y: e.clientY / window.innerHeight - 0.5 };
+      const last = fingers.get(e.pointerId);
+      const reach = reachOf(s.mode);
+      if (!last || !s.dragging || !reach) return;
       const dx = e.clientX - last.x;
       const dy = e.clientY - last.y;
-      last = { x: e.clientX, y: e.clientY };
-      s.nudge.turn = Math.max(-TURN_LIMIT, Math.min(TURN_LIMIT, s.nudge.turn - dx * 0.004));
-      s.nudge.tilt = Math.max(TILT_MIN - PLAY_TILT, Math.min(TILT_MAX - PLAY_TILT, s.nudge.tilt + dy * 0.003));
+      fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (fingers.size >= 2) {
+        // Two fingers: the distance between them is the zoom.
+        const now = gap();
+        if (spread > 0 && now > 0) s.nudge.zoom = clamp((s.nudge.zoom * spread) / now, reach.zoomMin, reach.zoomMax);
+        spread = now;
+      } else {
+        s.nudge.turn = clamp(s.nudge.turn - dx * 0.005, -reach.turn, reach.turn);
+        s.nudge.tilt = clamp(s.nudge.tilt + dy * 0.004, -1.2, 1.2);
+      }
+      if (Math.abs(dx) + Math.abs(dy) > 0) moved();
     };
-    const up = () => {
-      if (!s.dragging) return;
+    const up = (e: PointerEvent) => {
+      fingers.delete(e.pointerId);
+      spread = gap();
+      if (fingers.size > 0 || !s.dragging) return;
       s.dragging = false;
-      last = null;
-      s.returnTimer = setTimeout(back, RETURN_AFTER_MS);
+      rest();
     };
     const wheel = (e: WheelEvent) => {
-      if (s.mode !== 'play' || fixed) return;
-      s.nudge.zoom = Math.max(0.9, Math.min(1.1, s.nudge.zoom + e.deltaY * 0.0005));
-      if (s.returnTimer) clearTimeout(s.returnTimer);
-      s.returnTimer = setTimeout(back, RETURN_AFTER_MS);
+      const reach = reachOf(s.mode);
+      if (!reach || fixed) return;
+      gsap.killTweensOf(s.nudge);
+      s.nudge.zoom = clamp(s.nudge.zoom + e.deltaY * 0.0008, reach.zoomMin, reach.zoomMax);
+      moved();
+      rest();
+    };
+    const twice = () => {
+      if (reachOf(s.mode)) back();
     };
     el.addEventListener('pointerdown', down);
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', up);
     el.addEventListener('wheel', wheel, { passive: true });
+    el.addEventListener('dblclick', twice);
     return () => {
       el.removeEventListener('pointerdown', down);
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', up);
       window.removeEventListener('pointercancel', up);
       el.removeEventListener('wheel', wheel);
+      el.removeEventListener('dblclick', twice);
       if (s.returnTimer) clearTimeout(s.returnTimer);
     };
   }, [gl, fixed]);
@@ -185,6 +260,10 @@ export function CameraRig() {
   useFrame(({ clock }) => {
     const s = state.current;
     const t = clock.elapsedTime;
+    // The lean towards the pointer eases in, and lets go while the view is being dragged.
+    const want = s.dragging || REDUCED_MOTION ? { x: 0, y: 0 } : s.look;
+    s.lean.x += (want.x - s.lean.x) * 0.06;
+    s.lean.y += (want.y - s.lean.y) * 0.06;
     const live = livePose(t);
     const pose = s.k < 1 && s.from ? (s.arc ? seatArc(s.from, live, s.k) : blendPose(s.from, live, s.k)) : live;
     s.current = pose;

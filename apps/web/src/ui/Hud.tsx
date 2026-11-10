@@ -7,7 +7,7 @@ import { useBoardView } from '../scene/boardView';
 import { useScene } from '../scene/sceneStore';
 import { Callouts } from './hud/Callouts';
 import { Caption } from './hud/Caption';
-import { Emblem } from './kit';
+import { Emblem, Medallion } from './kit';
 import { Cartouche } from './hud/Cartouche';
 import { PlayerPlate } from './hud/PlayerPlate';
 import { roman } from './hud/roman';
@@ -25,6 +25,7 @@ export function Hud({ session }: { session: Session }) {
   const near = useScene((s) => s.seat);
   // The stores as the board shows them: a capture counts on the plate when its stones land, not when the move is made.
   const shown = useBoardView((s) => s.counts);
+  const viewMoved = useScene((s) => s.viewMoved);
   const far: Player = near === 0 ? 1 : 0;
   const inPlay = phase !== 'finished' && phase !== 'round-summary' && phase !== 'toss';
 
@@ -79,7 +80,11 @@ export function Hud({ session }: { session: Session }) {
       <Cartouche text={cartouche.text} pips={cartouche.pips} />
       {caption ? <Caption tone={caption.tone} text={caption.text} thinking={caption.thinking} motionKey={`${active}:${caption.thinking}`} /> : <p className="hud-caption" aria-live="polite" />}
       {plate(near, 'near')}
-      <Emblem size={40} className="hud-crest" />
+      {viewMoved && inPlay ? (
+        <Medallion icon="rotate" label={t('hud.resetView')} className="hud-reset" onClick={() => useScene.setState((s) => ({ resetView: s.resetView + 1 }))} />
+      ) : (
+        <Emblem size={40} className="hud-crest" />
+      )}
       <Callouts />
     </header>
   );

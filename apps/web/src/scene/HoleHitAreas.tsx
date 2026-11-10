@@ -48,11 +48,12 @@ export function HoleHitAreas({ playable, onTap }: { playable: ReadonlySet<HoleIn
               onPointerDown={down(hole)}
               onPointerUp={release}
               onPointerOver={() => {
-                document.body.style.cursor = playable.has(hole) ? 'pointer' : 'default';
+                if (playable.has(hole)) document.body.style.setProperty('--scene-cursor', 'pointer');
+                else document.body.style.removeProperty('--scene-cursor');
                 feedback.setHover(playable.has(hole) ? hole : null);
               }}
               onPointerOut={() => {
-                document.body.style.cursor = 'default';
+                document.body.style.removeProperty('--scene-cursor');
                 feedback.setHover(null);
                 release();
               }}

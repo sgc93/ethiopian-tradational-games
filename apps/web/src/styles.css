@@ -181,3 +181,12 @@ button {
     transition: none;
   }
 }
+
+/* The scene can be taken hold of. */
+.scene-root canvas {
+  cursor: var(--scene-cursor, grab);
+}
+
+.scene-root canvas:active {
+  cursor: var(--scene-cursor, grabbing);
+}

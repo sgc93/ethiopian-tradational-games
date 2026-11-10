@@ -544,3 +544,15 @@
     opacity: 0;
   }
 }
+
+/* The reset medallion stands where the crest does while the player has the view turned. */
+.ui-layer .hud-reset {
+  position: absolute;
+  right: calc(59px * var(--ui));
+  bottom: calc(6px * var(--ui) + var(--safe-b));
+  animation: hud-in 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.ui-compact .ui-layer .hud-reset {
+  bottom: calc(3px * var(--ui) + var(--safe-b));
+}

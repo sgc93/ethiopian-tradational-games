@@ -61,7 +61,8 @@
     "menu": "ምናሌ",
     "quickGame": "ፈጣን ጨዋታ",
     "endOfRound": "የዙር {{n}} መጨረሻ",
-    "tapHint": "የሚያበራውን ጉድጓድ ይንኩ"
+    "tapHint": "የሚያበራውን ጉድጓድ ይንኩ",
+    "resetView": "እይታውን ይመልሱ"
   },
   "menu": {
     "title": "ቆሟል",

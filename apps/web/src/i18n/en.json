@@ -61,7 +61,8 @@
     "menu": "Menu",
     "quickGame": "Quick game",
     "endOfRound": "End of round {{n}}",
-    "tapHint": "tap a glowing cup"
+    "tapHint": "tap a glowing cup",
+    "resetView": "Put the view back"
   },
   "menu": {
     "title": "Paused",

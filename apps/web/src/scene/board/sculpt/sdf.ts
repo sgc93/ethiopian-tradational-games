@@ -21,7 +21,7 @@ const smoothstep = (a: number, b: number, x: number) => {
 /** Landmarks read off the side reference (image 07) at the blueprint's scale (220 px a unit). */
 export const PROFILE = {
   /** The eye's centre on the side of the head; the almond's front corner sits a little lower. */
-  eye: { u: 1.0, v: 1.66, halfLength: 0.13, halfHeight: 0.045, tilt: -0.14 },
+  eye: { u: 1.0, v: 1.66, halfLength: 0.185, halfHeight: 0.072, tilt: -0.2 },
   /** A nostril's centre on the front-side of the nose, either side. */
   nostril: { u: 1.548, v: 1.055, w: 0.078 },
   /** The mouth line, from the lips' front back to the corner, which rises a little. */
@@ -34,7 +34,7 @@ export const PROFILE = {
   /** The beard hangs below this height, in front of this line. */
   beard: { belowV: 0.8, frontOfU: 1.0, halfWidth: 0.14 },
   /** An ear (side +1): its root at the poll, behind the horn, and its tip up, back and out. */
-  ear: { base: [0.4, 1.95, 0.4] as V3, tip: [0.17, 2.33, 0.7] as V3, halfWidth: 0.17 },
+  ear: { base: [0.4, 1.95, 0.4] as V3, tip: [0.12, 2.4, 0.72] as V3, halfWidth: 0.2 },
   /** The neck's foot sinks this far into the board's top so the two meet without a seam. */
   footSink: 0.04,
 };
@@ -189,24 +189,30 @@ function relief(u: number, v: number, inset: number): number {
   const r = 1 - (x / e.halfLength) ** 2;
   const half = e.halfHeight * Math.max(0, r);
   const edge = Math.abs(x) < e.halfLength ? Math.abs(y) - half : Math.hypot(Math.abs(x) - e.halfLength, y);
-  const lid = (y > 0 ? 0.05 : 0.035) * smoothstep(-0.004, 0.005, edge) * Math.exp(-Math.max(0, edge) / 0.028);
-  const ball = edge < 0 ? 0.01 + 0.014 * Math.sqrt(Math.max(0, 1 - (x / e.halfLength) ** 2 - (y / e.halfHeight) ** 2)) : 0;
+  const lid = (y > 0 ? 0.075 : 0.052) * smoothstep(-0.004, 0.006, edge) * Math.exp(-Math.max(0, edge) / 0.04);
+  // The ball swells between the lids, with the line of the closed lid cut across it.
+  const ball = edge < 0 ? 0.012 + 0.03 * Math.sqrt(Math.max(0, 1 - (x / e.halfLength) ** 2 - (y / e.halfHeight) ** 2)) - 0.014 * Math.exp(-(((y + 0.008) / 0.011) ** 2)) : 0;
   let eye = Math.max(lid, ball);
-  eye -= 0.026 * Math.exp(-((x / 0.22) ** 2) - (y / 0.14) ** 2) * smoothstep(0.02, 0.05, edge); // the socket round the lids
-  eye += 0.03 * g(0.97, 1.79, 0.17, 0.045); // the brow over it
+  eye -= 0.02 * Math.exp(-(((edge - 0.085) / 0.015) ** 2)) * (y > 0 ? 1 : 0.35); // the crease over the upper lid
+  eye -= 0.045 * Math.exp(-((x / 0.3) ** 2) - (y / 0.2) ** 2) * smoothstep(0.03, 0.08, edge); // the socket round the lids
+  eye += 0.055 * g(0.97, 1.83, 0.2, 0.05); // the brow over it
   eye -= 0.012 * Math.exp(-((distanceToPolyline([[1.12, 1.635], [1.2, 1.53]], u, v).d / 0.012) ** 2)); // the tear line
   // The cheekbone under the eye and the jaw's muscle behind the mouth.
-  eye += 0.03 * g(0.88, 1.5, 0.16, 0.07);
-  eye += 0.035 * g(0.76, 1.18, 0.2, 0.17);
+  eye += 0.045 * g(0.88, 1.47, 0.17, 0.07);
+  eye += 0.05 * g(0.76, 1.18, 0.2, 0.17);
+  eye += 0.02 * g(1.5, 1.08, 0.07, 0.06); // the nostril's wing
   d += eye * side;
   // The mouth: a cut line with the upper lip just proud of it.
   const m = distanceToPolyline(PROFILE.mouth, u, v);
   const fade = smoothstep(1, 0.85, m.t);
-  d -= 0.024 * Math.exp(-((m.d / 0.011) ** 2)) * fade;
-  d += 0.01 * g(1.42, 0.93, 0.12, 0.03);
+  d -= 0.04 * Math.exp(-((m.d / 0.016) ** 2)) * fade;
+  d += 0.022 * g(1.42, 0.94, 0.12, 0.03);
+  d += 0.012 * g(1.4, 0.83, 0.1, 0.03); // the lower lip
+  // The hair of the forehead, combed back between the horns in chiselled grooves.
+  d -= 0.014 * Math.cos((2 * Math.PI * u) / 0.055) ** 2 * smoothstep(1.86, 1.94, v) * smoothstep(1.06, 0.96, u) * smoothstep(0.58, 0.68, u);
   // The beard's long locks.
   const b = PROFILE.beard;
-  if (v < b.belowV + 0.05 && u > b.frontOfU) d -= 0.012 * Math.max(0, Math.cos((2 * Math.PI * (u - 1.15)) / 0.065)) ** 2 * smoothstep(b.belowV + 0.05, b.belowV - 0.05, v);
+  if (v < b.belowV + 0.05 && u > b.frontOfU) d -= 0.026 * Math.max(0, Math.cos((2 * Math.PI * (u - 1.15)) / 0.065)) ** 2 * smoothstep(b.belowV + 0.05, b.belowV - 0.05, v);
   return d;
 }
 
@@ -346,7 +352,7 @@ export function earSdf(p: V3, side: 1 | -1): number {
   const axis = normalize(sub(tip, base));
   const root: V3 = [base[0] - axis[0] * 0.12, base[1] - axis[1] * 0.12, base[2] - axis[2] * 0.12];
   const length = Math.hypot(...sub(tip, root));
-  const facing: V3 = [0.6, 0.05, 0.8 * side];
+  const facing: V3 = [0.3, 0.05, 0.95 * side];
   const n = normalize(sub(facing, [axis[0] * dot(facing, axis), axis[1] * dot(facing, axis), axis[2] * dot(facing, axis)]));
   const b = cross(axis, n);
   const q = sub(p, root);
@@ -355,11 +361,18 @@ export function earSdf(p: V3, side: 1 | -1): number {
   const z = dot(q, n);
   const x = clamp01(s / length);
   const half = e.halfWidth * Math.pow(1 - x, 0.7) * Math.sqrt(Math.min(1, (x + 0.08) / 0.4));
-  const curl = 0.045 * Math.min(1, Math.abs(y) / Math.max(half, 1e-3)) ** 2;
-  const thick = 0.012 + 0.03 * (1 - 0.5 * x);
+  const curl = 0.07 * Math.min(1, Math.abs(y) / Math.max(half, 1e-3)) ** 2;
+  const thick = 0.018 + 0.034 * (1 - 0.5 * x);
   const across = Math.max(Math.abs(y) - half, -s, s - length);
   const through = Math.abs(z - curl) - thick;
-  return Math.hypot(Math.max(across, 0), Math.max(through, 0)) + Math.min(Math.max(across, through), 0);
+  const leaf = Math.hypot(Math.max(across, 0), Math.max(through, 0)) + Math.min(Math.max(across, through), 0);
+  // The hollow of the ear, scooped out of the face that is turned outward.
+  const rs = 0.36 * length;
+  const ry = Math.max(0.03, half * 0.62);
+  const rz = 0.04;
+  const k = Math.hypot((s - 0.46 * length) / rs, y / ry, (z - curl - thick - 0.012) / rz);
+  const hollow = (k - 1) * Math.min(rs, ry, rz);
+  return smax(leaf, -hollow, 0.012);
 }
 
 function sdEllipsoid(p: V3, c: V3, r: V3): number {
@@ -388,11 +401,11 @@ export function headSdf(bp: Blueprint, p: V3): number {
   // The beard's locks, cut down its length on every face.
   const b = PROFILE.beard;
   const locks = smoothstep(b.belowV + 0.05, b.belowV - 0.05, v) * smoothstep(b.frontOfU - 0.02, b.frontOfU + 0.06, u);
-  if (locks > 0) d += 0.014 * Math.cos((Math.PI * w) / 0.045) ** 2 * locks;
+  if (locks > 0) d += 0.026 * Math.cos((Math.PI * w) / 0.045) ** 2 * locks;
   d = smin(d, earSdf(p, 1), 0.04);
   d = smin(d, earSdf(p, -1), 0.04);
   const n = PROFILE.nostril;
-  for (const side of [1, -1]) d = smax(d, -sdEllipsoid(p, [n.u, n.v, n.w * side], [0.032, 0.048, 0.03]), 0.012);
+  for (const side of [1, -1]) d = smax(d, -sdEllipsoid(p, [n.u, n.v, n.w * side], [0.042, 0.06, 0.038]), 0.012);
   return Math.max(d, -(v + PROFILE.footSink));
 }
 

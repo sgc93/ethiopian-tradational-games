@@ -23,6 +23,10 @@ export interface SceneState {
   speed: Speed;
   sfx: Sfx | null;
   suggested: HoleIndex | null;
+  /** True once the player has turned or zoomed the play view away from where the game puts it. */
+  viewMoved: boolean;
+  /** Raised by one to ask the camera to put the view back. */
+  resetView: number;
   /** True while the camera eases between poses; the interface hides pinned labels then. */
   cameraMoving: boolean;
   /** A black cross-fade, 0–1, used in place of camera moves when motion is reduced. */
@@ -50,6 +54,8 @@ export const useScene = create<SceneState>((set) => ({
   speed: 'normal',
   sfx: null,
   suggested: null,
+  viewMoved: false,
+  resetView: 0,
   cameraMoving: false,
   fade: 0,
   frameloop: 'always',

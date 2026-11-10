@@ -3,7 +3,7 @@ import type { PackedMesh } from './pack';
 import type { V3 } from './sdf';
 
 /**
- * A horn as a swept tube along the blueprint's 41 stations: an oval section (its depth in the
+ * A horn as a swept tube along the blueprint's 41 stations: a squared oval section (its depth in the
  * side view, its width in the front view) that narrows to the point, the 24 knuckled ridges
  * standing on its front face. The root is carried down into the skull until it is buried, so the
  * horn grows out of the head with no gap and nothing pokes through the face.
@@ -81,8 +81,8 @@ function station(bp: Blueprint, t: number) {
     u: f((h) => h.u),
     v: f((h) => h.v),
     z: frontZ(t),
-    depth: Math.max(0.03, f((h) => h.depth)),
-    width: Math.max(0.03, f((h) => h.width)),
+    depth: Math.max(0.03, f((h) => h.depth)) * (1 + 0.26 * smoothstep(0.06, 0.24, clamp01(t)) * (1 - smoothstep(0.5, 1, clamp01(t)))),
+    width: Math.max(0.03, f((h) => h.width)) * (1 + 0.42 * smoothstep(0.06, 0.24, clamp01(t)) * (1 - smoothstep(0.45, 1, clamp01(t)))),
     normal: [f((h) => h.normal[0]), f((h) => h.normal[1])] as [number, number],
   };
 }
@@ -174,7 +174,10 @@ export function buildHorn(bp: Blueprint, side: 1 | -1, o: HornOptions, inside: (
       const a = (2 * Math.PI * j) / o.sides;
       const c = Math.cos(a);
       const lift = sec.knob * smoothstep(-0.25, 0.55, c);
-      pts.push(add(add(sec.centre, sec.n, sec.rn * c + lift), sec.b, sec.rb * Math.sin(a)));
+      // The sides are flatter than an oval's, as a horn's are: the section is squared a little.
+      const sn = Math.sin(a);
+      const flat = Math.sign(sn) * Math.abs(sn) ** 0.72;
+      pts.push(add(add(sec.centre, sec.n, sec.rn * c + lift), sec.b, sec.rb * flat));
     }
     return pts;
   };

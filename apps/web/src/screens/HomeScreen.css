@@ -348,3 +348,16 @@
     animation: none;
   }
 }
+
+/* The yard behind the home screen can be turned by hand: only the screen's own parts take the pointer. */
+.home {
+  pointer-events: none;
+}
+
+.home > * {
+  pointer-events: auto;
+}
+
+.home > .home-tagline {
+  pointer-events: none;
+}

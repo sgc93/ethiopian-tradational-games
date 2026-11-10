@@ -60,7 +60,7 @@ test('seen from the front, the neck is as stout as the carving, not the blueprin
   const foot = surface(head, [0, 0.05, 0], 2, 1)!;
   expect(foot).toBeGreaterThan(side);
   // The muzzle is narrow against the skull.
-  expect(surface(head, [1.45, 1.1, 0], 2, 1)!).toBeLessThan(0.2);
+  expect(surface(head, [1.45, 1.1, 0], 2, 1)!).toBeLessThan(0.23); // with the nostrils' wings
   expect(surface(head, [0.75, 1.66, 0], 2, 1)!).toBeGreaterThan(0.35);
 });
 

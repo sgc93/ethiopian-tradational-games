@@ -212,3 +212,23 @@ How each kind of move looks is in `scene/stoneMotion.ts`, with tests.
 **Not judged here:** the sound, which cannot be heard from this machine's test browser; the frame rate on a phone, now that the scene holds a yard; and the final colour, since the captures are from headless Chrome's software renderer.
 
 **Still open from the review:** trees and props with more shape than cut-outs and lathes. The night scene's modules (hearth, flame, embers, smoke, night sky, its lights) are still in `scene/world/` and nothing mounts them.
+
+## Part 7: the yard cleared, real wood, carved heads, a view you can take hold of
+
+The owner's four points of 2026-11-10 after seeing part 6.
+
+- **The yard is cleared.** The coffee pot, the cups and the basket are gone; the board has the mat and the yard to itself. The house, the trees and the ridges stay as the setting.
+- **The wood reads as wood** (`scene/board/woodMaterial.ts`). It is walnut-brown rather than orange. It has open pores, short dark dashes lying along the grain. The grain has fine relief, worked out from the photograph itself, so no normal map is downloaded. The finish is a hand-rubbed oil, satin and uneven, with the soft sheen wood has at a grazing angle. The carved band's cuts and the cups' depths are darker.
+- **The heads are carved more boldly** (`sculpt/sdf.ts`), after images 07 and 11. The eye is a full almond with heavy lids, a crease and a brow; the mouth line, the lips and the nostrils' wings are cut deeper; the beard and the forehead have chiselled locks; the ear is a broad hollowed leaf. Shade is baked into every cut when the head is built, so the carving shows in any light. A head is now 16,000 triangles.
+- **The horns are massive** (`sculpt/horn.ts`): deeper and wider than the traced stations along their length, with a squared section, and still slim at the root so nothing of them reaches down the face. Their sides carry the fine cut lines of the carving and one long line down their length.
+- **The play area answers the hand** (`scene/CameraRig.tsx`). Dragging turns and tilts the view, a pinch or the wheel brings it nearer, and a double tap puts it back. In play the view stays where it is left and a reset medallion appears in the bottom bar. On the home and result screens the board can be turned all the way round and drifts back after five seconds. With a mouse the view leans a little towards the pointer.
+
+| Head before | Head after | Play | Play, turned and brought nearer |
+|---|---|---|---|
+| [p7-head-before.jpg](p7-head-before.jpg) | [p7-head-after.jpg](p7-head-after.jpg) | [p7-play.jpg](p7-play.jpg) | [p7-play-turned.jpg](p7-play-turned.jpg) |
+
+**Checked:** typecheck, 211 unit tests, 36 of 36 end-to-end tests, the download at 1,684.6 KB gzip of the 2,929.7 KB budget, and a scripted drag, zoom and reset in a live game.
+
+**Not judged here:** how the drag and the pinch feel under a finger, and the frame rate with the heavier heads, both of which want a real phone.
+
+**Still open:** the necks stand on the board as posts; in the reference they flow into it. The muzzle's length follows the traced outline and was not changed.
