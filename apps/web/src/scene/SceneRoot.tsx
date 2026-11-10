@@ -9,7 +9,8 @@ import { Post } from './Post';
 import { useScene } from './sceneStore';
 import { TIERS } from './tiers';
 import { useTier } from './useTier';
-import { Studio } from './world/Studio';
+import { Daylight } from './world/Daylight';
+import { Yard } from './world/Yard';
 
 const showFps = typeof location !== 'undefined' && new URLSearchParams(location.search).has('fps');
 
@@ -50,7 +51,7 @@ function WorldReady() {
   return null;
 }
 
-/** The one canvas behind every screen: the board in its daylight studio, and the camera. */
+/** The one canvas behind every screen: the board on its mat in the yard, in daylight, and the camera. */
 export function SceneRoot() {
   const [declined, setDeclined] = useState(false);
   // A shallow pick, so per-frame writes to the store do not re-render the canvas.
@@ -84,8 +85,9 @@ export function SceneRoot() {
       >
         <PerformanceMonitor onDecline={() => setDeclined(true)} />
         <TierProbe />
-        <Studio />
+        <Daylight />
         <Suspense fallback={null}>
+          <Yard />
           <WorldReady />
         </Suspense>
         <BoardScene

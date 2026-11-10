@@ -1,13 +1,12 @@
 import { expect, test } from 'vitest';
 import { buildGrass, GRASS_HEIGHT, grassPlacements } from './grassGeometry';
 
-test('grass avoids the mat and the hearth and stays within 20', () => {
+test('grass avoids the mat and stays within 42', () => {
   const p = grassPlacements(2000, 3);
   expect(p).toHaveLength(2000);
   for (const [x, z, , height] of p) {
     expect((x / 11) ** 2 + (z / 6.5) ** 2).toBeGreaterThan(1);
-    expect(Math.hypot(x + 26, z + 2)).toBeGreaterThan(9);
-    expect(Math.hypot(x, z)).toBeLessThanOrEqual(20.01);
+    expect(Math.hypot(x, z)).toBeLessThanOrEqual(42.01);
     expect(height).toBeGreaterThanOrEqual(GRASS_HEIGHT[0]);
     expect(height).toBeLessThanOrEqual(GRASS_HEIGHT[1]);
   }

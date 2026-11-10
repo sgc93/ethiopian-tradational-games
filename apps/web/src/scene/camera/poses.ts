@@ -102,48 +102,72 @@ export function topCamera(_size: Size, _bands: Bands): Pose {
 }
 
 const TAU = Math.PI * 2;
-const HOME_RADIUS = 15.5;
-const HOME_TARGET: Vec3 = [0, 0.8, 0];
-const HOME_AZIMUTH = (-30 * Math.PI) / 180;
-/** The board's share of the screen's height from HOME_RADIUS. */
-const HOME_FILL = 0.83;
+const DEG = Math.PI / 180;
+const HOME_AZIMUTH = -30 * DEG;
+/** The home camera stands this far from the board's centre along the ground, this high, aimed this far above the board. */
+const HOME_DISTANCE = 19;
+const HOME_HEIGHT = 5.5;
+const HOME_AIM = 2.2;
+const HOME_FOV = 44;
+/** The share of the screen's height between the interface's bars that the home view is composed for. */
+const HOME_ROOM = 0.71;
 
 /**
- * The home camera: the reference photograph's three-quarter view of the board, from A's side, in
- * front and to the left and a little above. It drifts a slow ±10° about that view once a minute
- * and rises and falls half a unit, always aimed at the board.
+ * The home camera: a low three-quarter view from A's side, in front and to the left, with a wide
+ * lens. Low enough that the yard stands behind the board (the house, the trees, the ridges and
+ * the sky), high enough that the cups and their stones show. It drifts a slow ±10° about that
+ * view once a minute and rises and falls a little.
  *
- * `room` is the share of the screen's height left between the interface's two bars. At the
- * nearest distance the board fills 83% of the height, so with less room than that the camera
- * stands back until the board fits between the bars.
+ * `room` is the share of the screen's height left between the interface's two bars,
+ * `centre` is where the middle of that space is (0 at the top, 1 at the bottom) and `aspect`
+ * is the screen's width over its height. With less room than the view was composed for, or a
+ * narrower screen than 16:9, the camera stands back along the same line; with more room or a
+ * wider screen it comes a little nearer; and it tips so the picture's middle is the middle of
+ * the space between the bars.
  */
-export function homePose(t: number, room = 1): Pose {
-  const back = Math.max(1, HOME_FILL / (0.92 * Math.min(1, Math.max(0.3, room))));
-  const az = HOME_AZIMUTH + ((10 * Math.PI) / 180) * Math.sin((TAU * t) / 60);
-  const y = (7 + 0.5 * Math.sin((TAU * t) / 60 + 1)) * back;
-  const r = HOME_RADIUS * back;
-  return { position: [r * Math.sin(az), y, r * Math.cos(az)], target: HOME_TARGET, fov: 30 };
+export function homePose(t: number, room = HOME_ROOM, centre = 0.5, aspect = 16 / 9): Pose {
+  const forHeight = HOME_ROOM / Math.min(1, Math.max(0.3, room));
+  const forWidth = Math.min(1.5, Math.max(0.9, 16 / 9 / aspect));
+  const back = Math.min(1.9, Math.max(0.88, forHeight * forWidth));
+  const az = HOME_AZIMUTH + 10 * DEG * Math.sin((TAU * t) / 60);
+  const d = HOME_DISTANCE * back;
+  const y = (HOME_HEIGHT + 0.4 * Math.sin((TAU * t) / 60 + 1)) * back;
+  const tip = (0.5 - Math.min(0.7, Math.max(0.3, centre))) * HOME_FOV * DEG * d;
+  return { position: [d * Math.sin(az), y, d * Math.cos(az)], target: [0, HOME_AIM * back - tip, 0], fov: HOME_FOV };
 }
 
-const ORBIT_RADIUS = 20;
-const ORBIT_TILT = (35 * Math.PI) / 180;
+/**
+ * The opening shot: from high over the yard, behind where the home camera will stand. The home
+ * view is reached from here as the game is revealed, a crane coming down to the board.
+ */
+export function openingPose(home: Pose): Pose {
+  return {
+    position: [home.position[0] * 2.3, home.position[1] * 3.6, home.position[2] * 2.3],
+    target: [home.target[0], home.target[1] + 3.5, home.target[2]],
+    fov: home.fov,
+  };
+}
+
+const RESULT_DISTANCE = 22;
+const RESULT_TILT = 12 * DEG;
+const RESULT_FOV = 40;
 /** Aimed below the board, so it sits in the upper part of the screen, over the result panel. */
-const ORBIT_TARGET: Vec3 = [0, -1.1, 0];
+const RESULT_TARGET: Vec3 = [0, -0.6, 0];
 /** How far the result camera swings to either side of the broadside view. */
-const ORBIT_SWING = (40 * Math.PI) / 180;
+const RESULT_SWING = 35 * DEG;
 
 /**
- * The result camera: at 35°, a metre from the board's centre, swinging 40° to either side of the
- * near player's broadside view and back every 40 s. It never comes end-on, where the near head
- * would stand in front of the result panel.
+ * The result camera: low and wide, the yard and the hills behind the board, swinging 35° to
+ * either side of the near player's broadside view and back every 40 s. It never comes end-on,
+ * where the near head would stand in front of the result panel.
  */
 export function orbitPose(t: number): Pose {
-  const az = ORBIT_SWING * Math.sin((TAU * t) / 40);
-  const r = ORBIT_RADIUS * Math.cos(ORBIT_TILT);
+  const az = RESULT_SWING * Math.sin((TAU * t) / 40);
+  const r = RESULT_DISTANCE * Math.cos(RESULT_TILT);
   return {
-    position: [r * Math.sin(az), ORBIT_TARGET[1] + ORBIT_RADIUS * Math.sin(ORBIT_TILT), r * Math.cos(az)],
-    target: ORBIT_TARGET,
-    fov: PLAY_FOV,
+    position: [r * Math.sin(az), RESULT_TARGET[1] + RESULT_DISTANCE * Math.sin(RESULT_TILT), r * Math.cos(az)],
+    target: RESULT_TARGET,
+    fov: RESULT_FOV,
   };
 }
 

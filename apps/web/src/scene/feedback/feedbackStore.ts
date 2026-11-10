@@ -4,9 +4,11 @@ import { create } from 'zustand';
 /** Moments the world reacts to. `at` is `now()`: seconds on the page's clock. */
 export type FeedbackEvent =
   | { kind: 'landed'; hole: HoleIndex; at: number }
-  | { kind: 'captured'; hole: HoleIndex; by: Player; at: number }
+  | { kind: 'captured'; hole: HoleIndex; by: Player; count: number; at: number }
+  /** A hand ran out in a cup that had stones: they are picked up and the sowing goes on. */
+  | { kind: 'relay'; hole: HoleIndex; at: number }
   | { kind: 'turn'; player: Player; at: number }
-  /** The result: embers burst up from the fire. */
+  /** The result: gold dust goes up from the board. */
   | { kind: 'burst'; at: number };
 
 export type StampedEvent = FeedbackEvent & { id: number };

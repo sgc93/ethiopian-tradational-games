@@ -9,7 +9,7 @@ export interface Sfx {
   coinRing(): void;
   /** A soft wooden tick for buttons. */
   tick(): void;
-  /** The fireside ambience (crackle, breeze, crickets); it follows the Sound setting. */
+  /** The yard's ambience (breeze, leaves, birds); it follows the Sound setting. */
   ambience(on: boolean): void;
   /** Lowers the ambience while stones move. */
   duck(on: boolean): void;

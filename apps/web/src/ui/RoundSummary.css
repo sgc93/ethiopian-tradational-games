@@ -73,3 +73,70 @@
   margin-top: calc(6px * var(--ui));
   font-size: max(12px, calc(12.5px * var(--ui)));
 }
+
+/* ---------- motion: each home is set down in turn ---------- */
+.summary-panel .homes .hut {
+  animation: hut-in 360ms cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+
+.summary-panel .homes .hut:nth-child(1) {
+  animation-delay: 270ms;
+}
+
+.summary-panel .homes .hut:nth-child(2) {
+  animation-delay: 340ms;
+}
+
+.summary-panel .homes .hut:nth-child(3) {
+  animation-delay: 410ms;
+}
+
+.summary-panel .homes .hut:nth-child(4) {
+  animation-delay: 480ms;
+}
+
+.summary-panel .homes .hut:nth-child(5) {
+  animation-delay: 550ms;
+}
+
+.summary-panel .homes .hut:nth-child(6) {
+  animation-delay: 620ms;
+}
+
+.summary-panel .homes .hut:nth-child(7) {
+  animation-delay: 690ms;
+}
+
+.summary-panel .homes .hut:nth-child(8) {
+  animation-delay: 760ms;
+}
+
+.summary-panel .homes .hut:nth-child(9) {
+  animation-delay: 830ms;
+}
+
+.summary-panel .homes .hut:nth-child(10) {
+  animation-delay: 900ms;
+}
+
+.summary-panel .homes .hut:nth-child(11) {
+  animation-delay: 970ms;
+}
+
+.summary-panel .homes .hut:nth-child(12) {
+  animation-delay: 1040ms;
+}
+
+@keyframes hut-in {
+  from {
+    opacity: 0;
+    scale: 0.3;
+    translate: 0 -8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summary-panel .homes .hut {
+    animation: none;
+  }
+}

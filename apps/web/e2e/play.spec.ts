@@ -6,7 +6,8 @@ test('quick game against easy reaches a result', async ({ page }) => {
   await startComputerGame(page, 'Quick game');
   await playToResult(page);
   await expect(page.locator('#result-title')).toHaveText(/won|draw/);
-  const [a, b] = (await page.locator('.result-score').textContent())!.split('–').map((s) => Number(s.trim()));
+  // The visible score counts up; its label carries the final score.
+  const [a, b] = (await page.locator('.result-score').getAttribute('aria-label'))!.split('–').map((s) => Number(s.trim()));
   expect(a! + b!).toBe(48);
 });
 

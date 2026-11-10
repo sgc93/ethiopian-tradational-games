@@ -5,15 +5,18 @@ import { GROUND_Y } from '../layout';
 import { useScene } from '../sceneStore';
 import { TIERS } from '../tiers';
 import { buildGrass } from './grassGeometry';
+import { LEAF_SHADE_GLSL, leafUniforms } from './leafShade';
 
 const vertexShader = /* glsl */ `
   attribute vec4 aOffset;
   uniform float uTime;
   uniform float uGround;
   varying float vT;
+  varying vec2 vAt;
   #include <fog_pars_vertex>
   void main() {
     vT = uv.y;
+    vAt = aOffset.xy;
     float yaw = aOffset.z;
     vec3 p = vec3(position.x, position.y * aOffset.w, position.z);
     float c = cos(yaw), s = sin(yaw);
@@ -32,14 +35,20 @@ const fragmentShader = /* glsl */ `
   uniform vec3 uBase;
   uniform vec3 uTip;
   varying float vT;
+  varying vec2 vAt;
   #include <fog_pars_fragment>
+  ${LEAF_SHADE_GLSL}
   void main() {
-    gl_FragColor = vec4(mix(uBase, uTip, vT), 1.0);
+    // Each tuft is a little greener or a little more straw than the next.
+    float dry = fract(sin(dot(floor(vAt * 3.0), vec2(12.9898, 78.233))) * 43758.5453);
+    vec3 colour = mix(uBase, mix(uTip, vec3(0.86, 0.74, 0.42), dry * 0.6), vT);
+    colour *= mix(vec3(1.0), LEAF_SHADE_TINT, leafShade(vAt));
+    gl_FragColor = vec4(colour, 1.0);
     #include <fog_fragment>
   }
 `;
 
-/** Short blades around the mat and on the nearby ground, swaying in a vertex-shader wind. */
+/** Short dry-season blades around the mat and on the nearby ground, swaying in a vertex-shader wind. */
 export function Grass() {
   const tier = useScene((s) => s.tier);
   const count = TIERS[tier].grass;
@@ -54,9 +63,10 @@ export function Grass() {
           {
             uTime: { value: 0 },
             uGround: { value: GROUND_Y },
-            uBase: { value: new THREE.Color('#2a2a12') },
-            uTip: { value: new THREE.Color('#7a6a30') },
+            uBase: { value: new THREE.Color('#4a4a22') },
+            uTip: { value: new THREE.Color('#a39a4c') },
           },
+          leafUniforms(),
         ]),
         fog: true,
         side: THREE.DoubleSide,
@@ -65,6 +75,7 @@ export function Grass() {
   );
   useFrame(({ clock }) => {
     material.uniforms.uTime!.value = clock.elapsedTime;
+    material.uniforms.uLeafTime!.value = clock.elapsedTime;
   });
   if (!geometry) return null;
   return <mesh geometry={geometry} material={material} frustumCulled={false} />;

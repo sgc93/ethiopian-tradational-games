@@ -8,17 +8,17 @@ export interface Ambience {
 }
 
 const dB = (level: number) => Math.pow(10, level / 20);
-const CRACKLE_LEVEL = dB(-18);
-const WIND_LEVEL = dB(-26);
-const CRICKET_LEVEL = dB(-30);
+const WIND_LEVEL = dB(-27);
+const LEAVES_LEVEL = dB(-36);
+const BIRD_LEVEL = dB(-31);
 const DUCKED = dB(-6);
 
 const between = (lo: number, hi: number) => lo + Math.random() * (hi - lo);
 
 /**
- * The fireside at night (spec §10 "Sound"), synthesized: fire crackle as band-passed noise bursts
- * every 90–400 ms, a soft breeze of low-passed noise swelling on a 9 s cycle, and sparse cricket
- * chirps in threes. Nothing is downloaded.
+ * The yard in daylight, synthesized: a soft breeze of low-passed noise swelling on a nine-second
+ * cycle, the hiss of leaves in it, and now and then a bird: a short phrase of rising or falling
+ * whistles, each bird at its own pitch. Nothing is downloaded.
  */
 export function createAmbience(ctx: AudioContext, out: AudioNode): Ambience {
   const bus = ctx.createGain();
@@ -51,43 +51,30 @@ export function createAmbience(ctx: AudioContext, out: AudioNode): Ambience {
     timers.push(id);
   };
 
-  /** One crackle: a short noise burst through a band-pass, 30–80 ms, then the next one is booked. */
-  const crackle = () => {
+  /** One bird's phrase: two to five short whistles that slide up or down, then a quiet stretch of 2.5 to 8 s. */
+  const bird = () => {
     const t = ctx.currentTime;
-    const ms = between(30, 80);
-    const src = ctx.createBufferSource();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
-    src.buffer = noiseBuffer();
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(between(800, 3000), t);
-    filter.Q.setValueAtTime(1.5, t);
-    gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.linearRampToValueAtTime(CRACKLE_LEVEL * between(0.5, 1), t + 0.004);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + ms / 1000);
-    src.connect(filter).connect(gain).connect(bus);
-    src.start(t);
-    src.stop(t + ms / 1000 + 0.02);
-    later(between(90, 400), crackle);
-  };
-
-  /** Three chirps at 4.2 kHz, then a quiet stretch of 2–6 s. */
-  const crickets = () => {
-    const t = ctx.currentTime;
-    for (let i = 0; i < 3; i++) {
-      const at = t + i * 0.09;
+    const pitch = between(2300, 4200);
+    const rising = Math.random() < 0.6;
+    const notes = 2 + Math.floor(Math.random() * 4);
+    const gap = between(0.11, 0.19);
+    const level = BIRD_LEVEL * between(0.45, 1);
+    for (let i = 0; i < notes; i++) {
+      const at = t + i * gap;
+      const length = between(0.05, 0.09);
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(4200, at);
+      osc.frequency.setValueAtTime(pitch * (rising ? 0.86 : 1.12), at);
+      osc.frequency.exponentialRampToValueAtTime(pitch * (rising ? 1.12 : 0.86), at + length);
       gain.gain.setValueAtTime(0.0001, at);
-      gain.gain.linearRampToValueAtTime(CRICKET_LEVEL, at + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.035);
+      gain.gain.linearRampToValueAtTime(level, at + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + length);
       osc.connect(gain).connect(bus);
       osc.start(at);
-      osc.stop(at + 0.05);
+      osc.stop(at + length + 0.02);
     }
-    later(between(2000, 6000), crickets);
+    later(between(2500, 8000), bird);
   };
 
   return {
@@ -102,7 +89,7 @@ export function createAmbience(ctx: AudioContext, out: AudioNode): Ambience {
       wind.buffer = noiseBuffer();
       wind.loop = true;
       low.type = 'lowpass';
-      low.frequency.setValueAtTime(200, t);
+      low.frequency.setValueAtTime(260, t);
       windGain.gain.setValueAtTime(WIND_LEVEL, t);
       const lfo = ctx.createOscillator();
       const depth = ctx.createGain();
@@ -111,11 +98,22 @@ export function createAmbience(ctx: AudioContext, out: AudioNode): Ambience {
       depth.gain.setValueAtTime(WIND_LEVEL * 0.6, t);
       lfo.connect(depth).connect(windGain.gain);
       wind.connect(low).connect(windGain).connect(bus);
+      // The leaves: the same noise through a high band, rising and falling with the breeze.
+      const leaves = ctx.createBiquadFilter();
+      const leavesGain = ctx.createGain();
+      const leavesDepth = ctx.createGain();
+      leaves.type = 'bandpass';
+      leaves.frequency.setValueAtTime(3200, t);
+      leaves.Q.setValueAtTime(0.7, t);
+      leavesGain.gain.setValueAtTime(LEAVES_LEVEL, t);
+      leavesDepth.gain.setValueAtTime(LEAVES_LEVEL * 0.8, t);
+      lfo.connect(leavesDepth).connect(leavesGain.gain);
+      wind.connect(leaves).connect(leavesGain).connect(bus);
       wind.start(t);
       lfo.start(t);
       sources = [wind, lfo];
-      later(between(50, 200), crackle);
-      later(between(500, 1500), crickets);
+      later(between(600, 1800), bird);
+      later(between(2500, 5000), bird);
     },
     stop() {
       running = false;

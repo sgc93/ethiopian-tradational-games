@@ -14,7 +14,7 @@ test('feedback store prunes events older than 3 s', () => {
 
 test('pushing keeps the order and prune at 3 s keeps the boundary event', () => {
   const s = useFeedback.getState();
-  s.push({ kind: 'captured', hole: 1, by: 0, at: 1 });
+  s.push({ kind: 'captured', hole: 1, by: 0, count: 4, at: 1 });
   s.push({ kind: 'turn', player: 1, at: 2 });
   s.prune(4);
   expect(useFeedback.getState().events.map((e) => e.kind)).toEqual(['captured', 'turn']);

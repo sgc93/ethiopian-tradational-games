@@ -186,7 +186,8 @@ test('result shows a quick-game draw', () => {
   );
   render(<ResultScreen session={s} onPlayAgain={() => {}} onHome={() => {}} />);
   expect(screen.getByText("It's a draw")).toBeTruthy();
-  expect(screen.getByText('24 – 24')).toBeTruthy();
+  // The visible score counts up; its label carries the final score from the start.
+  expect(screen.getByLabelText('24 – 24')).toBeTruthy();
 });
 
 test('result names the winner of a full match and the rounds played', () => {

@@ -332,21 +332,21 @@
     0 0 10px rgba(255, 140, 50, 0.75);
 }
 
-/* A value change: the disc swells and flashes brass for 160 ms. */
+/*
+ * A value change: the disc flashes brass and its rim swells for 160 ms. The disc is placed by a
+ * transform from the page corner, so it must not be scaled: a scale would carry it across the board.
+ */
 .cnt.tick {
   animation: cnt-tick 160ms ease-out;
 }
 
 @keyframes cnt-tick {
-  0% {
-    scale: 1;
-  }
   40% {
-    scale: 1.15;
     background: var(--gold-500);
-  }
-  100% {
-    scale: 1;
+    color: var(--ink-950);
+    box-shadow:
+      0 0 0 3px var(--gold-300),
+      0 0 12px rgba(255, 200, 120, 0.8);
   }
 }
 
@@ -395,7 +395,152 @@
   }
 }
 
-/* The caption's two parts are flex items: the space between them is set here. */
+/* The caption's two parts are flex items of its line: the space between them is set here. */
 .hud-caption .hint {
   margin-left: 0.6em;
+}
+
+/* ---------- motion ---------- */
+/* The turn caption: its two parts sit in one line that comes in afresh when the turn changes. */
+.hud-caption .caption-line {
+  display: inline-flex;
+  align-items: center;
+  animation: caption-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+    letter-spacing: 0.34em;
+  }
+}
+
+/* The plates and the plaque arrive with the game; the plate whose turn it is rings once. */
+.hud .plate,
+.hud .cart {
+  animation: hud-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.hud .cart {
+  animation-name: cart-in;
+}
+
+@keyframes hud-in {
+  from {
+    opacity: 0;
+    translate: -14px 0;
+  }
+}
+
+@keyframes cart-in {
+  from {
+    opacity: 0;
+    translate: 0 -100%;
+  }
+}
+
+.plate.active .av {
+  animation: av-ring 620ms ease-out;
+}
+
+@keyframes av-ring {
+  0% {
+    box-shadow:
+      0 0 0 1px var(--ink-950),
+      0 0 0 2.5px var(--acc),
+      0 0 0 3px var(--acc);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px var(--ink-950),
+      0 0 0 2.5px var(--acc),
+      0 0 0 14px transparent;
+  }
+}
+
+/* A count that changes swells for a moment. */
+.plate .st .bump {
+  display: inline-block;
+  animation: st-bump 380ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+@keyframes st-bump {
+  0% {
+    scale: 1.55;
+    color: var(--gold-200);
+  }
+}
+
+/* ---------- capture call-outs ---------- */
+.callouts {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.callout {
+  position: absolute;
+  translate: -50% -100%;
+  font: 700 max(15px, calc(19px * var(--ui))) / 1 var(--f-display);
+  letter-spacing: 0.04em;
+  color: var(--ember-300);
+  text-shadow:
+    0 0 2px var(--ink-950),
+    0 1px 3px var(--ink-950),
+    0 0 12px rgba(255, 150, 60, 0.7);
+  animation: callout-rise 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.callout[data-by='1'] {
+  color: var(--moon-300);
+  text-shadow:
+    0 0 2px var(--ink-950),
+    0 1px 3px var(--ink-950),
+    0 0 12px rgba(150, 180, 255, 0.7);
+}
+
+@keyframes callout-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.6);
+  }
+  18% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.25);
+  }
+  30% {
+    transform: translateY(-16px) scale(1);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-46px) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-caption .caption-line,
+  .hud .plate,
+  .hud .cart,
+  .plate.active .av,
+  .plate .st .bump {
+    animation: none;
+  }
+  .callout {
+    animation: callout-hold 1100ms linear both;
+  }
+}
+
+@keyframes callout-hold {
+  0%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }

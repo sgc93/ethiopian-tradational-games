@@ -76,7 +76,9 @@
     "sound": "Sound",
     "on": "On",
     "off": "Off",
-    "quit": "Quit to home"
+    "quit": "Quit to home",
+    "confirmRestart": "Tap again to start over",
+    "confirmQuit": "Tap again to quit"
   },
   "summary": {
     "title": "End of round {{n}}",

@@ -40,8 +40,8 @@ test('storage that throws is ignored', () => {
 });
 
 test('the table has the spec counts', () => {
-  expect(TIERS.high.grass).toBe(3000);
-  expect(TIERS.mid.grass).toBe(1500);
+  expect(TIERS.high.grass).toBe(9000);
+  expect(TIERS.mid.grass).toBe(5000);
   expect(TIERS.low.embers).toBe(40);
   expect(TIERS.minimal.embers).toBe(24);
   expect(TIERS.minimal.post).toBe('none');

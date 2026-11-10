@@ -8,7 +8,8 @@ import { TIERS } from './tiers';
 /**
  * Post-processing by tier, in the order `postEffects` gives: a little bloom for the highlights,
  * Neutral tone mapping (the composer turns the renderer's own off), a trace of film grain and a
- * light vignette; depth of field focused on the board and SMAA on the high tier only;
+ * light vignette; depth of field focused on the board and SMAA on the high tier, and four-sample
+ * multisampling in its place on the tiers below it, so no tier shows stair-stepped edges;
  * half-resolution bloom on the low tier; and nothing at all on the minimal tier, where the
  * renderer's tone mapping stands. The values are the daylight studio's: quieter than the night
  * scene's, so the wood shows its own colour.
@@ -25,7 +26,7 @@ export function Post() {
     vignette: () => <Vignette key="vignette" offset={0.3} darkness={0.38} />,
   };
   return (
-    <EffectComposer multisampling={0} enableNormalPass={false}>
+    <EffectComposer multisampling={level === 'full' ? 0 : 4} enableNormalPass={false}>
       {postEffects(level).map((name) => effect[name]())}
     </EffectComposer>
   );

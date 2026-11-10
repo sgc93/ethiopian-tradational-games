@@ -114,3 +114,46 @@
 .ui-layer .result-won.panel {
   border-color: var(--gold-300);
 }
+
+/* ---------- motion: the result builds in steps ---------- */
+.ui-layer .result-panel > .result-crest {
+  animation: result-crest 700ms cubic-bezier(0.2, 0.9, 0.2, 1) 180ms both;
+}
+
+.ui-layer .result-panel > .result-words {
+  animation: result-step 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 300ms both;
+}
+
+.ui-layer .result-panel > .scoreline {
+  animation: result-step 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 430ms both;
+}
+
+.ui-layer .result-panel > .result-actions {
+  animation: result-step 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 900ms both;
+}
+
+@keyframes result-crest {
+  from {
+    opacity: 0;
+    rotate: -120deg;
+    scale: 0.4;
+  }
+}
+
+@keyframes result-step {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+/* The headline keeps to two lines at most. */
+.ui-layer .result-panel .big {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-layer .result-panel > * {
+    animation: none !important;
+  }
+}

@@ -11,6 +11,8 @@ const PER_SHAPE = TOTAL_STONES / SHAPES;
 interface StonePose {
   rotation: THREE.Quaternion;
   scale: THREE.Vector3;
+  /** The axis the stone tumbles about in the air. */
+  axis: THREE.Vector3;
 }
 
 /** Each stone's fixed tilt and size, from its id alone. */
@@ -22,6 +24,7 @@ function stonePose(id: number): StonePose & { colour: THREE.Color } {
     colour,
     rotation: new THREE.Quaternion().setFromEuler(turn),
     scale: new THREE.Vector3().setScalar(0.85 + rng() * 0.3),
+    axis: new THREE.Vector3(rng() - 0.5, (rng() - 0.5) * 0.4, rng() - 0.5).normalize(),
   };
 }
 
@@ -57,22 +60,29 @@ function pebbleMaterial(): THREE.MeshStandardMaterial {
 
 const poses = Array.from({ length: TOTAL_STONES }, (_, id) => stonePose(id));
 const tmp = new THREE.Vector3();
+const turned = new THREE.Quaternion();
+const tumbleBy = new THREE.Quaternion();
 
-/** Instance matrices for `count` stones; ids without a position get `null` and are not drawn. */
-export function stoneMatrices(positions: readonly (Vec3 | undefined)[], count: number): (THREE.Matrix4 | null)[] {
+/**
+ * Instance matrices for `count` stones; ids without a position get `null` and are not drawn.
+ * A stone with a spin is turned that far about its own tumbling axis from its resting angle.
+ */
+export function stoneMatrices(positions: readonly (Vec3 | undefined)[], count: number, spins: readonly (number | undefined)[] = []): (THREE.Matrix4 | null)[] {
   return Array.from({ length: count }, (_, id) => {
     const at = positions[id];
     if (!at) return null;
     const pose = poses[id] ?? stonePose(id);
-    return new THREE.Matrix4().compose(tmp.set(...at), pose.rotation, pose.scale);
+    const spin = spins[id] ?? 0;
+    const rotation = spin === 0 ? pose.rotation : turned.copy(tumbleBy.setFromAxisAngle(pose.axis, spin)).multiply(pose.rotation);
+    return new THREE.Matrix4().compose(tmp.set(...at), rotation, pose.scale);
   });
 }
 
 /**
  * The 48 pebbles, drawn as one instanced mesh per pebble shape. Each frame they are placed at
- * `positions.current[id]`, so animation only has to move those vectors.
+ * `positions.current[id]` and turned by `spins.current[id]`, so animation only has to move those.
  */
-export function Stones({ positions }: { positions: MutableRefObject<Vec3[]> }) {
+export function Stones({ positions, spins }: { positions: MutableRefObject<Vec3[]>; spins?: MutableRefObject<number[]> }) {
   const meshes = useMemo(() => {
     const material = pebbleMaterial();
     return makePebbleGeometries(SHAPES, 3).map((g) => {
@@ -96,7 +106,7 @@ export function Stones({ positions }: { positions: MutableRefObject<Vec3[]> }) {
 
   const hidden = useMemo(() => new THREE.Matrix4().makeScale(0, 0, 0), []);
   useFrame(() => {
-    const matrices = stoneMatrices(positions.current, TOTAL_STONES);
+    const matrices = stoneMatrices(positions.current, TOTAL_STONES, spins?.current);
     stones.forEach((s, id) => s.mesh.setMatrixAt(s.index, matrices[id] ?? hidden));
     for (const mesh of meshes) mesh.instanceMatrix.needsUpdate = true;
   });

@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { fitPoints, type Vec3 } from '../layout';
-import { defaultBands, homePose, orbitPose, playCamera, project, seatArc, topCamera, type Bands } from './poses';
+import { defaultBands, homePose, openingPose, orbitPose, playCamera, project, seatArc, topCamera, type Bands } from './poses';
 
 const S = { width: 844, height: 390 };
 const B: Bands = { top: 56, bottom: 313 };
@@ -62,49 +62,78 @@ test('the top-down view looks almost straight down from 15.5', () => {
 
 test('with less room between the bars, the home camera stands back along the same line', () => {
   const near = homePose(5);
-  const far = homePose(5, 0.6);
-  expect(homePose(5, 1)).toEqual(near);
-  expect(homePose(5, 0.95)).toEqual(near); // the board already fits
+  const far = homePose(5, 0.5);
+  expect(homePose(5, 0.71)).toEqual(near);
+  // With room to spare it comes a little nearer, but only a little.
+  expect(Math.hypot(...homePose(5, 1).position) / Math.hypot(...near.position)).toBeCloseTo(0.88, 5);
+  // A narrow screen stands it back as well.
+  expect(Math.hypot(...homePose(5, 0.71, 0.5, 4 / 3).position) / Math.hypot(...near.position)).toBeCloseTo(4 / 3, 5);
   const ratio = Math.hypot(...far.position) / Math.hypot(...near.position);
-  expect(ratio).toBeCloseTo(0.83 / (0.92 * 0.6), 5);
+  expect(ratio).toBeCloseTo(0.71 / 0.5, 5);
   far.position.forEach((v, i) => expect(v / near.position[i]!).toBeCloseTo(ratio, 5));
-  expect(far.target).toEqual(near.target);
+  expect(far.target[1] / near.target[1]).toBeCloseTo(ratio, 5);
 });
 
-test('home view: the reference three-quarter, drifting ±10° about 30° left, 6.5–7.5 up, at radius 15.5', () => {
+test('the home camera tips so the picture sits between unequal bars', () => {
+  // A taller bottom bar puts the middle of the free space above the screen's middle: the camera aims lower, and the board rises.
+  const level = homePose(5, 0.7, 0.5);
+  const raised = homePose(5, 0.7, 0.46);
+  expect(raised.target[1]).toBeLessThan(level.target[1]);
+  expect(project(raised, S, [0, 0, 0])[1]).toBeLessThan(project(level, S, [0, 0, 0])[1]);
+  expect(raised.position).toEqual(level.position);
+});
+
+test('home view: a low three-quarter, drifting ±10° about 30° left, 5.1–5.9 up, 19 from the board', () => {
   for (let t = 0; t < 60; t += 0.5) {
     const p = homePose(t);
     const az = (Math.atan2(p.position[0], p.position[2]) * 180) / Math.PI;
     expect(az).toBeLessThanOrEqual(-19.99);
     expect(az).toBeGreaterThanOrEqual(-40.01);
-    expect(p.position[1]).toBeGreaterThanOrEqual(6.5);
-    expect(p.position[1]).toBeLessThanOrEqual(7.5);
-    expect(Math.hypot(p.position[0], p.position[2])).toBeCloseTo(15.5, 1);
+    expect(p.position[1]).toBeGreaterThanOrEqual(5.1);
+    expect(p.position[1]).toBeLessThanOrEqual(5.9);
+    expect(Math.hypot(p.position[0], p.position[2])).toBeCloseTo(19, 1);
     expect(p.position[2]).toBeGreaterThan(0); // on A's side
   }
   homePose(0).position.forEach((v, i) => expect(v).toBeCloseTo(homePose(60).position[i]!, 9)); // once a minute
 });
 
-test('home camera aims at the board', () => {
+test('the home camera shows the horizon above the board', () => {
+  const pose = homePose(10);
+  const horizon = project(pose, S, [pose.position[0] * -50, pose.position[1], pose.position[2] * -50])[1];
+  const board = project(pose, S, [0, 0, 0])[1];
+  expect(horizon).toBeGreaterThan(0);
+  expect(horizon).toBeLessThan(S.height * 0.4);
+  expect(board).toBeGreaterThan(horizon);
+});
+
+test('home camera aims over the board', () => {
   const { target } = homePose(10);
   expect(Math.hypot(target[0], target[2])).toBeLessThan(1);
   expect(target[1]).toBeGreaterThan(0);
-  expect(target[1]).toBeLessThan(2);
+  expect(target[1]).toBeLessThan(4);
 });
 
-test('orbit: a swing of 40° either side of broadside every 40 s, at radius 20 and tilt 35°', () => {
+test('the opening shot is high over the yard, on the home view\'s line', () => {
+  const home = homePose(0);
+  const open = openingPose(home);
+  expect(open.position[1]).toBeGreaterThan(home.position[1] * 3);
+  expect(Math.atan2(open.position[0], open.position[2])).toBeCloseTo(Math.atan2(home.position[0], home.position[2]), 9);
+  expect(Math.hypot(open.position[0], open.position[2])).toBeGreaterThan(Math.hypot(home.position[0], home.position[2]) * 2);
+});
+
+test('result view: a swing of 35° either side of broadside every 40 s, low and wide', () => {
   for (let t = 0; t <= 40; t += 1) {
     const [x, , z] = orbitPose(t).position;
-    expect(Math.abs(Math.atan2(x, z))).toBeLessThanOrEqual((40 * Math.PI) / 180 + 1e-9);
+    expect(Math.abs(Math.atan2(x, z))).toBeLessThanOrEqual((35 * Math.PI) / 180 + 1e-9);
   }
-  expect(Math.atan2(orbitPose(10).position[0], orbitPose(10).position[2])).toBeCloseTo((40 * Math.PI) / 180, 6);
+  expect(Math.atan2(orbitPose(10).position[0], orbitPose(10).position[2])).toBeCloseTo((35 * Math.PI) / 180, 6);
   const a = orbitPose(0);
   const b = orbitPose(40);
   expect(a.position[0]).toBeCloseTo(b.position[0], 6);
   expect(a.position[2]).toBeCloseTo(b.position[2], 6);
   const p = orbitPose(7).position;
-  expect(Math.hypot(p[0], p[2])).toBeCloseTo(20 * Math.cos((35 * Math.PI) / 180), 1);
-  expect(p[1] - orbitPose(7).target[1]).toBeCloseTo(20 * Math.sin((35 * Math.PI) / 180), 1);
+  expect(Math.hypot(p[0], p[2])).toBeCloseTo(22 * Math.cos((12 * Math.PI) / 180), 1);
+  expect(p[1] - orbitPose(7).target[1]).toBeCloseTo(22 * Math.sin((12 * Math.PI) / 180), 1);
   expect(orbitPose(10).position[0]).not.toBeCloseTo(orbitPose(0).position[0], 1);
 });
 

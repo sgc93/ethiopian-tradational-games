@@ -20,9 +20,9 @@ export interface TierSettings {
 
 /** The four quality tiers of spec §11. */
 export const TIERS: Record<Tier, TierSettings> = {
-  high: { dpr: 2, shadowMap: 1024, bakedShadow: false, post: 'full', grass: 3000, embers: 160, smoke: 14, detail: 'full', drawCalls: 120 },
-  mid: { dpr: 1.5, shadowMap: 1024, bakedShadow: false, post: 'full-no-dof', grass: 1500, embers: 90, smoke: 10, detail: 'full', drawCalls: 100 },
-  low: { dpr: 1, shadowMap: 512, bakedShadow: false, post: 'light', grass: 0, embers: 40, smoke: 6, detail: 'half', drawCalls: 80 },
+  high: { dpr: 2, shadowMap: 1024, bakedShadow: false, post: 'full', grass: 9000, embers: 160, smoke: 14, detail: 'full', drawCalls: 120 },
+  mid: { dpr: 1.5, shadowMap: 1024, bakedShadow: false, post: 'full-no-dof', grass: 5000, embers: 90, smoke: 10, detail: 'full', drawCalls: 100 },
+  low: { dpr: 1, shadowMap: 512, bakedShadow: false, post: 'light', grass: 2000, embers: 40, smoke: 6, detail: 'half', drawCalls: 80 },
   minimal: { dpr: 0.85, shadowMap: 0, bakedShadow: true, post: 'none', grass: 0, embers: 24, smoke: 4, detail: 'half', drawCalls: 60 },
 };
 

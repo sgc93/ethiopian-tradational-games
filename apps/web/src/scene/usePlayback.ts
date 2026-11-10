@@ -7,6 +7,7 @@ import type { Speed } from '../state/settings';
 import { now, useFeedback } from './feedback/feedbackStore';
 import { handSlot, stoneSlot, storeSlot, type Vec3 } from './layout';
 import { planPlayback } from './playbackPlan';
+import { flight, type Motion } from './stoneMotion';
 import { StoneTracker, type StoneLocation } from './stoneTracker';
 import { buildTimeline, DURATION_MS } from './timeline';
 
@@ -23,30 +24,24 @@ export function locationToPosition(loc: StoneLocation): Vec3 {
 
 const IDLE_ROUND = newRound(initialOwners(), 0);
 
-/** A point between two positions, lifted into an arc of the given height. */
-function arc(from: Vec3, to: Vec3, t: number, height: number): Vec3 {
-  return [
-    from[0] + (to[0] - from[0]) * t,
-    from[1] + (to[1] - from[1]) * t + height * 4 * t * (1 - t),
-    from[2] + (to[2] - from[2]) * t,
-  ];
-}
-
 interface Args {
   session: Session | null;
   speed: Speed;
   sfx: Sfx;
   /** Stone positions by id, read by <Stones> every frame. */
   positions: MutableRefObject<Vec3[]>;
+  /** How far each stone has tumbled from its resting angle, in radians, by id; 0 at rest. */
+  spins?: MutableRefObject<number[]>;
   onDone(turnId: number): void;
   onCounts(counts: number[]): void;
   onOwners(owners: readonly Player[]): void;
 }
 
 /**
- * Replays each move's events as animation: stones lift from a hole, fly one by one into the
- * following holes (the rest of the hand following along), relay, and captured fours fly to their
- * pile. Between rounds every stone is dealt back out, four to a hole.
+ * Replays each move's events as animation: stones lift from a hole one after another, are tossed
+ * one by one into the following holes (the rest of the hand hopping along), relay, and captured
+ * fours swirl up and stream to their pile. Between rounds every stone is dealt back out in high
+ * arcs, four to a hole. How each kind of move looks is in `stoneMotion.ts`.
  */
 /** The fourteen counts the discs show: the cups, then the two piles (stores) as stones land in them. */
 const allCounts = (t: StoneTracker): number[] => [...t.holeCounts(), ...t.pileCounts()];
@@ -63,7 +58,10 @@ export function usePlayback(args: Args): void {
   const key = session ? `${session.id}:${session.turnId}:${session.phase === 'animating'}` : 'idle';
 
   useEffect(() => {
-    const { session, speed, sfx, positions, onDone, onCounts, onOwners } = live.current;
+    const { session, speed, sfx, positions, spins, onDone, onCounts, onOwners } = live.current;
+    const still = () => {
+      if (spins) spins.current = [];
+    };
     const feedback = useFeedback.getState();
 
     /** The turn has passed to someone: the world answers (the firelight swells their way). */
@@ -79,6 +77,7 @@ export function usePlayback(args: Args): void {
       sfx.duck(false); // a killed move must not leave the ambience down
       tracker.current = new StoneTracker(round);
       positions.current = tracker.current.locations().map(locationToPosition);
+      still();
       onCounts(allCounts(tracker.current));
       onOwners(round.owners);
       turnTo(session ? round.toMove : null);
@@ -86,6 +85,7 @@ export function usePlayback(args: Args): void {
 
     const finish = (turnId: number) => {
       positions.current = tracker.current!.locations().map(locationToPosition);
+      still();
       onCounts(allCounts(tracker.current!));
       sfx.duck(false);
       onDone(turnId);
@@ -113,8 +113,8 @@ export function usePlayback(args: Args): void {
     timeline.current = tl;
     sfx.duck(true); // the ambience drops while stones move (spec §10 "Mix")
 
-    /** Moves one stone along an arc; where it starts is read when the flight begins. */
-    const fly = (id: number, to: () => Vec3, atSec: number, durSec: number, height: number) => {
+    /** Moves one stone in the manner of `kind`, tumbling `turns` turns; where it starts is read when the move begins. */
+    const fly = (id: number, to: () => Vec3, atSec: number, durSec: number, kind: Motion, turns = 0) => {
       const s = { t: 0 };
       let from: Vec3 = positions.current[id]!;
       let target: Vec3 = from;
@@ -123,18 +123,22 @@ export function usePlayback(args: Args): void {
         {
           t: 1,
           duration: Math.max(durSec, 0.001),
-          ease: 'power1.inOut',
+          ease: 'none', // the motion has its own easing
           onStart: () => {
             from = positions.current[id]!;
             target = to();
           },
           onUpdate: () => {
-            positions.current[id] = arc(from, target, s.t, height);
+            const f = flight(kind, from, target, s.t, turns);
+            positions.current[id] = f.position;
+            if (spins) spins.current[id] = f.spin;
           },
         },
         atSec,
       );
     };
+    /** Stones differ a little in how much they tumble, by id, so a handful never moves as one. */
+    const tumble = (id: number, base: number) => base + ((id * 7) % 5) * 0.25;
 
     if (session.turnEvents.length === 0) {
       // A new round: holes change hands, then every stone is dealt back out, four to a hole.
@@ -146,11 +150,11 @@ export function usePlayback(args: Args): void {
         return;
       }
       const per = DURATION_MS[speed].redealStone / 1000;
-      const flight = speed === 'fast' ? 0.25 : 0.4;
+      const air = speed === 'fast' ? 0.3 : 0.55;
       moves.forEach((m, i) => {
         const at = 0.5 + i * per;
-        fly(m.id, () => locationToPosition(m.to), at, flight, 0.35);
-        if (i % 4 === 3) tl.call(() => sfx.drop(4), [], at + flight);
+        fly(m.id, () => locationToPosition(m.to), at, air, 'deal', tumble(m.id, 1));
+        if (i % 4 === 3) tl.call(() => sfx.drop(4), [], at + air * 0.8);
       });
       return;
     }
@@ -170,30 +174,34 @@ export function usePlayback(args: Args): void {
       const moves = t.apply(e);
       const counts = allCounts(t);
       switch (e.type) {
-        case 'pickup':
+        case 'pickup': {
           hand = moves.map((m) => m.id);
-          tl.call(() => (sfx.pickup(e.count), onCounts(counts)), [], at);
-          hand.forEach((id, i) => fly(id, () => handSlot(e.hole, i), at, dur, 0));
+          tl.call(() => (sfx.pickup(e.count), onCounts(counts), e.relay && feedback.push({ kind: 'relay', hole: e.hole, at: now() })), [], at);
+          // One after another, each a beat behind the last, all in the hand by the end of the step.
+          const gap = Math.min(0.03, (dur * 0.35) / Math.max(1, hand.length));
+          hand.forEach((id, i) => fly(id, () => handSlot(e.hole, i), at + i * gap, dur - hand.length * gap, 'lift', 0.5));
           break;
+        }
         case 'drop': {
           const id = hand.shift();
           if (id === undefined) break;
           const target = locationToPosition(moves[0]!.to);
-          fly(id, () => target, at, dur, 0.25);
-          // The rest of the hand moves along above the hole just sown into.
-          hand.forEach((rid, i) => fly(rid, () => handSlot(e.hole, i), at, dur, 0));
-          tl.call(() => (sfx.drop(e.countAfter), onCounts(counts), feedback.push({ kind: 'landed', hole: e.hole, at: now() })), [], at + dur * 0.9);
+          fly(id, () => target, at, dur, 'drop', tumble(id, 0.5));
+          // The rest of the hand hops along to above the hole just sown into.
+          hand.forEach((rid, i) => fly(rid, () => handSlot(e.hole, i), at, dur, 'carry'));
+          // The stone lands four fifths of the way through; the rest is its bounce.
+          tl.call(() => (sfx.drop(e.countAfter), onCounts(counts), feedback.push({ kind: 'landed', hole: e.hole, at: now() })), [], at + dur * 0.8);
           break;
         }
         case 'capture':
-          tl.call(() => (sfx.capture(), onCounts(counts), feedback.push({ kind: 'captured', hole: e.hole, by: e.by, at: now() })), [], at);
-          // The four lift together in one arc into the store: 0.6 s at normal speed (1.5× the step).
-          moves.forEach((m) => fly(m.id, () => locationToPosition(m.to), at, dur * 1.5, 0.5));
+          tl.call(() => (sfx.capture(), onCounts(counts), feedback.push({ kind: 'captured', hole: e.hole, by: e.by, count: moves.length, at: now() })), [], at);
+          // They swirl up and stream to the store one behind another: 0.6 s in all at normal speed (1.5× the step).
+          moves.forEach((m, i) => fly(m.id, () => locationToPosition(m.to), at + i * dur * 0.11, dur * (1.5 - (moves.length - 1) * 0.11), 'capture', tumble(m.id, 1.5)));
           break;
         case 'round-end': {
           const per = DURATION_MS[speed].sweepStone / 1000;
           tl.call(() => onCounts(counts), [], at);
-          moves.forEach((m, i) => fly(m.id, () => locationToPosition(m.to), at + i * per, speed === 'fast' ? 0.2 : 0.35, 0.4));
+          moves.forEach((m, i) => fly(m.id, () => locationToPosition(m.to), at + i * per, speed === 'fast' ? 0.25 : 0.45, 'deal', tumble(m.id, 1)));
           break;
         }
       }

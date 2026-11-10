@@ -31,12 +31,16 @@ export function PlayerPlate({ player, name, stones, homes, active, side }: Playe
         <div className="st">
           <span>
             <Icon name="pebble" size={12} />
-            <b data-testid={`stones-${player}`}>{stones}</b>
+            <b key={stones} className="bump" data-testid={`stones-${player}`}>
+              {stones}
+            </b>
           </span>
           {homes !== undefined && (
             <span>
               <Icon name="hut" size={12} />
-              <b data-testid={`homes-${player}`}>{homes}</b>
+              <b key={homes} className="bump" data-testid={`homes-${player}`}>
+                {homes}
+              </b>
             </span>
           )}
         </div>

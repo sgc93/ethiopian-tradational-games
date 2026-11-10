@@ -53,7 +53,7 @@ test('ambience starts its sources once and stops them all', () => {
     a.start();
     const started = ctx.counts.started;
     expect(started).toBeGreaterThan(0);
-    vi.advanceTimersByTime(3000); // crackle bursts and chirps are scheduled on timers
+    vi.advanceTimersByTime(6000); // the birds' phrases are scheduled on timers
     expect(ctx.counts.started).toBeGreaterThan(started);
     a.stop();
     vi.advanceTimersByTime(10_000);

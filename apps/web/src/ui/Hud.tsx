@@ -1,9 +1,11 @@
-import { homesOf, MAX_ROUNDS, type Player } from '@etg/gebeta-rules';
+import { HOLES, homesOf, MAX_ROUNDS, type Player } from '@etg/gebeta-rules';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Session } from '../game/session';
 import { activePlayer, playerName } from '../game/view';
+import { useBoardView } from '../scene/boardView';
 import { useScene } from '../scene/sceneStore';
+import { Callouts } from './hud/Callouts';
 import { Caption } from './hud/Caption';
 import { Emblem } from './kit';
 import { Cartouche } from './hud/Cartouche';
@@ -21,6 +23,8 @@ export function Hud({ session }: { session: Session }) {
   const round = match.round;
   const active = activePlayer(session);
   const near = useScene((s) => s.seat);
+  // The stores as the board shows them: a capture counts on the plate when its stones land, not when the move is made.
+  const shown = useBoardView((s) => s.counts);
   const far: Player = near === 0 ? 1 : 0;
   const inPlay = phase !== 'finished' && phase !== 'round-summary' && phase !== 'toss';
 
@@ -60,7 +64,7 @@ export function Hud({ session }: { session: Session }) {
     <PlayerPlate
       player={player}
       name={playerName(t, session, player)}
-      stones={round.captured[player]}
+      stones={Math.min(round.captured[player], shown[HOLES + player] ?? round.captured[player])}
       homes={match.format === 'match' ? homesOf(round.owners, player) : undefined}
       active={inPlay && active === player}
       side={side}
@@ -73,9 +77,10 @@ export function Hud({ session }: { session: Session }) {
       <div className="bar bar-bottom" aria-hidden="true" />
       {plate(far, 'far')}
       <Cartouche text={cartouche.text} pips={cartouche.pips} />
-      {caption ? <Caption tone={caption.tone} text={caption.text} thinking={caption.thinking} /> : <p className="hud-caption" aria-live="polite" />}
+      {caption ? <Caption tone={caption.tone} text={caption.text} thinking={caption.thinking} motionKey={`${active}:${caption.thinking}`} /> : <p className="hud-caption" aria-live="polite" />}
       {plate(near, 'near')}
       <Emblem size={40} className="hud-crest" />
+      <Callouts />
     </header>
   );
 }

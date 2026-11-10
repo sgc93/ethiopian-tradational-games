@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { deviceEnv } from '../state/settings';
 import { urlOptions } from '../urlOptions';
-import { blendPose, defaultBands, homePose, orbitPose, playCamera, seatArc, topCamera, type Pose } from './camera/poses';
+import { blendPose, defaultBands, homePose, openingPose, orbitPose, playCamera, seatArc, topCamera, type Pose } from './camera/poses';
 import { latest, now, useFeedback } from './feedback/feedbackStore';
 import { nudge } from './feedback/pulses';
 import { holeCenter } from './layout';
@@ -13,7 +13,7 @@ import { useScene, type SceneMode } from './sceneStore';
 const REDUCED_MOTION = typeof window !== 'undefined' && deviceEnv().reducedMotion;
 /** Fixed looks for checking the set: the reference three-quarter view, and three at head B (at x = −5.25, facing +x) like the reference sheets. */
 const DEV_LOOKS: Record<NonNullable<typeof urlOptions.cam>, Pose> = {
-  home: { position: [-7.75, 7, 13.4], target: [0, 0.8, 0], fov: 30 },
+  home: { position: [-9.5, 5.5, 16.45], target: [0, 2.2, 0], fov: 44 },
   head: { position: [-5.0, 1.9, 9.5], target: [-5.0, 1.7, 0], fov: 30 },
   head34: { position: [1.5, 3.4, 7.5], target: [-5.0, 1.6, 0], fov: 30 },
   headfront: { position: [4.5, 2.2, 0], target: [-5.0, 1.8, 0], fov: 30 },
@@ -87,9 +87,14 @@ export function CameraRig() {
     if (urlOptions.cam) return DEV_LOOKS[urlOptions.cam];
     const s = state.current;
     switch (s.mode) {
-      case 'home':
-        // The board fits between the interface's bars; the bare still has the whole height.
-        return urlOptions.still ? homePose(12) : homePose(t, (bands.bottom - bands.top) / size.height);
+      case 'home': {
+        // The bare still has the whole height; otherwise the board fits between the interface's bars.
+        if (urlOptions.still) return homePose(12, 0.71);
+        const home = homePose(t, (bands.bottom - bands.top) / size.height, (bands.bottom + bands.top) / 2 / size.height, size.width / size.height);
+        // The reveal: the loading screen runs `flare` from 0 to 1, and the camera cranes down from over the yard.
+        const reveal = useScene.getState().flare;
+        return reveal < 1 && !REDUCED_MOTION ? blendPose(openingPose(home), home, reveal * reveal * (3 - 2 * reveal)) : home;
+      }
       case 'toss':
       case 'round-end':
         return topCamera(size, bands);

@@ -3,23 +3,34 @@ import * as THREE from 'three';
 
 /** Blade height range in game units (2–4.5 cm). */
 export const GRASS_HEIGHT: [number, number] = [0.4, 0.9];
-const BLADE_WIDTH = 0.06;
+const BLADE_WIDTH = 0.045;
+/** Blades grow in tufts: this many to a tuft, within this distance of its middle. */
+const TUFT = { blades: 7, spread: 0.32 };
 const MAT = { rx: 11, rz: 6.5 };
-const HEARTH = { x: -26, z: -2, r: 9 };
-const REACH = 20;
+const REACH = 42;
 
-/** Blade placements as [x, z, yaw, height], kept off the mat and clear of the hearth. */
+/** Blade placements as [x, z, yaw, height], kept off the mat. */
 export function grassPlacements(count: number, seed: number): [number, number, number, number][] {
   const rng = mulberry32(seed);
   const out: [number, number, number, number][] = [];
+  const offMat = (x: number, z: number) => (x / MAT.rx) ** 2 + (z / MAT.rz) ** 2 > 1.16;
   while (out.length < count) {
     const a = rng() * Math.PI * 2;
-    const r = Math.sqrt(rng()) * REACH;
-    const x = r * Math.cos(a);
-    const z = r * Math.sin(a);
-    if ((x / MAT.rx) ** 2 + (z / MAT.rz) ** 2 <= 1.05) continue;
-    if (Math.hypot(x - HEARTH.x, z - HEARTH.z) <= HEARTH.r) continue;
-    out.push([x, z, rng() * Math.PI, GRASS_HEIGHT[0] + rng() * (GRASS_HEIGHT[1] - GRASS_HEIGHT[0])]);
+    // Thickest by the mat, thinning out across the yard.
+    const r = Math.pow(rng(), 0.72) * (REACH - TUFT.spread);
+    const cx = r * Math.cos(a);
+    const cz = r * Math.sin(a);
+    if (!offMat(cx, cz)) continue;
+    // A tuft is as tall as its tallest blade; the others are shorter and lean out from the middle.
+    const tall = GRASS_HEIGHT[0] + rng() * (GRASS_HEIGHT[1] - GRASS_HEIGHT[0]);
+    for (let b = 0; b < TUFT.blades && out.length < count; b++) {
+      const ba = rng() * Math.PI * 2;
+      const br = Math.sqrt(rng()) * TUFT.spread;
+      const x = cx + br * Math.cos(ba);
+      const z = cz + br * Math.sin(ba);
+      if (!offMat(x, z)) continue;
+      out.push([x, z, rng() * Math.PI, Math.max(GRASS_HEIGHT[0], tall * (0.55 + 0.45 * rng()))]);
+    }
   }
   return out;
 }

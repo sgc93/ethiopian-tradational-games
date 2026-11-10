@@ -4,6 +4,7 @@ import type { Session } from '../game/session';
 import { playerName } from '../game/view';
 import { now, useFeedback } from '../scene/feedback/feedbackStore';
 import { Button, Emblem, Panel } from '../ui/kit';
+import { useCountUp } from '../ui/useCountUp';
 import './ResultScreen.css';
 
 /**
@@ -16,6 +17,9 @@ export function ResultScreen({ session, onPlayAgain, onHome }: { session: Sessio
   const { match } = session;
   const result = match.result;
   const last = match.history.at(-1);
+  // The score arrives: both sides count up together once the panel is in.
+  const shownA = useCountUp(last?.totals[0] ?? 0, 900, 450);
+  const shownB = useCountUp(last?.totals[1] ?? 0, 900, 450);
 
   useEffect(() => {
     useFeedback.getState().push({ kind: 'burst', at: now() });
@@ -48,7 +52,9 @@ export function ResultScreen({ session, onPlayAgain, onHome }: { session: Sessio
         </div>
         <div className="scoreline">
           <span className="who">{playerName(t, session, 0)}</span>
-          <p className="score result-score">{t('result.score', { a: last.totals[0], b: last.totals[1] })}</p>
+          <p className="score result-score" aria-label={t('result.score', { a: last.totals[0], b: last.totals[1] })}>
+            {t('result.score', { a: shownA, b: shownB })}
+          </p>
           <span className="who">{playerName(t, session, 1)}</span>
         </div>
         <div className="result-actions">

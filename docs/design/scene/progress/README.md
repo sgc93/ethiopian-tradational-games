@@ -148,3 +148,65 @@ The interface is drawn as the fittings of the object: the board's case. Oxblood 
 **Copy changed with the scene:** the loading line is now "Setting out the board…" (`ገበጣውን እያዘጋጀን ነው…`, in `docs/i18n-review.md` for the owner's reading), and the home bar's About button reads "About Gebeta". The no-WebGL still (`apps/web/public/home-still.webp`) is the daylight board.
 
 **Not judged here:** the captures are from headless Chrome's software renderer, so the final colour and the frame rate on a phone still want a real GPU and the owner's eye. The stones are still the blueprint's 10 mm.
+
+## Part 6: the yard, and motion
+
+The owner asked on 2026-11-10 for every element of the game to be scored, for what would take each to 10, and for that to be built, to the standard of a video game. The scores and the plan are in [`../../review-2026-11-10.md`](../../review-2026-11-10.md). This part is what was built against it.
+
+### The yard
+
+The board is no longer in a studio. It lies on a woven mat in a highland homestead's yard, in daylight.
+
+- **Light and air** (`scene/world/Daylight.tsx`): the sun as the one hard light, the sky as the fill and as what the oiled wood reflects, haze that pales things with distance, and dust drifting in the sunlight.
+- **Sky** (`DaySky.tsx`): a blue gradient, the sun's glow, two layers of drifting cloud, and three ridges of mountains one behind another. All of it is worked out in the shader; nothing is downloaded.
+- **Ground** (`Yard.tsx` and the modules it mounts): packed earth, the mat with a dyed red ring and a frayed fringe, tufts of dry grass moving in the wind, the coffee pot on its brazier with a tray of cups, a woven basket, the round thatched house across the yard, and acacia and eucalyptus beyond.
+- **Leaf shade** (`leafShade.ts`): moving, dappled shade on the ground round the board. The board itself sits in a sunlit clearing, so the cups and stones are always in plain light.
+
+The yard alone: [p6-yard.jpg](p6-yard.jpg). This picture is also the new no-WebGL still.
+
+### Cameras
+
+- **Home** is a low, wide three-quarter view with the yard behind the board. It stands back on narrow screens and tips so the picture sits between the two bars.
+- **The opening** is a crane shot: the camera comes down from over the yard to the home view as the loading screen lifts.
+- **The result** is low and wide, the hills behind the board, swinging slowly either side of broadside.
+
+### Stones
+
+How each kind of move looks is in `scene/stoneMotion.ts`, with tests.
+
+- Stones are lifted out of a cup one after another, with a little pop.
+- A sown stone is tossed from the hand, falls faster as it goes, and bounces once. The rest of the hand hops along.
+- Captured stones swirl up and stream to the store one behind another.
+- The deal at a new round, and the sweep at a round's end, go in high arcs.
+- Every stone tumbles in the air and comes to rest at its own angle.
+
+### Feedback
+
+- A "+4" rises from the capturing player's store, in that player's colour.
+- A ring snaps out from a cup where four are captured, and where a hand relays.
+- The player's plate counts a capture when its stones land, not when the move is made.
+- Gold dust goes up from the board at the result.
+
+### Interface motion
+
+- The home screen assembles itself: the bars slide in, the crest turns into place, the menu plaques are dealt in one after another.
+- Plaques and medallions press. The turn caption comes in afresh when the turn changes, and the plate whose turn it is rings once.
+- The result panel builds in steps and its score counts up. In the round summary each home is set down in turn.
+- All of it is switched off under reduced motion.
+
+### Smaller things
+
+- "Start again" and "Quit" in the pause menu ask once: the first press arms the button, the second does it.
+- The tiers below the high one are multisampled, so edges are no longer stair-stepped there.
+- A count disc used to jump sideways for a moment whenever its number changed. It now flashes in place.
+- The ambience is a breeze, leaves and birds in place of the fire and the crickets.
+
+| Home | A capture | Result | Phone |
+|---|---|---|---|
+| [p6-home.jpg](p6-home.jpg) | [p6-capture.jpg](p6-capture.jpg) | [p6-result.jpg](p6-result.jpg) | [p6-phone-home.jpg](p6-phone-home.jpg) |
+
+**Checked:** typecheck, 209 unit tests, 36 of 36 end-to-end tests, and the download at 1,614.7 KB gzip of the 2,929.7 KB budget.
+
+**Not judged here:** the sound, which cannot be heard from this machine's test browser; the frame rate on a phone, now that the scene holds a yard; and the final colour, since the captures are from headless Chrome's software renderer.
+
+**Still open from the review:** a mark on the cup where a move's first lap will end; a wooden knock for stones and plucked-string stings for a capture, a round and a win; trees and props with more shape than cut-outs and lathes. The night scene's modules (hearth, flame, embers, smoke, night sky, its lights) are still in `scene/world/` and nothing mounts them.

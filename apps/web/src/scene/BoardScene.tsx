@@ -33,15 +33,16 @@ const silent: Sfx = { pickup() {}, drop() {}, capture() {}, coinWhoosh() {}, coi
 /** The board, its stones and the camera. Without a session it shows a fresh board at rest. */
 export function BoardScene({ session, speed, sfx, suggested = null, onHoleTap, onAnimationDone }: Props) {
   const positions = useRef<Vec3[]>([]);
+  const spins = useRef<number[]>([]);
   const [owners, setOwners] = useState<readonly Player[]>(initialOwners);
-  usePlayback({ session, speed, sfx: sfx ?? silent, positions, onDone: onAnimationDone, onCounts: setCounts, onOwners: setOwners });
+  usePlayback({ session, speed, sfx: sfx ?? silent, positions, spins, onDone: onAnimationDone, onCounts: setCounts, onOwners: setOwners });
   const playable = useMemo(() => playableHoles(session), [session]);
   const detail = useScene((s) => TIERS[s.tier].detail);
 
   return (
     <>
       <Board detail={detail} />
-      <Stones positions={positions} />
+      <Stones positions={positions} spins={spins} />
       <Feedback owners={owners} playable={playable} suggested={suggested} />
       <HoleHitAreas playable={playable} onTap={onHoleTap} />
       <DiscAnchors />

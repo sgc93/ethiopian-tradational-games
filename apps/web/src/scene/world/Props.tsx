@@ -1,10 +1,14 @@
-import { useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { GROUND_Y } from '../layout';
-import { flicker } from './flicker';
-import { BASKET, BRAZIER, CUP, JEBENA, lathe, STOOL_LEG } from './latheProfiles';
+import { SunBlob } from './sun';
+import { BASKET, BRAZIER, CUP, JEBENA, lathe } from './latheProfiles';
+
+/** Where each stands on the ground (x, z): behind the board as the home view sees it, clear of the play view. */
+const COFFEE: [number, number] = [-9, -30];
+const TRAY: [number, number] = [-1, -33];
+const BASKET_AT: [number, number] = [36, -27];
 
 const CLAY = { color: '#2a1a12', roughness: 0.35, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.3 };
 
@@ -31,7 +35,7 @@ function CoffeeCorner() {
   const cup = useMemo(() => lathe(CUP, 16), []);
   useFrame(({ clock }) => {
     const t = clock.elapsedTime;
-    if (coals.current) coals.current.emissiveIntensity = 1.2 * (0.8 + 0.2 * Math.sin(2.1 * t)) * flicker(t * 0.5);
+    if (coals.current) coals.current.emissiveIntensity = 0.9 * (0.8 + 0.2 * Math.sin(2.1 * t));
     steam.current.forEach((s, i) => {
       if (!s) return;
       const age = ((t * 0.8) / 1.2 + i * 0.25) % 1;
@@ -42,7 +46,9 @@ function CoffeeCorner() {
   });
   return (
     <group>
-      <group position={[-20, GROUND_Y, -9]}>
+      <SunBlob at={[COFFEE[0], COFFEE[1]]} radius={2.6} height={7} />
+      <SunBlob at={[TRAY[0], TRAY[1]]} radius={3.3} height={0.8} opacity={0.4} />
+      <group position={[COFFEE[0], GROUND_Y, COFFEE[1]]}>
         <mesh geometry={brazier} castShadow receiveShadow>
           <meshPhysicalMaterial {...CLAY} color="#3a2416" clearcoat={0.2} roughness={0.7} />
         </mesh>
@@ -72,7 +78,7 @@ function CoffeeCorner() {
         </group>
       </group>
       {/* A tray of six small cups. */}
-      <group position={[-15, GROUND_Y, -11]}>
+      <group position={[TRAY[0], GROUND_Y, TRAY[1]]}>
         <mesh position-y={0.15} receiveShadow castShadow>
           <cylinderGeometry args={[3.2, 3.2, 0.3, 24]} />
           <meshStandardMaterial color="#3a2414" roughness={0.8} />
@@ -81,7 +87,7 @@ function CoffeeCorner() {
           const a = (i / 6) * Math.PI * 2;
           return (
             <mesh key={i} geometry={cup} position={[1.8 * Math.cos(a), 0.3, 1.8 * Math.sin(a)]} castShadow>
-              <meshPhysicalMaterial color="#efe6d8" roughness={0.3} clearcoat={0.5} />
+              <meshPhysicalMaterial color="#d9cfbf" roughness={0.3} clearcoat={0.5} />
             </mesh>
           );
         })}
@@ -90,59 +96,62 @@ function CoffeeCorner() {
   );
 }
 
-/** A low carved stool with a folded white gabi on it, its tilet border repeating the board's band. */
-function StoolAndGabi() {
-  const leg = useMemo(() => lathe(STOOL_LEG, 12), []);
-  const band = useTexture('/textures/band-normal.webp');
-  useMemo(() => {
-    band.wrapS = THREE.RepeatWrapping;
-    band.repeat.set(6, 1);
-  }, [band]);
-  return (
-    <group position={[-32, GROUND_Y, 10]}>
-      {[
-        [-2.2, -2.2],
-        [2.2, -2.2],
-        [-2.2, 2.2],
-        [2.2, 2.2],
-      ].map(([x, z], i) => (
-        <mesh key={i} geometry={leg} position={[x!, 0, z!]} castShadow>
-          <meshStandardMaterial color="#4a2e1a" roughness={0.8} />
-        </mesh>
-      ))}
-      <mesh position-y={6.3} castShadow receiveShadow>
-        <boxGeometry args={[6, 0.6, 6]} />
-        <meshStandardMaterial color="#5a3a22" roughness={0.75} />
-      </mesh>
-      <group position-y={7.2}>
-        <mesh castShadow receiveShadow>
-          <boxGeometry args={[5, 1.2, 4]} />
-          <meshStandardMaterial color="#efe6d8" roughness={0.95} />
-        </mesh>
-        <mesh position={[0, 0, 2.01]}>
-          <planeGeometry args={[5, 1.2]} />
-          <meshStandardMaterial color="#e6c88e" roughness={0.9} normalMap={band} />
-        </mesh>
-      </group>
-    </group>
-  );
+/** The basket's dyed coils: straw, with bands of red, green and black and a row of diamonds, wrapped round it. */
+function makeWeave(): THREE.CanvasTexture {
+  const w = 256;
+  const h = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = '#c9a25c';
+  ctx.fillRect(0, 0, w, h);
+  const band = (y: number, height: number, colour: string) => {
+    ctx.fillStyle = colour;
+    ctx.fillRect(0, y, w, height);
+  };
+  band(40, 14, '#8a2a1c');
+  band(58, 5, '#2a1c14');
+  band(96, 30, '#8a2a1c');
+  band(170, 5, '#2a1c14');
+  band(180, 14, '#3f5a2c');
+  ctx.fillStyle = '#e6c98a';
+  for (let x = 0; x < w; x += 32) {
+    ctx.beginPath();
+    ctx.moveTo(x + 16, 99);
+    ctx.lineTo(x + 28, 111);
+    ctx.lineTo(x + 16, 123);
+    ctx.lineTo(x + 4, 111);
+    ctx.fill();
+  }
+  // The coils themselves: fine dark lines across.
+  ctx.fillStyle = 'rgba(60, 40, 20, 0.22)';
+  for (let y = 0; y < h; y += 6) ctx.fillRect(0, y, w, 1.5);
+  const t = new THREE.CanvasTexture(canvas);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = THREE.RepeatWrapping;
+  t.repeat.set(3, 1);
+  return t;
 }
 
 function Basket() {
   const body = useMemo(() => lathe(BASKET, 28), []);
+  const weave = useMemo(makeWeave, []);
   return (
-    <mesh geometry={body} position={[-20, GROUND_Y, 9]} castShadow receiveShadow>
-      <meshStandardMaterial color="#8a6a36" roughness={0.9} />
-    </mesh>
+    <>
+      <SunBlob at={[BASKET_AT[0], BASKET_AT[1]]} radius={5} height={8} />
+      <mesh geometry={body} position={[BASKET_AT[0], GROUND_Y, BASKET_AT[1]]} scale={1.1} castShadow receiveShadow>
+        <meshStandardMaterial map={weave} roughness={0.9} />
+      </mesh>
+    </>
   );
 }
 
-/** The props around the fire: the coffee corner, the stool with the gabi, and the basket. */
+/** The things of the yard, set out beyond the board where the home view finds them: the coffee corner and the woven basket-table. */
 export function Props() {
   return (
     <group>
       <CoffeeCorner />
-      <StoolAndGabi />
       <Basket />
     </group>
   );

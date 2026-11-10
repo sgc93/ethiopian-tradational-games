@@ -7,6 +7,8 @@ Every string added by the Teret interface work (plan part 2) with the Amharic th
 | `turn.title` | Turn your phone | ስልክዎን ያዙሩ | REVIEW |
 | `turn.body` | Gebeta is played sideways, the way the board lies in front of you. | ገበጣ ሰሌዳው ፊትዎ እንደሚተኛ ሁሉ በጎን ይጫወታል። | REVIEW |
 | `loading.line` | Setting out the board… | ገበጣውን እያዘጋጀን ነው… | REVIEW |
+| `menu.confirmRestart` | Tap again to start over | ዳግም ለመጀመር እንደገና ይንኩ | REVIEW |
+| `menu.confirmQuit` | Tap again to quit | ለመውጣት እንደገና ይንኩ | REVIEW |
 | `picker.level` | How strong? | ምን ያህል ጠንካራ? | REVIEW |
 | `about.close` | Close | ዝጋ | REVIEW |
 | `hud.quickGame` | Quick game | ፈጣን ጨዋታ | REVIEW |

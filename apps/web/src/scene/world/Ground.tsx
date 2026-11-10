@@ -3,8 +3,11 @@ import { useTexture } from '@react-three/drei';
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { GROUND_Y } from '../layout';
+import { withLeafShade } from './leafShade';
 
-const RADIUS = 600;
+const RADIUS = 2600;
+/** One tile of the earth texture covers a metre (20 units). */
+const TILES = (RADIUS * 2) / 20;
 const DECALS = 300;
 const DECAL_REACH = 40;
 
@@ -91,22 +94,25 @@ function Litter() {
   );
 }
 
-/** Packed red-brown earth out to the fog, with scattered straw, pebbles and leaves near the board. */
+/** Packed red-brown earth out to the haze, under moving leaf shade, with scattered straw, pebbles and leaves near the board. */
 export function Ground() {
   const tex = useTexture({ map: '/textures/earth-color.webp', normalMap: '/textures/earth-normal.webp' });
   useMemo(() => {
     for (const t of Object.values(tex)) {
       t.wrapS = t.wrapT = THREE.RepeatWrapping;
-      t.repeat.set(60, 60);
+      t.repeat.set(TILES, TILES);
       t.anisotropy = 4;
     }
     tex.map.colorSpace = THREE.SRGBColorSpace;
   }, [tex]);
+  const material = useMemo(
+    () => withLeafShade(new THREE.MeshStandardMaterial({ map: tex.map, normalMap: tex.normalMap, normalScale: new THREE.Vector2(0.6, 0.6), roughness: 1, color: new THREE.Color(1.9, 2.5, 2.4) }), 'ground'),
+    [tex],
+  );
   return (
     <group>
-      <mesh rotation-x={-Math.PI / 2} position-y={GROUND_Y} receiveShadow>
+      <mesh rotation-x={-Math.PI / 2} position-y={GROUND_Y} material={material} receiveShadow>
         <circleGeometry args={[RADIUS, 64]} />
-        <meshStandardMaterial map={tex.map} normalMap={tex.normalMap} normalScale={new THREE.Vector2(0.5, 0.5)} roughness={1} />
       </mesh>
       <Litter />
     </group>
