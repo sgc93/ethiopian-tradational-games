@@ -3,7 +3,7 @@ import { changeLanguage } from '../i18n';
 import { loadSettings, saveSettings } from '../persistence/storage';
 import { defaultSettings, deviceEnv, type Settings } from './settings';
 
-export type Screen = 'home' | 'about' | 'game' | 'result';
+export type Screen = 'home' | 'about' | 'rules' | 'game' | 'result';
 
 export interface AppStore {
   screen: Screen;

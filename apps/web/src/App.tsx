@@ -4,6 +4,7 @@ import { controller, useSession } from './game/instance';
 import { SceneRoot } from './scene/SceneRoot';
 import { useScene } from './scene/sceneStore';
 import { AboutScreen } from './screens/AboutScreen';
+import { RulesScreen } from './screens/RulesScreen';
 import { GameScreen } from './screens/GameScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { Loading } from './screens/Loading';
@@ -78,7 +79,7 @@ export function App() {
       <UiLayer>
         {loaded && (
           <div className="screens" inert={portrait || undefined}>
-            {screen === 'about' ? <AboutScreen /> : screen === 'game' ? <GameScreen /> : <HomeScreen />}
+            {screen === 'about' ? <AboutScreen /> : screen === 'rules' ? <RulesScreen /> : screen === 'game' ? <GameScreen /> : <HomeScreen />}
           </div>
         )}
         {!loaded && <Loading onDone={() => setLoaded(true)} />}

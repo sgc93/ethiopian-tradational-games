@@ -1,6 +1,7 @@
 import type { Strategy } from './ai';
 import { advanceMatch, newMatch, playMove, type Format } from './match';
 import { mulberry32 } from './rng';
+import { DEFAULT_RULES, type Rules } from './types';
 
 export interface SimStats {
   matches: number;
@@ -21,10 +22,12 @@ export interface SimOptions {
   players: [Strategy, Strategy];
   seed: number;
   maxTurnsPerRound?: number;
+  /** The rules every match is played under; the usual ones unless given. */
+  rules?: Rules;
 }
 
 /** Plays whole matches between two strategies and reports how long rounds and matches run (§4.6). */
-export function simulate({ matches, format, players, seed, maxTurnsPerRound = 5000 }: SimOptions): SimStats {
+export function simulate({ matches, format, players, seed, maxTurnsPerRound = 5000, rules = DEFAULT_RULES }: SimOptions): SimStats {
   const rng = mulberry32(seed);
   const stats: SimStats = {
     matches,
@@ -37,7 +40,7 @@ export function simulate({ matches, format, players, seed, maxTurnsPerRound = 50
   };
 
   for (let i = 0; i < matches; i++) {
-    let match = newMatch(format, rng() < 0.5 ? 0 : 1);
+    let match = newMatch(format, rng() < 0.5 ? 0 : 1, rules);
     let finished = true;
     while (!match.result) {
       let turns = 0;

@@ -1,4 +1,4 @@
-import { isValidMatchState } from '@etg/gebeta-rules';
+import { isValidMatchState, normalizeRules } from '@etg/gebeta-rules';
 import type { Mode, SavedSession } from '../game/session';
 import { LANGUAGES, SPEEDS, type Settings } from '../state/settings';
 
@@ -37,13 +37,15 @@ const isObject = (x: unknown): x is Record<string, unknown> => typeof x === 'obj
 export function loadSettings(fallback: Settings, store: Storage | null = defaultStore()): Settings {
   const saved = read(SETTINGS_KEY, store);
   if (!isObject(saved)) return fallback;
-  const bool = (k: keyof Settings) => (typeof saved[k] === 'boolean' ? (saved[k] as boolean) : (fallback[k] as boolean));
+  const bool = (k: 'sound' | 'showCounts' | 'fixedCamera') => (typeof saved[k] === 'boolean' ? (saved[k] as boolean) : (fallback[k] as boolean));
   return {
     language: LANGUAGES.includes(saved.language as never) ? (saved.language as Settings['language']) : fallback.language,
     speed: SPEEDS.includes(saved.speed as never) ? (saved.speed as Settings['speed']) : fallback.speed,
     sound: bool('sound'),
     showCounts: bool('showCounts'),
     fixedCamera: bool('fixedCamera'),
+    // Each rule is taken on its own: a rule that is missing or unknown is the usual one.
+    rules: saved.rules === undefined ? fallback.rules : normalizeRules(saved.rules),
   };
 }
 

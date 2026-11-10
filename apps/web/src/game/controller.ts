@@ -2,6 +2,8 @@ import {
   advanceMatch,
   legalMoves,
   newMatch,
+  rulesOf,
+  type Rules,
   playMove,
   type Format,
   type HoleIndex,
@@ -22,7 +24,8 @@ export interface SessionPersistence {
 }
 
 export interface Controller {
-  start(mode: Mode, format: Format): void;
+  /** Starts a game under the given rules (the usual ones unless given; a lesson is always under the usual ones). */
+  start(mode: Mode, format: Format, rules?: Rules): void;
   toss(call: 'lion' | 'person'): Player;
   playHole(hole: HoleIndex): boolean;
   animationDone(turnId: number): void;
@@ -121,16 +124,16 @@ export function createController({ ai, persistence, rng, onChange }: Deps): Cont
   };
 
   const controller: Controller = {
-    start(mode, format) {
+    start(mode, format, rules) {
       if (mode.kind === 'guided') begin(mode, newMatch('quick', 0), 'awaiting-move');
-      else begin(mode, newMatch(format, 0), 'toss');
+      else begin(mode, newMatch(format, 0, rules), 'toss');
     },
 
     toss(call) {
       const s = session!;
       const coin = rng() < 0.5 ? 'lion' : 'person';
       const starter: Player = call === coin ? 0 : 1;
-      set({ ...s, match: newMatch(s.match.format, starter) });
+      set({ ...s, match: newMatch(s.match.format, starter, rulesOf(s.match.round)) });
       save();
       next();
       return starter;
@@ -174,7 +177,7 @@ export function createController({ ai, persistence, rng, onChange }: Deps): Cont
       if (!session) return;
       const { mode, match } = session;
       persistence.clear();
-      controller.start(mode, match.format);
+      controller.start(mode, match.format, rulesOf(match.round));
     },
 
     quit() {

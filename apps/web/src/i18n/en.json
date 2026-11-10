@@ -16,7 +16,8 @@
     "about": "About Gebeta",
     "continue": "Continue your game",
     "soundOn": "Sound on",
-    "soundOff": "Sound off"
+    "soundOff": "Sound off",
+    "rules": "Rules"
   },
   "picker": {
     "level": "How strong?",
@@ -62,7 +63,8 @@
     "quickGame": "Quick game",
     "endOfRound": "End of round {{n}}",
     "tapHint": "tap a glowing cup",
-    "resetView": "Put the view back"
+    "resetView": "Put the view back",
+    "noStones": "{{player}} has no stones to play"
   },
   "menu": {
     "title": "Paused",
@@ -169,5 +171,32 @@
   "turn": {
     "title": "Turn your phone",
     "body": "Gebeta is played sideways, the way the board lies in front of you."
+  },
+  "rules": {
+    "title": "Rules of play",
+    "note": "These apply to the next game you start. A game already under way keeps the rules it began with.",
+    "reset": "The usual rules",
+    "done": "Done",
+    "direction": {
+      "label": "Which way the stones are sown",
+      "counter-clockwise": "Counter-clockwise",
+      "clockwise": "Clockwise"
+    },
+    "stranded": {
+      "label": "When a player has no stones left to play",
+      "sweep": "The other takes what is left",
+      "pass": "They miss the turn; the other plays on",
+      "pass-above-four": "They miss the turn while more than four are left"
+    },
+    "passingFour": {
+      "label": "A cup brought to four while sowing passes over it",
+      "owner": "Its owner takes it",
+      "sower": "The player sowing takes it"
+    },
+    "nextStarter": {
+      "label": "Who starts the next round",
+      "winner": "The winner",
+      "loser": "The loser"
+    }
   }
 }

@@ -28,7 +28,7 @@ export function HomeScreen() {
   useEffect(() => useScene.getState().setMode('home'), []);
 
   const begin = (mode: Mode, format: Format) => {
-    controller.start(mode, format);
+    controller.start(mode, format, settings.rules);
     setScreen('game');
   };
 
@@ -58,6 +58,9 @@ export function HomeScreen() {
         ))}
       </div>
       <div className="home-tools">
+        <Button kind="quiet" className="home-about" onClick={() => setScreen('rules')}>
+          {t('home.rules')}
+        </Button>
         <Button kind="quiet" className="home-about" onClick={() => setScreen('about')}>
           <Mixed text={t('home.about')} />
         </Button>

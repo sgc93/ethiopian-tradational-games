@@ -61,7 +61,8 @@ function search(state: RoundState, depth: number, alpha: number, beta: number, d
   if (deadline()) throw new OutOfTime();
   let best = -Infinity;
   for (const child of orderedChildren(state)) {
-    const score = -search(child, depth - 1, -beta, -alpha, deadline);
+    // The score is for the player to move: turned about when the turn has passed to the other player, kept when it has not.
+    const score = child.toMove === state.toMove ? search(child, depth - 1, alpha, beta, deadline) : -search(child, depth - 1, -beta, -alpha, deadline);
     if (score > best) best = score;
     if (best > alpha) alpha = best;
     if (alpha >= beta) break;
@@ -81,7 +82,8 @@ function bestAtDepth(state: RoundState, depth: number, rng: () => number, deadli
   let best = -Infinity;
   let bests: HoleIndex[] = [];
   for (const h of legalMoves(state)) {
-    const score = -search(applyMove(state, h).state, depth - 1, -Infinity, Infinity, deadline);
+    const child = applyMove(state, h).state;
+    const score = (child.toMove === state.toMove ? 1 : -1) * search(child, depth - 1, -Infinity, Infinity, deadline);
     if (score > best) [best, bests] = [score, [h]];
     else if (score === best) bests.push(h);
   }

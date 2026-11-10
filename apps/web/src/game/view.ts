@@ -1,4 +1,4 @@
-import { HOLES, legalMoves, type HoleIndex, type Player, type RoundState } from '@etg/gebeta-rules';
+import { legalMoves, nextHole, rulesOf, type HoleIndex, type Player, type RoundState } from '@etg/gebeta-rules';
 import type { TFunction } from 'i18next';
 import type { Session } from './session';
 
@@ -12,11 +12,13 @@ export function playableHoles(session: Session | null): Set<HoleIndex> {
 
 /**
  * The cup a hand of stones lifted from `hole` runs out in: one stone to each cup onward, round
- * the board. That is the end of the first lap only; if the cup had stones the hand is picked up
+ * the board the way the game's rules sow. That is the end of the first lap only; if the cup had stones the hand is picked up
  * again from there, and where that ends is not shown.
  */
 export function firstLapEnd(round: RoundState, hole: HoleIndex): HoleIndex {
-  return ((hole + (round.board[hole] ?? 0)) % HOLES) as HoleIndex;
+  let at = hole;
+  for (let n = round.board[hole] ?? 0; n > 0; n--) at = nextHole(at, rulesOf(round));
+  return at;
 }
 
 /** "You" / "Computer" against the computer, "Player 1" / "Player 2" between friends. */

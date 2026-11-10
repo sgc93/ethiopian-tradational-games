@@ -1,3 +1,5 @@
+import { DEFAULT_RULES, type Rules } from '@etg/gebeta-rules';
+
 export type Language = 'am' | 'en';
 export type Speed = 'normal' | 'fast' | 'skip';
 
@@ -7,6 +9,8 @@ export interface Settings {
   speed: Speed;
   showCounts: boolean;
   fixedCamera: boolean;
+  /** The rules the next game is started under. */
+  rules: Rules;
 }
 
 export const LANGUAGES: readonly Language[] = ['am', 'en'];
@@ -24,6 +28,7 @@ export function defaultSettings(env: DeviceEnv): Settings {
     speed: env.reducedMotion ? 'fast' : 'normal',
     showCounts: true,
     fixedCamera: false,
+    rules: DEFAULT_RULES,
   };
 }
 

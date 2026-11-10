@@ -1,10 +1,12 @@
 import {
+  DEFAULT_RULES,
   HOLES,
   IllegalMoveError,
   STONES_PER_HOLE,
   type HoleIndex,
   type Player,
   type RoundState,
+  type Rules,
   type TurnEvent,
 } from './types';
 
@@ -13,7 +15,7 @@ export function initialOwners(): Player[] {
   return Array.from({ length: HOLES }, (_, i) => (i < HOLES / 2 ? 0 : 1));
 }
 
-export function newRound(owners: readonly Player[], starter: Player): RoundState {
+export function newRound(owners: readonly Player[], starter: Player, rules: Rules = DEFAULT_RULES): RoundState {
   const board: number[] = Array(HOLES).fill(STONES_PER_HOLE);
   return {
     board,
@@ -23,7 +25,16 @@ export function newRound(owners: readonly Player[], starter: Player): RoundState
     starter,
     over: false,
     seen: { [positionKey(board, starter)]: 1 },
+    rules,
   };
+}
+
+/** The rules a round is played under: its own, or the usual ones for a game saved before there was a choice. */
+export const rulesOf = (state: RoundState): Rules => state.rules ?? DEFAULT_RULES;
+
+/** The cup the sowing goes to after `hole`, under the round's direction. */
+export function nextHole(hole: HoleIndex, rules: Rules = DEFAULT_RULES): HoleIndex {
+  return (hole + (rules.direction === 'clockwise' ? HOLES - 1 : 1)) % HOLES;
 }
 
 /**
@@ -48,12 +59,15 @@ export function legalMoves(state: RoundState): HoleIndex[] {
 
 /**
  * Play one turn (spec §4.2): sow from `hole`, relay from occupied holes, capture fours,
- * and stop at an empty hole, a last-stone capture, or a repeated relay position (§4.6).
+ * and stop at an empty hole, a last-stone capture, or a repeated relay position (§4.6). The
+ * round's own rules say which way the sowing goes, who takes a four made in passing, and what
+ * happens when the next player has no stones to play.
  */
 export function applyMove(state: RoundState, hole: HoleIndex): { state: RoundState; events: TurnEvent[] } {
   if (state.over || !legalMoves(state).includes(hole)) {
     throw new IllegalMoveError(`hole ${hole} cannot be played`);
   }
+  const rules = rulesOf(state);
   const mover = state.toMove;
   const board = [...state.board];
   const captured: [number, number] = [state.captured[0], state.captured[1]];
@@ -67,7 +81,7 @@ export function applyMove(state: RoundState, hole: HoleIndex): { state: RoundSta
   events.push({ type: 'pickup', hole: pos, count: hand, relay: false });
 
   for (;;) {
-    pos = (pos + 1) % HOLES;
+    pos = nextHole(pos, rules);
     const count = board[pos]! + 1;
     board[pos] = count;
     hand--;
@@ -75,10 +89,10 @@ export function applyMove(state: RoundState, hole: HoleIndex): { state: RoundSta
 
     if (hand > 0) {
       if (count === STONES_PER_HOLE) {
-        const owner = state.owners[pos]!;
-        captured[owner] += STONES_PER_HOLE;
+        const taker = rules.passingFour === 'sower' ? mover : state.owners[pos]!;
+        captured[taker] += STONES_PER_HOLE;
         board[pos] = 0;
-        events.push({ type: 'capture', hole: pos, by: owner, rule: 'owner' });
+        events.push({ type: 'capture', hole: pos, by: taker, rule: 'owner' });
       }
       continue;
     }
@@ -104,7 +118,14 @@ export function applyMove(state: RoundState, hole: HoleIndex): { state: RoundSta
     events.push({ type: 'pickup', hole: pos, count, relay: true });
   }
 
-  const toMove = (1 - mover) as Player;
+  const other = (1 - mover) as Player;
+  const left = board.reduce((a, b) => a + b, 0);
+  const otherIsOut = !board.some((n, h) => n > 0 && state.owners[h] === other);
+  // The other player has no stones to play. Under the passing rules they miss the turn and the
+  // mover plays on (while more than four stones are left, for the rule that says so).
+  const passes = otherIsOut && left > 0 && (rules.stranded === 'pass' || (rules.stranded === 'pass-above-four' && left > STONES_PER_HOLE));
+  if (passes) events.push({ type: 'pass', player: other });
+  const toMove = passes ? mover : other;
   const posKey = positionKey(board, toMove);
   const visits = (state.seen[posKey] ?? 0) + 1;
   const next: RoundState = { ...state, board, captured, toMove, seen: { ...state.seen, [posKey]: visits } };
@@ -118,7 +139,7 @@ export function applyMove(state: RoundState, hole: HoleIndex): { state: RoundSta
     // Provisional: whoever holds more of the remaining stones takes them; the mover on a tie.
     let held = 0;
     for (let h = 0; h < HOLES; h++) held += state.owners[h] === mover ? board[h]! : -board[h]!;
-    [sweptBy, reason] = [held >= 0 ? mover : toMove, 'repetition'];
+    [sweptBy, reason] = [held >= 0 ? mover : other, 'repetition'];
   } else {
     return { state: next, events };
   }

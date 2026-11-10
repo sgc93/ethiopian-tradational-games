@@ -9,6 +9,7 @@ test('defaults follow the device', () => {
     speed: 'fast',
     showCounts: true,
     fixedCamera: false,
+    rules: { direction: 'counter-clockwise', stranded: 'sweep', passingFour: 'owner', nextStarter: 'winner' },
   });
   expect(defaultSettings({ languages: ['en-US'], reducedMotion: false }).speed).toBe('normal');
 });

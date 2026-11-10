@@ -1,5 +1,5 @@
 import type { MatchState } from './match';
-import { HOLES, STONES_PER_HOLE, TOTAL_STONES } from './types';
+import { HOLES, RULE_CHOICES, STONES_PER_HOLE, TOTAL_STONES } from './types';
 
 const isPlayer = (x: unknown): x is 0 | 1 => x === 0 || x === 1;
 const isCount = (x: unknown): x is number => Number.isInteger(x) && (x as number) >= 0;
@@ -21,6 +21,12 @@ export function isValidMatchState(x: unknown): x is MatchState {
   if (!isPlayer(r.toMove) || !isPlayer(r.starter) || typeof r.over !== 'boolean') return false;
   if (captured.some((c) => c % STONES_PER_HOLE !== 0)) return false;
   if (!isObject(r.seen) || !Object.values(r.seen).every(isCount)) return false;
+  // A game saved before rules could be chosen has none, which means the usual ones; rules that are there must be whole.
+  if (r.rules !== undefined) {
+    const rules = r.rules;
+    if (!isObject(rules)) return false;
+    for (const [key, choices] of Object.entries(RULE_CHOICES)) if (!(choices as readonly unknown[]).includes(rules[key])) return false;
+  }
 
   const total = [...board, ...captured].reduce((a: number, b: number) => a + b, 0);
   return total === TOTAL_STONES;

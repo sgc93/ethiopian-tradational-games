@@ -1,5 +1,5 @@
-import { applyMove, initialOwners, newRound } from './round';
-import { HOLES, MAX_ROUNDS, STONES_PER_HOLE, type HoleIndex, type Player, type RoundState, type TurnEvent } from './types';
+import { applyMove, initialOwners, newRound, rulesOf } from './round';
+import { HOLES, MAX_ROUNDS, STONES_PER_HOLE, type HoleIndex, type Player, type RoundState, type Rules, type TurnEvent, DEFAULT_RULES } from './types';
 
 export type Format = 'quick' | 'match';
 
@@ -26,8 +26,9 @@ export interface MatchState {
   readonly result: MatchResult | null;
 }
 
-export function newMatch(format: Format, firstPlayer: Player): MatchState {
-  return { format, roundNumber: 1, round: newRound(initialOwners(), firstPlayer), history: [], result: null };
+/** A new game under the given rules; every round of it carries them. */
+export function newMatch(format: Format, firstPlayer: Player, rules: Rules = DEFAULT_RULES): MatchState {
+  return { format, roundNumber: 1, round: newRound(initialOwners(), firstPlayer, rules), history: [], result: null };
 }
 
 export function playMove(match: MatchState, hole: HoleIndex): { match: MatchState; events: TurnEvent[] } {
@@ -44,20 +45,26 @@ export function roundResult(round: RoundState): RoundResult {
 
 /**
  * §4.5: the winner keeps their own row and takes holes from the start of the loser's row,
- * continuing in sowing order. A drawn round goes back to six holes each.
+ * continuing in sowing order (so the other way round the board when the sowing is clockwise).
+ * A drawn round goes back to six holes each.
  */
-export function ownersForNextRound(result: RoundResult): Player[] {
+export function ownersForNextRound(result: RoundResult, rules: Rules = DEFAULT_RULES): Player[] {
   const w = result.winner;
   if (w === null) return initialOwners();
   const homes = result.totals[w] / STONES_PER_HOLE;
-  const start = w === 0 ? 0 : HOLES / 2;
+  const clockwise = rules.direction === 'clockwise';
+  // The winner's row in sowing order: holes 0–5 or 6–11 counter-clockwise, 5–0 or 11–6 clockwise.
+  const start = clockwise ? (w === 0 ? HOLES / 2 - 1 : HOLES - 1) : w === 0 ? 0 : HOLES / 2;
+  const step = clockwise ? HOLES - 1 : 1;
   const owners: Player[] = Array(HOLES);
-  for (let i = 0; i < HOLES; i++) owners[(start + i) % HOLES] = i < homes ? w : ((1 - w) as Player);
+  for (let i = 0; i < HOLES; i++) owners[(start + i * step) % HOLES] = i < homes ? w : ((1 - w) as Player);
   return owners;
 }
 
-export function nextStarter(result: RoundResult): Player {
-  return result.winner ?? ((1 - result.starter) as Player);
+/** Who starts the next round: the winner or the loser, as the rules say; after a drawn round, the other player than last time. */
+export function nextStarter(result: RoundResult, rules: Rules = DEFAULT_RULES): Player {
+  if (result.winner === null) return (1 - result.starter) as Player;
+  return rules.nextStarter === 'loser' ? ((1 - result.winner) as Player) : result.winner;
 }
 
 export function homesOf(owners: readonly Player[], player: Player): number {
@@ -80,7 +87,7 @@ export function advanceMatch(match: MatchState): MatchState {
   return {
     ...match,
     roundNumber: rounds + 1,
-    round: newRound(ownersForNextRound(r), nextStarter(r)),
+    round: newRound(ownersForNextRound(r, rulesOf(match.round)), nextStarter(r, rulesOf(match.round)), rulesOf(match.round)),
     history,
   };
 }

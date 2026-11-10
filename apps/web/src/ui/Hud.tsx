@@ -28,6 +28,9 @@ export function Hud({ session }: { session: Session }) {
   const viewMoved = useScene((s) => s.viewMoved);
   const far: Player = near === 0 ? 1 : 0;
   const inPlay = phase !== 'finished' && phase !== 'round-summary' && phase !== 'toss';
+  // Under a passing rule the last move may have left the other player with nothing to play.
+  const missed = session.turnEvents.find((e): e is Extract<(typeof session.turnEvents)[number], { type: 'pass' }> => e.type === 'pass');
+  const missedBy = missed && phase !== 'animating' ? t('hud.noStones', { player: playerName(t, session, missed.player) }) : null;
 
   // The caption: whose turn, in the player's colour, or the other side's with pulsing diamonds.
   let caption: { tone: 'ember' | 'moon'; text: ReactNode; thinking: boolean } | null = null;
@@ -40,7 +43,7 @@ export function Hud({ session }: { session: Session }) {
         text: (
           <>
             <span>{t('hud.yourTurn')}</span>
-            <span className="hint"> · {t('hud.tapHint')}</span>
+            <span className="hint"> · {missedBy ?? t('hud.tapHint')}</span>
           </>
         ),
         thinking: false,
