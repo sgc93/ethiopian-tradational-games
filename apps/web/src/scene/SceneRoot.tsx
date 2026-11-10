@@ -101,11 +101,15 @@ export function SceneRoot() {
   return (
     <div className="scene-root" aria-hidden="true">
       <Canvas
-        shadows="soft"
+        // Percentage-closer shadows: in three r186 these are the soft ones, their softness set by
+        // each light's shadow radius. Asking for "soft" names a type three has removed.
+        shadows="percentage"
         dpr={dpr}
         frameloop={frameloop}
         camera={{ fov: 30, near: 0.1, far: 2000, position: [0, 12, 11] }}
-        gl={{ toneMapping: THREE.AgXToneMapping, outputColorSpace: THREE.SRGBColorSpace }}
+        // The renderer's tone mapping only reaches the screen on the minimal tier; with a composer
+        // mounted, `Post` maps tones with the same Neutral curve (see `postPlan.ts` for why not AgX).
+        gl={{ toneMapping: THREE.NeutralToneMapping, outputColorSpace: THREE.SRGBColorSpace }}
       >
         <PerformanceMonitor onDecline={() => setDeclined(true)} />
         <TierProbe />

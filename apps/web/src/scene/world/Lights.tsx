@@ -3,6 +3,7 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { latest, now, useFeedback } from '../feedback/feedbackStore';
 import { turnSwell } from '../feedback/pulses';
+import { shadowRadius } from '../postPlan';
 import { useScene } from '../sceneStore';
 import { TIERS } from '../tiers';
 import { flicker, jitter } from './flicker';
@@ -75,6 +76,7 @@ export function Lights() {
         target={target}
         castShadow={shadows}
         shadow-mapSize={[shadowMap, shadowMap]}
+        shadow-radius={shadowRadius(shadowMap)}
         shadow-camera-near={10}
         shadow-camera-far={60}
         shadow-bias={-0.0003}

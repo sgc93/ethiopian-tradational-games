@@ -103,3 +103,15 @@ In the game: [p3-heads-home-1920x1080.jpg](p3-heads-home-1920x1080.jpg) · [p3-h
 **Changes of design, from the images over the blueprint.** The horns are a lyre as in images 08 and 14: close at the brow, out to 1.31 units either side, tips back in to 0.92 (the blueprint's stations ran straight out to 0.98; the first pass's 1.3 p tip spacing is withdrawn). The neck is as stout as the carving's, 0.47 either side at mid-height and 0.59 at the foot, against the blueprint front outline's 0.30 and 0.43. The ridges stand 1.8 times the blueprint's measure.
 
 **Still to refine, by the owner's eye:** the fine transverse lines on the horns' sides and the hair on the forehead (both texture rather than shape), and how the heads read under the night firelight, which is darker than the studio.
+
+## Part 4: the rendering foundation repaired
+
+The experience audit of 2026-11-10 found three rendering settings that were not doing what the scene asked. All three are repaired in `apps/web/src/scene/Post.tsx`, `postPlan.ts`, `SceneRoot.tsx` and `world/Lights.tsx`. Each image below is the same view before (top) and after (bottom), from headless Chrome's software renderer.
+
+- **Depth of field focused 0.02 units in front of the lens**, so on the high tier the whole frame was at full blur. It is now focused on the board's centre in every view, with a range of 30 units: the board and heads are sharp, the hut and trees soften. [p4-render-play-high.jpg](p4-render-play-high.jpg) · [p4-render-home-high.jpg](p4-render-home-high.jpg)
+- **No tone mapping on the tiers with an effect composer.** The composer switches the renderer's tone mapping off and the chain added none back, so bright values clipped. The chain now maps tones after bloom and depth of field and before grain, vignette and grade.
+- **The shadow type asked for had been removed from three.** `shadows="soft"` names a type three r186 no longer has; it substituted its percentage-closer type with a warning. That type is itself soft, by each light's shadow radius, which was left at one texel. The scene now asks for it by name and sets the fire's shadow radius to 2.5 texels of the 1024 map, scaled so the 512 map is as soft.
+
+**A change of design: the tone curve is Khronos Neutral, not the spec's AgX.** Under a composer nothing can skip tone mapping, and the flame, embers, sky and the cups' glowing rings are authored as the colours they should show. AgX drains bright saturated colour by design: tried first, it turned the fire pale pink and the ember rings peach. Neutral leaves in-range colours as they are and rolls the highlights off, so the fire is orange rather than clipped yellow and the rings stay ember. The renderer's own curve, which only reaches the screen on the minimal tier, is Neutral too, so lit surfaces follow one curve on every tier; that tier is a little darker and more contrasted than it was under AgX. [p4-render-play-minimal.jpg](p4-render-play-minimal.jpg)
+
+**Not judged here:** the shadow softness (the captures' grazing firelight does not show it clearly) and the final colour, both of which want a real GPU and the owner's eye.
