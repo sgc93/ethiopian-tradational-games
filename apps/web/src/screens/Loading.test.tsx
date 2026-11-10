@@ -16,7 +16,7 @@ test('shows the emblem, the name, the gold line and the loading line', () => {
   const bar = screen.getByRole('progressbar');
   expect(bar.getAttribute('aria-valuenow')).toBe('35');
   expect(screen.getByText('GEBETA')).toBeTruthy();
-  expect(screen.getByText(/lighting the fire/i)).toBeTruthy();
+  expect(screen.getByText(/setting out the board/i)).toBeTruthy();
   expect(document.querySelector('.loading .emblem')).toBeTruthy();
 });
 

@@ -12,7 +12,7 @@ export function NoWebGL() {
     <main className="nowebgl" role="alert">
       <img className="nowebgl-still" src="/home-still.webp" alt="" />
       <div className="nowebgl-dim" aria-hidden="true" />
-      <Panel labelledBy="nowebgl-title" title={t('noWebgl.title')} center y={96} width={400} className="nowebgl-panel">
+      <Panel labelledBy="nowebgl-title" title={t('noWebgl.title')} center width={420} className="nowebgl-panel">
         <p className="note">{t('noWebgl.body')}</p>
       </Panel>
     </main>

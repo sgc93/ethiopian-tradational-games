@@ -1,4 +1,4 @@
-/* End of a round (spec §9, screen 7): a compact panel along the bottom that keeps the board visible. */
+/* End of a round: a low panel along the bottom that leaves the board, and the cups changing hands, in view. */
 .summary {
   position: absolute;
   inset: 0;
@@ -49,15 +49,11 @@
   justify-content: center;
   flex-wrap: wrap;
   margin-top: calc(6px * var(--ui));
-  color: var(--gold-400);
+  color: var(--ember-300);
 }
 
 .summary-side.moon .homes {
   color: var(--moon-300);
-}
-
-.homes .hut {
-  stroke-width: 1.3;
 }
 
 .ui-layer .summary-side .note {

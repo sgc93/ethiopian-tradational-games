@@ -9,15 +9,16 @@ import { LANGUAGES } from '../state/settings';
 import { useApp } from '../state/store';
 import { FormatPicker, LevelPicker } from '../ui/FormatPicker';
 import { onFirstPlayTap } from '../ui/fullscreen';
-import { Button, Medallion, Mixed } from '../ui/kit';
+import { Button, Emblem, Medallion, Mixed } from '../ui/kit';
 import './HomeScreen.css';
 
 type Step = null | { kind: 'level' } | { kind: 'format'; mode: Mode };
 
 /**
- * Home (spec §9, screen 2): the live scene behind, the title block at the left, the menu stack at
- * the right, the language switch and the sound medallion at the bottom left. The level and game
- * type panels replace the stack in place.
+ * Home: the board in the middle of the screen with nothing over it, framed by two leather bars.
+ * The top bar carries the name either side of the crest, with the language and the sound at its
+ * ends; the bottom bar carries the ways to play. Setting a game up (how strong, what kind) swaps
+ * the bottom bar's buttons for that step's answers.
  */
 export function HomeScreen() {
   const { t } = useTranslation();
@@ -33,12 +34,40 @@ export function HomeScreen() {
 
   return (
     <main className="home panel-enter">
-      <div className="home-grade" aria-hidden="true" />
+      <div className="bar bar-top" aria-hidden="true" />
+      <div className="bar bar-bottom" aria-hidden="true" />
+
       <header className="home-title">
         <h1 lang="am">{t('app.titleGeez')}</h1>
+        <Emblem size={60} className="home-crest" />
         <p className="home-latin">GEBETA</p>
-        <p className="home-tagline">{t('app.tagline')}</p>
       </header>
+      <p className="home-tagline">{t('app.tagline')}</p>
+
+      <div className="seg home-language" role="group" aria-label={t('languages.label')}>
+        {LANGUAGES.map((lang) => (
+          <button
+            key={lang}
+            type="button"
+            lang={lang}
+            aria-pressed={settings.language === lang}
+            onClick={() => updateSettings({ language: lang })}
+          >
+            {t(`languages.${lang}`)}
+          </button>
+        ))}
+      </div>
+      <div className="home-tools">
+        <Button kind="quiet" className="home-about" onClick={() => setScreen('about')}>
+          <Mixed text={t('home.about')} />
+        </Button>
+        <Medallion
+          icon={settings.sound ? 'sound' : 'soundOff'}
+          label={settings.sound ? t('home.soundOn') : t('home.soundOff')}
+          pressed={settings.sound}
+          onClick={() => updateSettings({ sound: !settings.sound })}
+        />
+      </div>
 
       {step === null && (
         <nav className="home-menu">
@@ -79,9 +108,6 @@ export function HomeScreen() {
           >
             {t('home.learn')}
           </Button>
-          <Button kind="quiet" className="home-about" onClick={() => setScreen('about')}>
-            <Mixed text={t('home.about')} />
-          </Button>
         </nav>
       )}
       {step?.kind === 'level' && (
@@ -91,28 +117,6 @@ export function HomeScreen() {
         />
       )}
       {step?.kind === 'format' && <FormatPicker onPick={(f) => begin(step.mode, f)} onBack={() => setStep(null)} />}
-
-      <footer className="home-footer">
-        <div className="seg" role="group" aria-label={t('languages.label')}>
-          {LANGUAGES.map((lang) => (
-            <button
-              key={lang}
-              type="button"
-              lang={lang}
-              aria-pressed={settings.language === lang}
-              onClick={() => updateSettings({ language: lang })}
-            >
-              {t(`languages.${lang}`)}
-            </button>
-          ))}
-        </div>
-        <Medallion
-          icon={settings.sound ? 'sound' : 'soundOff'}
-          label={settings.sound ? t('home.soundOn') : t('home.soundOff')}
-          pressed={settings.sound}
-          onClick={() => updateSettings({ sound: !settings.sound })}
-        />
-      </footer>
     </main>
   );
 }

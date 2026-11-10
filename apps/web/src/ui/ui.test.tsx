@@ -230,7 +230,7 @@ test('home shows the title block, the menu stack with one primary button and the
   expect(screen.getByText('GEBETA')).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Play with a friend' })).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Learn to play' })).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'About Gebeta · ገበጣ' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'About Gebeta' })).toBeTruthy();
   expect(screen.getByRole('button', { name: 'አማርኛ' }).getAttribute('lang')).toBe('am');
   expect(screen.getByRole('button', { name: 'English' })).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Sound on' }).className).toContain('medal');
@@ -243,7 +243,7 @@ test('the level panel replaces the stack in place and its back medallion returns
   expect(screen.getByRole('button', { name: 'Medium' })).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Hard' })).toBeTruthy();
   expect(screen.queryByRole('button', { name: 'Play with a friend' })).toBeNull();
-  expect(document.querySelector('.panel')).toBeTruthy();
+  expect(document.querySelector('.home-step')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: /back/i }));
   expect(screen.getByRole('button', { name: 'Play against the computer' })).toBeTruthy();
   expect(document.querySelector('.panel')).toBeNull();

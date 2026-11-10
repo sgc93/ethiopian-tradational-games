@@ -44,7 +44,7 @@ export function GameMenu({ session, settings, onPause, onSettings, onRestart, on
       <Medallion icon="menu" label={t('hud.menu')} className="hud-menu" onClick={() => show(true)} />
       {open && (
         <div className="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="menu-title">
-          <Panel labelledBy="menu-title" title={t('menu.title')} center y={28} width={380} className="menu-panel">
+          <Panel labelledBy="menu-title" title={t('menu.title')} center width={400} className="menu-panel">
             <div className="menu-main">
               <Button kind="primary" className="menu-continue" onClick={() => show(false)} autoFocus>
                 {t('menu.resume')}

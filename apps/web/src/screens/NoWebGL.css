@@ -3,7 +3,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #0a0806;
+  background: #d9c6a7;
 }
 
 .nowebgl-still {
@@ -18,11 +18,10 @@
 .nowebgl-dim {
   position: absolute;
   inset: 0;
-  background: rgba(6, 4, 3, 0.45);
+  background: rgba(40, 22, 10, 0.25);
 }
 
 .ui-layer .nowebgl-panel {
-  padding: calc(22px * var(--ui)) calc(30px * var(--ui));
   text-align: center;
 }
 
@@ -31,5 +30,5 @@
 }
 
 .ui-layer .nowebgl-panel .note {
-  margin-top: calc(16px * var(--ui));
+  margin-top: 0;
 }

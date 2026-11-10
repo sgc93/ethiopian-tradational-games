@@ -15,7 +15,7 @@
   --radius: 14px;
   font-family: var(--f-text);
   color: var(--cream);
-  background: var(--earth-deep);
+  background: #d9c6a7;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -31,7 +31,8 @@ body,
 }
 
 body {
-  background: radial-gradient(120% 80% at 50% 0%, var(--earth-warm) 0%, var(--earth) 45%, var(--earth-deep) 100%);
+  /* The studio backdrop's paper, so nothing dark shows before the scene draws. */
+  background: #d9c6a7;
   min-height: 100dvh;
 }
 
@@ -150,15 +151,25 @@ button {
 
 .hole-buttons:focus-within {
   clip-path: none;
-  background: rgba(36, 20, 13, 0.85);
+  z-index: 2;
+  background: var(--grain), linear-gradient(180deg, var(--ink-800), var(--ink-950));
+  border-top: 1px solid var(--gold-500);
 }
 
 .hole-buttons button {
   min-width: 2.75rem;
   min-height: 2.75rem;
-  border-radius: 10px;
-  border: 1px solid rgba(244, 231, 209, 0.3);
-  background: rgba(244, 231, 209, 0.1);
+  border-radius: 0;
+  border: 1px solid var(--gold-700);
+  background: var(--ink-950);
+  color: var(--gold-200);
+  font: 700 0.95rem / 1 var(--f-display);
+}
+
+.hole-buttons button:focus-visible {
+  outline: 2px solid var(--ember-400);
+  outline-offset: 2px;
+  background: var(--ox-600);
 }
 
 .hole-buttons button:disabled {

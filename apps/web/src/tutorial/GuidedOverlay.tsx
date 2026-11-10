@@ -35,7 +35,7 @@ export function GuidedOverlay({ guide, session, onLeave }: { guide: Guide; sessi
       {guide.card && (
         <div className="lesson" role="dialog" aria-modal="true" aria-labelledby="lesson-title">
           <div className="lesson-dim" aria-hidden="true" />
-          <Panel labelledBy="lesson-title" title={<Mixed text={t(`guide.card.${guide.card}.title`)} />} center y={66} width={360} className="lesson-panel">
+          <Panel labelledBy="lesson-title" title={<Mixed text={t(`guide.card.${guide.card}.title`)} />} center width={380} className="lesson-panel">
             <p className="note lesson-body">
               <Mixed text={body} />
             </p>

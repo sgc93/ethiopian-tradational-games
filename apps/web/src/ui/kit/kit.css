@@ -1,7 +1,12 @@
 /*
- * The interface kit (spec §9 "Parts", "States", "Motion"). Every size is in reference px at
- * 844 × 390, multiplied by --ui (set on :root by the interface layer), with the spec's minimums:
- * captions 9.5 px, body 12 px, buttons 36 px tall, medallions 34 px.
+ * The interface kit. Every size is in reference px at 844 × 390, multiplied by --ui (set on :root
+ * by the interface layer), with minimums: captions 9.5 px, body 12 px, buttons 36 px tall,
+ * medallions 34 px.
+ *
+ * The materials are a game case's: grained oxblood leather for the grounds, brass inlay for the
+ * lines, bone for the lettering and the stamped icons. The ornament is the board's own carving:
+ * its band of zigzags and windows runs under every header, and its stepped pyramids turn the
+ * corners.
  */
 
 /* ---------- the layer ---------- */
@@ -13,6 +18,12 @@
   overflow: auto;
   color: var(--text-100);
   pointer-events: none;
+
+  /* A flourish for either side of a title: a fine line ending in a diamond and a bead. */
+  --flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='8' viewBox='0 0 34 8'%3E%3Cpath d='M0 4h17' stroke='%23c9a15a' stroke-width='1'/%3E%3Cpath d='M18 4 22 .6 26 4 22 7.4z' fill='%23c9a15a'/%3E%3Ccircle cx='30.5' cy='4' r='1.5' fill='%23c9a15a'/%3E%3C/svg%3E");
+  /* Leather, lit a little from above. */
+  --leather: var(--grain), radial-gradient(130% 85% at 50% 0%, rgba(116, 43, 28, 0.3), transparent 64%), linear-gradient(180deg, var(--ink-800), var(--ink-950));
+  --oxblood: var(--grain), linear-gradient(180deg, var(--ox-500), var(--ox-700));
 }
 
 .ui-layer > * {
@@ -27,17 +38,17 @@
 /* ---------- type ---------- */
 .ui-layer .ttl {
   margin: 0;
-  font: 600 calc(17px * var(--ui)) / 1.2 var(--f-display);
-  letter-spacing: 0.22em;
+  font: 600 calc(15px * var(--ui)) / 1.25 var(--f-display);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   text-align: center;
-  color: var(--gold-300);
+  color: var(--gold-200);
 }
 
 .ui-layer .ttl:lang(am),
 .ui-layer .ttl :lang(am),
 .ui-layer .ttl[lang='am'] {
-  font: 600 calc(19px * var(--ui)) / 1.3 var(--f-geez);
+  font: 600 calc(17px * var(--ui)) / 1.3 var(--f-geez);
   letter-spacing: 0.04em;
   text-transform: none;
 }
@@ -51,14 +62,6 @@
   text-transform: none;
 }
 
-.ui-layer .small-title {
-  margin: 0;
-  font: 600 calc(13px * var(--ui)) / 1.25 var(--f-display);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold-300);
-}
-
 .ui-layer .note {
   margin: 0;
   font: 400 max(12px, calc(14px * var(--ui))) / 1.45 var(--f-text);
@@ -66,10 +69,8 @@
   text-align: center;
 }
 
-.ui-layer .caption {
-  font: 600 max(9.5px, calc(10px * var(--ui))) / 1 var(--f-display);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
+.ui-layer .note:lang(am) {
+  font: 600 max(12px, calc(15px * var(--ui))) / 1.5 var(--f-geez);
 }
 
 /* ---------- panel ---------- */
@@ -77,72 +78,113 @@
   position: relative;
   box-sizing: border-box;
   padding: calc(18px * var(--ui)) calc(24px * var(--ui));
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--line);
+  background: var(--leather);
+  border: 1px solid var(--gold-500);
   box-shadow:
-    0 22px 50px rgba(0, 0, 0, 0.6),
-    inset 0 0 0 4px rgba(10, 8, 6, 0.65),
-    inset 0 0 0 5px var(--line-soft);
+    0 20px 44px rgba(40, 20, 8, 0.5),
+    0 1px 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 0 3px var(--ink-950),
+    inset 0 0 0 4px var(--line-soft);
+  /* Never taller than the screen has room for: the rest scrolls inside. */
+  max-height: calc(100% - var(--panel-taken, 0px) - 12px);
+  overflow: hidden auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-700) transparent;
 }
 
+/* The stepped corners, one drawing turned four ways. */
 .ui-layer .panel > .k {
   position: absolute;
-  width: 7px;
-  height: 7px;
-  background: var(--gold-400);
-  transform: rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: var(--corner) center / contain no-repeat;
+  opacity: 0.85;
   pointer-events: none;
 }
 
 .ui-layer .k.tl {
-  left: -4px;
-  top: -4px;
+  left: 3px;
+  top: 3px;
 }
 .ui-layer .k.tr {
-  right: -4px;
-  top: -4px;
+  right: 3px;
+  top: 3px;
+  transform: scaleX(-1);
 }
 .ui-layer .k.bl {
-  left: -4px;
-  bottom: -4px;
+  left: 3px;
+  bottom: 3px;
+  transform: scaleY(-1);
 }
 .ui-layer .k.br {
-  right: -4px;
-  bottom: -4px;
+  right: 3px;
+  bottom: 3px;
+  transform: scale(-1);
 }
 
-.ui-layer .divider {
+/* The header: an oxblood band across the top with the title between two flourishes, and the
+   board's carved band running along its foot. */
+.ui-layer .panel-head {
+  position: relative;
+  margin: calc(-18px * var(--ui)) calc(-24px * var(--ui)) calc(14px * var(--ui));
+  padding: calc(11px * var(--ui)) calc(46px * var(--ui)) calc(17px * var(--ui));
+  background: var(--oxblood);
+  border-bottom: 1px solid var(--gold-500);
+  box-shadow: inset 0 0 0 3px rgba(18, 9, 7, 0.55);
+}
+
+.ui-layer .panel-head::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 4px;
+  height: 7px;
+  background: var(--band) center / auto 100% repeat-x;
+  opacity: 0.8;
+}
+
+.ui-layer .panel-head .ttl {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  width: calc(150px * var(--ui));
-  margin: calc(8px * var(--ui)) auto calc(12px * var(--ui));
+  gap: calc(10px * var(--ui));
 }
 
-.ui-layer .divider::before,
-.ui-layer .divider::after {
+.ui-layer .panel-head .ttl::before,
+.ui-layer .panel-head .ttl::after {
   content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--line));
+  flex: none;
+  width: 34px;
+  height: 8px;
+  background: var(--flourish) center / contain no-repeat;
 }
 
-.ui-layer .divider::after {
+.ui-layer .panel-head .ttl::before {
   transform: scaleX(-1);
 }
 
+/* A stretch of the board's band as a rule, between parts of a panel or a bar. */
+.ui-layer .divider {
+  width: calc(150px * var(--ui));
+  height: 7px;
+  margin: calc(9px * var(--ui)) auto calc(12px * var(--ui));
+  background: var(--band) center / auto 100% repeat-x;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+}
+
 .ui-layer .divider i {
-  width: 6px;
-  height: 6px;
-  background: var(--gold-400);
-  transform: rotate(45deg);
+  display: none;
 }
 
 /* ---------- buttons ---------- */
+/* A plaque with clipped corners: a brass edge, a leather face and a fine inner line. */
 .ui-layer .btn {
+  --notch: 7px;
+  --face: var(--grain), linear-gradient(180deg, var(--ink-700), var(--ink-950));
+  position: relative;
+  isolation: isolate;
   box-sizing: border-box;
   display: inline-flex;
   flex-direction: row;
@@ -153,28 +195,63 @@
   height: max(36px, calc(40px * var(--ui)));
   padding: 0 calc(22px * var(--ui));
   margin: 0;
-  font: 600 calc(11.5px * var(--ui)) / 1 var(--f-display);
-  letter-spacing: 0.2em;
+  font: 600 calc(11.5px * var(--ui)) / 1.2 var(--f-display);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   text-align: center;
   white-space: nowrap;
-  color: var(--gold-300);
-  background: rgba(16, 12, 9, 0.6);
-  border: 1px solid rgba(214, 174, 106, 0.42);
-  border-radius: 2px;
+  color: var(--gold-200);
+  background: linear-gradient(180deg, var(--gold-400), var(--gold-700));
+  border: 0;
+  border-radius: 0;
   box-shadow: none;
+  clip-path: polygon(
+    var(--notch) 0,
+    calc(100% - var(--notch)) 0,
+    100% var(--notch),
+    100% calc(100% - var(--notch)),
+    calc(100% - var(--notch)) 100%,
+    var(--notch) 100%,
+    0 calc(100% - var(--notch)),
+    0 var(--notch)
+  );
   cursor: pointer;
   transition:
-    border-color 120ms ease,
-    box-shadow 120ms ease,
-    background 120ms ease,
+    filter 120ms ease,
     transform 80ms ease,
     opacity 120ms ease;
 }
 
+.ui-layer .btn::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: var(--face);
+  clip-path: polygon(
+    calc(var(--notch) - 0.5px) 0,
+    calc(100% - var(--notch) + 0.5px) 0,
+    100% calc(var(--notch) - 0.5px),
+    100% calc(100% - var(--notch) + 0.5px),
+    calc(100% - var(--notch) + 0.5px) 100%,
+    calc(var(--notch) - 0.5px) 100%,
+    0 calc(100% - var(--notch) + 0.5px),
+    0 calc(var(--notch) - 0.5px)
+  );
+}
+
+.ui-layer .btn::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  z-index: -1;
+  border: 1px solid var(--line-soft);
+  pointer-events: none;
+}
+
 .ui-layer .btn :lang(am),
 .ui-layer .btn[lang='am'] {
-  font: 600 calc(13.5px * var(--ui)) / 1 var(--f-geez);
+  font: 600 calc(13.5px * var(--ui)) / 1.2 var(--f-geez);
   letter-spacing: 0;
   text-transform: none;
 }
@@ -185,21 +262,30 @@
   gap: calc(8px * var(--ui));
 }
 
+/* The one main action: oxblood, with a brighter edge. */
 .ui-layer .btn-primary {
-  color: #fff1cf;
-  background: linear-gradient(180deg, #6e4517, #311d0b);
-  border-color: #e3b56b;
-  box-shadow:
-    0 0 22px rgba(255, 150, 60, 0.35),
-    inset 0 1px 0 rgba(255, 228, 170, 0.3);
+  --face: var(--oxblood);
+  color: #fff3da;
+  background: linear-gradient(180deg, var(--gold-200), var(--gold-500));
+  text-shadow: 0 1px 0 rgba(30, 10, 6, 0.7);
 }
 
+.ui-layer .btn-primary::after {
+  border-color: rgba(240, 220, 171, 0.3);
+}
+
+/* Lettering alone. */
 .ui-layer .btn-quiet {
   height: max(28px, calc(28px * var(--ui)));
   padding: 0 calc(6px * var(--ui));
-  color: var(--gold-500);
+  color: var(--gold-400);
   background: none;
-  border-color: transparent;
+  clip-path: none;
+}
+
+.ui-layer .btn-quiet::before,
+.ui-layer .btn-quiet::after {
+  content: none;
 }
 
 /* 56 px tall in the reference; a hint that wraps (Amharic) grows the button rather than spilling. */
@@ -221,29 +307,23 @@
   color: var(--text-300);
 }
 
+.ui-layer .btn-hint:lang(am) {
+  font: 600 max(12px, calc(14px * var(--ui))) / 1.25 var(--f-geez);
+}
+
 .ui-layer .btn-primary .btn-hint {
   color: var(--gold-200);
 }
 
-/* States: hover brightens the border and grows the glow; press moves 1 px down; focus is an
-   ember outline 3 px out; disabled is 40 % opacity with no glow. */
+/* States: hover brightens the plaque; press moves it 1 px down; focus turns its edge to ember
+   (an outline would be cut off with the corners); disabled is 40 % opacity. */
 .ui-layer .btn:hover:not(:disabled) {
-  border-color: rgba(230, 200, 142, 0.85);
-  background: rgba(24, 18, 13, 0.7);
-}
-
-.ui-layer .btn-primary:hover:not(:disabled) {
-  border-color: #f1dcaa;
-  background: linear-gradient(180deg, #7c4f1b, #3a220d);
-  box-shadow:
-    0 0 30px rgba(255, 150, 60, 0.5),
-    inset 0 1px 0 rgba(255, 228, 170, 0.35);
+  filter: brightness(1.22);
 }
 
 .ui-layer .btn-quiet:hover:not(:disabled) {
-  border-color: transparent;
-  background: none;
-  color: var(--gold-300);
+  filter: none;
+  color: var(--gold-200);
 }
 
 .ui-layer .btn:active:not(:disabled),
@@ -251,7 +331,25 @@
   transform: translateY(1px);
 }
 
-.ui-layer .btn:focus-visible,
+.ui-layer .btn:focus-visible {
+  outline: none;
+  background: var(--ember-400);
+}
+
+.ui-layer .btn:focus-visible::before {
+  inset: 2px;
+}
+
+.ui-layer .btn:focus-visible::after {
+  border-color: var(--ember-300);
+}
+
+.ui-layer .btn-quiet:focus-visible {
+  background: none;
+  outline: 2px solid var(--ember-400);
+  outline-offset: 2px;
+}
+
 .ui-layer .medal:focus-visible {
   outline: 2px solid var(--ember-400);
   outline-offset: 3px;
@@ -260,11 +358,11 @@
 .ui-layer .btn:disabled,
 .ui-layer .medal:disabled {
   opacity: 0.4;
-  box-shadow: none;
   cursor: default;
 }
 
 /* ---------- medallion ---------- */
+/* A round icon button: a leather face in a brass bezel cut with the band's window marks. */
 .ui-layer .medal {
   box-sizing: border-box;
   display: grid;
@@ -273,17 +371,18 @@
   height: max(34px, calc(40px * var(--ui)));
   padding: 0;
   margin: 0;
+  border: 0;
   border-radius: 50%;
-  color: var(--gold-300);
-  background: rgba(12, 9, 7, 0.72);
-  border: 1px solid rgba(214, 174, 106, 0.6);
+  color: var(--text-100);
+  background:
+    radial-gradient(circle closest-side, var(--ink-700) 0 60%, var(--ink-950) 61% 68%, transparent 69%),
+    repeating-conic-gradient(var(--gold-500) 0 3.5deg, var(--ink-950) 3.5deg 12deg);
   box-shadow:
-    inset 0 0 0 3px rgba(10, 8, 6, 0.8),
-    inset 0 0 0 4px rgba(214, 174, 106, 0.22);
+    0 0 0 1px var(--gold-500),
+    0 3px 8px rgba(40, 20, 8, 0.45);
   cursor: pointer;
   transition:
-    border-color 120ms ease,
-    box-shadow 120ms ease,
+    filter 120ms ease,
     transform 80ms ease,
     opacity 120ms ease;
 }
@@ -294,39 +393,44 @@
 }
 
 .ui-layer .medal:hover:not(:disabled) {
-  border-color: rgba(241, 220, 170, 0.9);
-  box-shadow:
-    0 0 14px rgba(255, 150, 60, 0.25),
-    inset 0 0 0 3px rgba(10, 8, 6, 0.8),
-    inset 0 0 0 4px rgba(214, 174, 106, 0.35);
+  filter: brightness(1.25);
 }
 
 .ui-layer .medal[aria-pressed='false'] {
-  color: var(--gold-700);
+  color: var(--text-500);
 }
 
-/* ---------- icons and the emblem ---------- */
+/* ---------- icons and the crest ---------- */
 .ui-layer .icon {
   display: block;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  fill: currentColor;
+  stroke: none;
 }
 
-.ui-layer .emblem {
+.emblem {
   display: block;
-  color: var(--gold-300);
+  color: var(--gold-200);
 }
 
-.ui-layer .emblem circle,
-.ui-layer .emblem path {
-  stroke: currentColor;
+.emblem .emblem-ground {
+  fill: var(--ink-900);
+  stroke: none;
+}
+
+.emblem .emblem-ring,
+.emblem .emblem-ticks {
   fill: none;
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke: var(--gold-400);
+  stroke-width: 1;
+}
+
+.emblem .emblem-ticks {
+  stroke-width: 1.3;
+}
+
+.emblem .emblem-head {
+  fill: currentColor;
+  stroke: none;
 }
 
 /* A name for screen readers only, when the panel's title is carried elsewhere (the cartouche). */
@@ -342,26 +446,82 @@
   border: 0;
 }
 
+/* ---------- bars ---------- */
+/* The leather bars along the top and the bottom of a screen, each edged with the board's band. */
+.ui-layer .bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  background: var(--leather);
+  pointer-events: none;
+}
+
+.ui-layer .bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(7px * var(--ui));
+  background: var(--band) center / auto 100% repeat-x;
+  opacity: 0.85;
+}
+
+.ui-layer .bar-top {
+  top: 0;
+  height: calc(52px * var(--ui));
+  border-bottom: 1px solid var(--gold-500);
+  box-shadow: 0 8px 22px rgba(40, 20, 8, 0.35);
+}
+
+.ui-layer .bar-top::after {
+  bottom: calc(3px * var(--ui));
+}
+
+.ui-layer .bar-bottom {
+  bottom: 0;
+  height: calc(58px * var(--ui) + var(--safe-b));
+  border-top: 1px solid var(--gold-500);
+  box-shadow: 0 -8px 22px rgba(40, 20, 8, 0.3);
+}
+
+.ui-layer .bar-bottom::after {
+  top: calc(3px * var(--ui));
+  transform: scaleY(-1);
+}
+
+.ui-compact .ui-layer .bar-top,
+.ui-compact.ui-layer .bar-top {
+  height: calc(42px * var(--ui));
+}
+
+.ui-compact .ui-layer .bar-bottom,
+.ui-compact.ui-layer .bar-bottom {
+  height: calc(50px * var(--ui) + var(--safe-b));
+}
+
 /* ---------- ribbon ---------- */
-/* The lesson hint: a band fading at both ends, above the near plate, key words in ember. */
+/* The lesson hint: a leather band above the bottom bar, key words in ember. */
 .ui-layer .ribbon {
   position: absolute;
   left: 50%;
-  bottom: calc(72px * var(--ui));
+  bottom: calc(70px * var(--ui) + var(--safe-b));
   transform: translateX(-50%);
   max-width: min(calc(540px * var(--ui)), calc(100% - 24px));
   margin: 0;
-  padding: calc(10px * var(--ui)) calc(24px * var(--ui));
+  padding: calc(9px * var(--ui)) calc(40px * var(--ui));
   text-align: center;
   font: 500 max(12px, calc(14.5px * var(--ui))) / 1.35 var(--f-text);
   color: var(--text-100);
-  background: linear-gradient(90deg, transparent, rgba(12, 9, 7, 0.88) 12%, rgba(12, 9, 7, 0.88) 88%, transparent);
-  border-top: 1px solid var(--line-soft);
-  border-bottom: 1px solid var(--line-soft);
+  background: var(--leather);
+  border-top: 1px solid var(--gold-500);
+  border-bottom: 1px solid var(--gold-500);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
 }
 
 .ui-layer .ribbon:lang(am) {
-  font: 500 max(12px, calc(16.5px * var(--ui))) / 1.45 var(--f-geez);
+  font: 600 max(12px, calc(16px * var(--ui))) / 1.45 var(--f-geez);
 }
 
 .ui-layer .ribbon b {
@@ -370,29 +530,28 @@
 }
 
 /* ---------- panel furniture ---------- */
-/* The small back or close medallion in a panel's top-left corner. */
+/* The small back or close medallion at the left of a panel's header. */
 .ui-layer .panel-back {
   position: absolute;
-  left: calc(10px * var(--ui));
-  top: calc(10px * var(--ui));
+  left: calc(8px * var(--ui));
+  top: calc(5px * var(--ui));
+  z-index: 1;
 }
 
-/* The home pickers: a smaller title with room for the medallion, and tighter padding. */
+/* Low panels under the board: a smaller title and tighter padding. */
 .ui-layer .panel-compact .ttl {
-  margin-top: calc(6px * var(--ui));
   font-size: calc(13px * var(--ui));
 }
 
-.ui-layer .panel-compact .ttl:lang(am) {
+.ui-layer .panel-compact .ttl:lang(am),
+.ui-layer .panel-compact .ttl :lang(am) {
   font-size: calc(15px * var(--ui));
 }
 
-.ui-layer .btn-hint:lang(am) {
-  font: 400 max(12px, calc(14.5px * var(--ui))) / 1.2 var(--f-geez);
-}
-
-.ui-layer .home-panel {
-  padding: calc(18px * var(--ui)) calc(22px * var(--ui));
+.ui-layer .panel-compact .panel-head {
+  padding-top: calc(8px * var(--ui));
+  padding-bottom: calc(15px * var(--ui));
+  margin-bottom: calc(10px * var(--ui));
 }
 
 /* Buttons stacked in a panel. */
@@ -467,4 +626,9 @@
   to {
     opacity: 0;
   }
+}
+
+/* The corners sit over the header band too. */
+.ui-layer .panel > .k {
+  z-index: 2;
 }

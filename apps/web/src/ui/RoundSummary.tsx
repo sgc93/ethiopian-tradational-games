@@ -40,7 +40,7 @@ export function RoundSummary({ session, onNext }: { session: Session; onNext(): 
 
   return (
     <div className="summary" role="dialog" aria-modal="true" aria-labelledby="summary-title">
-      <Panel labelledBy="summary-title" center y={262} width={600} className="summary-panel">
+      <Panel labelledBy="summary-title" center bottom={12} width={620} className="summary-panel">
         <h2 id="summary-title" className="sr-only">
           {t('summary.title', { n: match.roundNumber - 1 })}
         </h2>

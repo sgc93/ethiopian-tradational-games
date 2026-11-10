@@ -18,8 +18,8 @@ export default defineConfig({
         // Landscape and full screen: the board lies sideways, and "turn your phone" covers portrait (spec §9).
         display: 'fullscreen',
         orientation: 'landscape',
-        theme_color: '#4a2a1c',
-        background_color: '#2e1a12',
+        theme_color: '#27130d',
+        background_color: '#d9c6a7',
       },
       workbox: {
         // No webmanifest here: the plugin precaches the manifest itself, and listing it twice

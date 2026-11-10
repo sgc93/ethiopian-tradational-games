@@ -70,8 +70,8 @@ export function CoinToss({ session, speed, onCall, onDone }: Props) {
           labelledBy="toss-title"
           title={<Mixed text={t(session.humanSeat === null ? 'toss.promptFriend' : 'toss.prompt')} />}
           center
-          y={252}
-          width={360}
+          bottom={14}
+          width={380}
           className="panel-compact toss-panel"
         >
           <div className="toss-choices">
@@ -89,8 +89,8 @@ export function CoinToss({ session, speed, onCall, onDone }: Props) {
           labelledBy="toss-title"
           title={<Mixed text={t('toss.landed', { side: t(outcome.coin === 'lion' ? 'toss.sideLion' : 'toss.sidePerson') })} />}
           center
-          y={226}
-          width={320}
+          bottom={14}
+          width={380}
           className="panel-compact toss-panel toss-result"
         >
           <p className="note">{starts}</p>

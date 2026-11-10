@@ -13,7 +13,7 @@
     "playComputer": "Play against the computer",
     "playFriend": "Play with a friend",
     "learn": "Learn to play",
-    "about": "About Gebeta · ገበጣ",
+    "about": "About Gebeta",
     "continue": "Continue your game",
     "soundOn": "Sound on",
     "soundOff": "Sound off"
@@ -161,7 +161,7 @@
     "person": "ሰው (person)"
   },
   "loading": {
-    "line": "Lighting the fire…"
+    "line": "Setting out the board…"
   },
   "turn": {
     "title": "Turn your phone",

@@ -5,14 +5,15 @@ import type { Session } from '../game/session';
 import { activePlayer, playerName } from '../game/view';
 import { useScene } from '../scene/sceneStore';
 import { Caption } from './hud/Caption';
+import { Emblem } from './kit';
 import { Cartouche } from './hud/Cartouche';
 import { PlayerPlate } from './hud/PlayerPlate';
 import { roman } from './hud/roman';
 import './hud/hud.css';
 
 /**
- * The play HUD (spec §9, screens 7–8): the far player's plate at the top left, the near player's
- * at the bottom left, the round cartouche and the turn caption at the top centre.
+ * The play HUD: two leather bars framing the board. The far player's plate and the round
+ * cartouche are in the top one, the near player's plate and the turn caption in the bottom one.
  */
 export function Hud({ session }: { session: Session }) {
   const { t, i18n } = useTranslation();
@@ -68,10 +69,13 @@ export function Hud({ session }: { session: Session }) {
 
   return (
     <header className={`hud${phase === 'round-summary' ? ' hud-summary' : ''}${session.mode.kind === 'guided' ? ' hud-lesson' : ''}`}>
+      <div className="bar bar-top" aria-hidden="true" />
+      <div className="bar bar-bottom" aria-hidden="true" />
       {plate(far, 'far')}
       <Cartouche text={cartouche.text} pips={cartouche.pips} />
       {caption ? <Caption tone={caption.tone} text={caption.text} thinking={caption.thinking} /> : <p className="hud-caption" aria-live="polite" />}
       {plate(near, 'near')}
+      <Emblem size={40} className="hud-crest" />
     </header>
   );
 }

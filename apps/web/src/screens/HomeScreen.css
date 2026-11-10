@@ -1,103 +1,109 @@
-/* Home (spec §9, screen 2). Positions are the mockup's reference pixels at 844 × 390, scaled by --ui. */
+/*
+ * Home. The board has the middle of the screen to itself; everything else is in the two bars.
+ * Positions are reference pixels at 844 × 390, scaled by --ui.
+ */
 .home {
   position: absolute;
   inset: 0;
 }
 
-/* A dark grade behind the title and another behind the menu keep the text readable over the scene. */
-.home-grade {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgba(6, 4, 3, 0.78) 0,
-    rgba(6, 4, 3, 0.2) 42%,
-    rgba(6, 4, 3, 0) 55%,
-    rgba(6, 4, 3, 0.55) 72%,
-    rgba(6, 4, 3, 0.82) 100%
-  );
-}
-
+/* ---------- the name, either side of the crest ---------- */
 .home-title {
   position: absolute;
-  left: calc(71px * var(--ui));
-  top: calc(84px * var(--ui));
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  height: calc(46px * var(--ui));
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: calc(14px * var(--ui));
+  white-space: nowrap;
 }
 
 .home-title h1 {
   margin: 0;
-  font: 700 calc(58px * var(--ui)) / 1 var(--f-geez);
-  letter-spacing: 0.02em;
+  justify-self: end;
+  font: 700 calc(27px * var(--ui)) / 1 var(--f-geez);
+  letter-spacing: 0.03em;
   color: var(--gold-200);
-  text-shadow:
-    0 0 30px rgba(255, 170, 80, 0.35),
-    0 2px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* The crest hangs from the bar, its lower edge out over the paper. */
+.home-crest {
+  align-self: start;
+  margin-top: calc(5px * var(--ui));
+  filter: drop-shadow(0 3px 6px rgba(40, 20, 8, 0.45));
 }
 
 .home-latin {
-  margin: calc(10px * var(--ui)) 0 0;
-  font: 600 calc(15px * var(--ui)) / 1 var(--f-display);
-  letter-spacing: 0.62em;
+  margin: 0;
+  justify-self: start;
+  font: 600 calc(14px * var(--ui)) / 1 var(--f-display);
+  letter-spacing: 0.5em;
   color: var(--gold-300);
 }
 
+/* A caption on the paper itself, as under a plate in a catalogue. */
 .home-tagline {
-  margin: calc(12px * var(--ui)) 0 0;
-  font: italic 400 max(12px, calc(15px * var(--ui))) / 1.3 var(--f-text);
-  color: var(--text-300);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(72px * var(--ui));
+  margin: 0;
+  text-align: center;
+  font: italic 400 max(12px, calc(14.5px * var(--ui))) / 1.3 var(--f-text);
+  color: var(--paper-ink);
+  pointer-events: none;
 }
 
 .home-tagline:lang(am) {
-  font: 500 max(12px, calc(17px * var(--ui))) / 1.4 var(--f-geez);
+  font: 600 max(12px, calc(15px * var(--ui))) / 1.4 var(--f-geez);
 }
 
-/* The menu stack hangs from the right edge, so a wide screen keeps its margin. */
-.home-menu {
+/* ---------- the ends of the top bar ---------- */
+.home-language {
   position: absolute;
-  right: calc(71px * var(--ui));
-  top: calc(83px * var(--ui));
-  width: calc(268px * var(--ui));
+  left: calc(59px * var(--ui));
+  top: calc(8px * var(--ui));
+}
+
+.home-tools {
+  position: absolute;
+  right: calc(59px * var(--ui));
+  top: calc(2px * var(--ui));
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: calc(10px * var(--ui));
 }
 
-.home-menu .home-about {
-  align-self: center;
+.ui-layer .home-about {
+  font-size: max(9.5px, calc(10px * var(--ui)));
+  letter-spacing: 0.12em;
 }
 
-.home-footer {
-  position: absolute;
-  left: calc(59px * var(--ui));
-  bottom: max(calc(28px * var(--ui)), calc(var(--safe-b) + 12px));
-  display: flex;
-  align-items: center;
-  gap: calc(34px * var(--ui));
-}
-
-/* The language switch: a 30 px pill with the chosen language lit (spec §9, screen 2). */
+/* The language switch: two plaques side by side, the chosen one lit. */
 .seg {
   display: flex;
   height: max(30px, calc(30px * var(--ui)));
-  border: 1px solid rgba(214, 174, 106, 0.42);
-  border-radius: 999px;
-  overflow: hidden;
-  background: rgba(12, 9, 7, 0.7);
+  box-shadow: 0 0 0 1px var(--gold-700);
+  background: var(--ink-950);
 }
 
 .seg button {
   appearance: none;
   margin: 0;
   border: 0;
-  border-radius: 999px;
+  border-radius: 0;
   background: none;
   display: grid;
   place-items: center;
-  padding: 0 calc(14px * var(--ui));
-  font: 500 max(12px, calc(13px * var(--ui))) / 1 var(--f-geez);
-  color: var(--text-300);
+  padding: 0 calc(13px * var(--ui));
+  font: 600 max(12px, calc(13px * var(--ui))) / 1 var(--f-geez);
+  color: var(--text-500);
   cursor: pointer;
+  transition: color 120ms ease;
 }
 
 .seg button[lang='en'] {
@@ -106,13 +112,112 @@
   text-transform: uppercase;
 }
 
+.seg button:hover {
+  color: var(--text-100);
+}
+
 .seg button[aria-pressed='true'] {
-  background: rgba(214, 174, 106, 0.18);
+  background: var(--oxblood);
   color: var(--gold-200);
-  box-shadow: inset 0 0 0 1px rgba(214, 174, 106, 0.5);
+  box-shadow: inset 0 0 0 1px var(--gold-500);
 }
 
 .seg button:focus-visible {
   outline: 2px solid var(--ember-400);
   outline-offset: -2px;
+}
+
+/* ---------- the bottom bar: the ways to play, or a step's answers ---------- */
+.home-menu,
+.home-step {
+  position: absolute;
+  left: calc(59px * var(--ui));
+  right: calc(59px * var(--ui));
+  bottom: calc(6px * var(--ui) + var(--safe-b));
+  min-height: calc(40px * var(--ui));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(10px * var(--ui));
+}
+
+.ui-layer .home-menu .btn,
+.ui-layer .home-step .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: calc(250px * var(--ui));
+  padding-left: calc(12px * var(--ui));
+  padding-right: calc(12px * var(--ui));
+  font-size: calc(10.5px * var(--ui));
+  letter-spacing: 0.12em;
+  white-space: normal;
+}
+
+.ui-layer .home-step .btn-choice {
+  max-width: calc(310px * var(--ui));
+  min-height: max(40px, calc(42px * var(--ui)));
+  padding-top: calc(4px * var(--ui));
+  padding-bottom: calc(4px * var(--ui));
+  gap: calc(2px * var(--ui));
+}
+
+.ui-layer .home-step .btn-hint {
+  font-size: max(11px, calc(11.5px * var(--ui)));
+}
+
+.ui-layer .home-back {
+  flex: none;
+}
+
+/* The step's question, in ink on the paper just above the bar. */
+.ui-layer .home-question {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 18px * var(--ui));
+  margin: 0;
+  text-align: center;
+  font: 600 calc(13px * var(--ui)) / 1.2 var(--f-display);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--paper-ink);
+  pointer-events: none;
+}
+
+.ui-layer .home-question:lang(am) {
+  font: 700 calc(16px * var(--ui)) / 1.3 var(--f-geez);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Below 340 px tall the bars are lower: the name and the tools draw in with them. */
+.ui-compact .home-title {
+  height: calc(37px * var(--ui));
+}
+
+.ui-compact .home-title h1 {
+  font-size: calc(23px * var(--ui));
+}
+
+.ui-compact .home-crest {
+  margin-top: calc(2px * var(--ui));
+  width: calc(50px * var(--ui)) !important;
+  height: calc(50px * var(--ui)) !important;
+}
+
+.ui-compact .home-language {
+  top: calc(3px * var(--ui));
+}
+
+.ui-compact .home-tools {
+  top: 0;
+}
+
+.ui-compact .home-tagline {
+  top: calc(56px * var(--ui));
+}
+
+.ui-compact .home-menu,
+.ui-compact .home-step {
+  bottom: calc(3px * var(--ui) + var(--safe-b));
 }

@@ -1,27 +1,14 @@
-import { BLUEPRINT } from '../../scene/board/blueprint';
+import { ibexPath } from './ibexPath';
 
-/** The ibex head's side outline from the blueprint, fitted into the 56-unit medallion. */
-function outlinePath(): string {
-  const points = BLUEPRINT.heads.outlines.side;
-  let minU = Infinity;
-  let maxU = -Infinity;
-  let minV = Infinity;
-  let maxV = -Infinity;
-  for (const [u, v] of points) {
-    minU = Math.min(minU, u);
-    maxU = Math.max(maxU, u);
-    minV = Math.min(minV, v);
-    maxV = Math.max(maxV, v);
-  }
-  const box = 31;
-  const s = box / Math.max(maxU - minU, maxV - minV);
-  const cu = (minU + maxU) / 2;
-  const cv = (minV + maxV) / 2;
+/** The ibex head's side outline from the blueprint, fitted into the 56-unit crest. */
+export const EMBLEM_PATH = ibexPath(29, 28, 28);
+
+/** The crest's ring of window marks, after the row of windows along the board's carved band: 24 round the rim. */
+const TICKS = Array.from({ length: 24 }, (_, i) => {
+  const a = (i / 24) * Math.PI * 2;
   const r = (n: number) => Math.round(n * 100) / 100;
-  return points.map(([u, v], i) => `${i === 0 ? 'M' : 'L'}${r(28 + (u - cu) * s)} ${r(28 - (v - cv) * s)}`).join('') + 'Z';
-}
-
-export const EMBLEM_PATH = outlinePath();
+  return `M${r(28 + 23.2 * Math.cos(a))} ${r(28 + 23.2 * Math.sin(a))}L${r(28 + 25.4 * Math.cos(a))} ${r(28 + 25.4 * Math.sin(a))}`;
+}).join('');
 
 export interface EmblemProps {
   /** In reference px; scaled by the interface. Default 56. */
@@ -31,7 +18,10 @@ export interface EmblemProps {
   label?: string;
 }
 
-/** The ibex-head medallion: two rings and the head drawn as a vector from the blueprint (spec §9 "Emblem"). */
+/**
+ * The crest: the board's ibex head as a solid stamp inside a brass ring set with the band's
+ * window marks. It stands for the game on the loading screen, the title and the result.
+ */
 export function Emblem({ size = 56, className, label }: EmblemProps) {
   return (
     <svg
@@ -43,9 +33,11 @@ export function Emblem({ size = 56, className, label }: EmblemProps) {
       aria-hidden={label ? undefined : 'true'}
       focusable="false"
     >
-      <circle cx="28" cy="28" r="26" />
-      <circle cx="28" cy="28" r="22" style={{ opacity: 0.35 }} />
-      <path d={EMBLEM_PATH} />
+      <circle className="emblem-ground" cx="28" cy="28" r="27" />
+      <circle className="emblem-ring" cx="28" cy="28" r="26.6" />
+      <path className="emblem-ticks" d={TICKS} />
+      <circle className="emblem-ring" cx="28" cy="28" r="21.6" />
+      <path className="emblem-head" d={EMBLEM_PATH} />
     </svg>
   );
 }

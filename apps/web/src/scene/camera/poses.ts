@@ -89,34 +89,56 @@ export function playCamera(seat: Player, size: Size, bands: Bands): Pose {
   return pose;
 }
 
-/** Looking almost straight down over the board, for the toss and the end of a round. */
+/** Where the top view aims: a little towards the near player, which sets the board in the upper part of the screen. */
+export const TOP_TARGET: Vec3 = [0, 0, 1.15];
+
+/**
+ * Looking almost straight down over the board, for the toss and the end of a round. Both have a
+ * low panel along the bottom of the screen, so the view is aimed below the board and the board,
+ * and the coin over it, sit above the panel.
+ */
 export function topCamera(_size: Size, _bands: Bands): Pose {
-  return tilted((84 * Math.PI) / 180, 15.5, [0, 0, 0.05], 0, PLAY_FOV);
+  return tilted((84 * Math.PI) / 180, 15.5, TOP_TARGET, 0, PLAY_FOV);
 }
 
 const TAU = Math.PI * 2;
 const HOME_RADIUS = 15.5;
 const HOME_TARGET: Vec3 = [0, 0.8, 0];
 const HOME_AZIMUTH = (-30 * Math.PI) / 180;
+/** The board's share of the screen's height from HOME_RADIUS. */
+const HOME_FILL = 0.83;
 
 /**
  * The home camera: the reference photograph's three-quarter view of the board, from A's side, in
  * front and to the left and a little above. It drifts a slow ±10° about that view once a minute
  * and rises and falls half a unit, always aimed at the board.
+ *
+ * `room` is the share of the screen's height left between the interface's two bars. At the
+ * nearest distance the board fills 83% of the height, so with less room than that the camera
+ * stands back until the board fits between the bars.
  */
-export function homePose(t: number): Pose {
+export function homePose(t: number, room = 1): Pose {
+  const back = Math.max(1, HOME_FILL / (0.92 * Math.min(1, Math.max(0.3, room))));
   const az = HOME_AZIMUTH + ((10 * Math.PI) / 180) * Math.sin((TAU * t) / 60);
-  const y = 7 + 0.5 * Math.sin((TAU * t) / 60 + 1);
-  return { position: [HOME_RADIUS * Math.sin(az), y, HOME_RADIUS * Math.cos(az)], target: HOME_TARGET, fov: 30 };
+  const y = (7 + 0.5 * Math.sin((TAU * t) / 60 + 1)) * back;
+  const r = HOME_RADIUS * back;
+  return { position: [r * Math.sin(az), y, r * Math.cos(az)], target: HOME_TARGET, fov: 30 };
 }
 
-const ORBIT_RADIUS = 18;
+const ORBIT_RADIUS = 20;
 const ORBIT_TILT = (35 * Math.PI) / 180;
-const ORBIT_TARGET: Vec3 = [0, 0.2, 0];
+/** Aimed below the board, so it sits in the upper part of the screen, over the result panel. */
+const ORBIT_TARGET: Vec3 = [0, -1.1, 0];
+/** How far the result camera swings to either side of the broadside view. */
+const ORBIT_SWING = (40 * Math.PI) / 180;
 
-/** The result camera: a slow orbit at 35°, one turn every 40 s, 0.9 m from the board's centre. */
+/**
+ * The result camera: at 35°, a metre from the board's centre, swinging 40° to either side of the
+ * near player's broadside view and back every 40 s. It never comes end-on, where the near head
+ * would stand in front of the result panel.
+ */
 export function orbitPose(t: number): Pose {
-  const az = (TAU * t) / 40;
+  const az = ORBIT_SWING * Math.sin((TAU * t) / 40);
   const r = ORBIT_RADIUS * Math.cos(ORBIT_TILT);
   return {
     position: [r * Math.sin(az), ORBIT_TARGET[1] + ORBIT_RADIUS * Math.sin(ORBIT_TILT), r * Math.cos(az)],

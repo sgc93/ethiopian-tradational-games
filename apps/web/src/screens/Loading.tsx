@@ -24,9 +24,9 @@ function visitStorage(): VisitStorage {
 }
 
 /**
- * "Lighting the fire…" (spec §9, screen 1): the emblem, the name and a gold line filling as the
- * scene loads. When everything is ready it fades over 300 ms while the fire flares from black,
- * then `onDone` fires and the home screen takes over.
+ * "Setting out the board…": the emblem, the name and a brass line filling as the scene loads.
+ * When everything is ready it fades over 300 ms while the scene comes up, then `onDone` fires
+ * and the home screen takes over.
  */
 export function Loading({ onDone }: { onDone(): void }) {
   const { t } = useTranslation();

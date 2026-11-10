@@ -53,9 +53,22 @@ test('the top-down view looks almost straight down from 15.5', () => {
   const pose = topCamera(S, B);
   expect(Math.hypot(...sub(pose.position, pose.target))).toBeCloseTo(15.5, 2);
   expect(pose.position[1]).toBeGreaterThan(15);
-  const [x, y] = project(pose, S, [0, 0, 0.05]);
+  // Aimed towards the near player, so the board's centre sits in the upper part of the screen, clear of the low panels.
+  const [x, y] = project(pose, S, [0, 0, 0]);
   expect(x).toBeCloseTo(S.width / 2, 0);
-  expect(y).toBeCloseTo(S.height / 2, 0);
+  expect(y).toBeLessThan(S.height * 0.42);
+  expect(y).toBeGreaterThan(S.height * 0.2);
+});
+
+test('with less room between the bars, the home camera stands back along the same line', () => {
+  const near = homePose(5);
+  const far = homePose(5, 0.6);
+  expect(homePose(5, 1)).toEqual(near);
+  expect(homePose(5, 0.95)).toEqual(near); // the board already fits
+  const ratio = Math.hypot(...far.position) / Math.hypot(...near.position);
+  expect(ratio).toBeCloseTo(0.83 / (0.92 * 0.6), 5);
+  far.position.forEach((v, i) => expect(v / near.position[i]!).toBeCloseTo(ratio, 5));
+  expect(far.target).toEqual(near.target);
 });
 
 test('home view: the reference three-quarter, drifting ±10° about 30° left, 6.5–7.5 up, at radius 15.5', () => {
@@ -79,14 +92,19 @@ test('home camera aims at the board', () => {
   expect(target[1]).toBeLessThan(2);
 });
 
-test('orbit: one turn in 40 s at radius 18 and tilt 35°', () => {
+test('orbit: a swing of 40° either side of broadside every 40 s, at radius 20 and tilt 35°', () => {
+  for (let t = 0; t <= 40; t += 1) {
+    const [x, , z] = orbitPose(t).position;
+    expect(Math.abs(Math.atan2(x, z))).toBeLessThanOrEqual((40 * Math.PI) / 180 + 1e-9);
+  }
+  expect(Math.atan2(orbitPose(10).position[0], orbitPose(10).position[2])).toBeCloseTo((40 * Math.PI) / 180, 6);
   const a = orbitPose(0);
   const b = orbitPose(40);
   expect(a.position[0]).toBeCloseTo(b.position[0], 6);
   expect(a.position[2]).toBeCloseTo(b.position[2], 6);
   const p = orbitPose(7).position;
-  expect(Math.hypot(p[0], p[2])).toBeCloseTo(18 * Math.cos((35 * Math.PI) / 180), 1);
-  expect(p[1] - orbitPose(7).target[1]).toBeCloseTo(18 * Math.sin((35 * Math.PI) / 180), 1);
+  expect(Math.hypot(p[0], p[2])).toBeCloseTo(20 * Math.cos((35 * Math.PI) / 180), 1);
+  expect(p[1] - orbitPose(7).target[1]).toBeCloseTo(20 * Math.sin((35 * Math.PI) / 180), 1);
   expect(orbitPose(10).position[0]).not.toBeCloseTo(orbitPose(0).position[0], 1);
 });
 

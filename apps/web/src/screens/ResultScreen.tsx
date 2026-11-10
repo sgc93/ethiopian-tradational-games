@@ -7,9 +7,9 @@ import { Button, Emblem, Panel } from '../ui/kit';
 import './ResultScreen.css';
 
 /**
- * The end of a game (spec §9, screen 8): over the orbiting scene, a panel with the emblem, the
- * headline, the score, the reason and the rounds played, with Play again and Home. Embers burst
- * up from the fire as it opens.
+ * The end of a game: a low panel along the bottom, under the board as the camera circles it, with
+ * the crest, the headline, the score between the two players' names, the reason and the rounds
+ * played, and Play again and Home. A win, a loss and a draw are dressed differently.
  */
 export function ResultScreen({ session, onPlayAgain, onHome }: { session: Session; onPlayAgain(): void; onHome(): void }) {
   const { t } = useTranslation();
@@ -28,6 +28,8 @@ export function ResultScreen({ session, onPlayAgain, onHome }: { session: Sessio
   else if (session.humanSeat === null) headline = t('result.playerWon', { player: playerName(t, session, result.winner) });
   else headline = t(result.winner === session.humanSeat ? 'result.youWon' : 'result.computerWon');
 
+  // Between friends somebody always wins; against the computer the player wins or loses.
+  const outcome = result.winner === null ? 'draw' : session.humanSeat !== null && result.winner !== session.humanSeat ? 'lost' : 'won';
   const loser = result.winner === null ? null : result.winner === 0 ? 1 : 0;
   const notes: string[] = [];
   if (result.reason === 'no-homes' && loser !== null) notes.push(t('result.noHomes', { player: playerName(t, session, loser) }));
@@ -36,13 +38,19 @@ export function ResultScreen({ session, onPlayAgain, onHome }: { session: Sessio
   return (
     <div className="result" role="dialog" aria-modal="true" aria-labelledby="result-title">
       <div className="result-dim" aria-hidden="true" />
-      <Panel labelledBy="result-title" center y={46} width={320} className="result-panel">
-        <Emblem size={44} />
-        <h2 id="result-title" className={`big${headline.length > 12 ? ' big-long' : ''}`}>
-          {headline}
-        </h2>
-        <p className="score result-score">{t('result.score', { a: last.totals[0], b: last.totals[1] })}</p>
-        {notes.length > 0 && <p className="note result-note">{notes.join(' · ')}</p>}
+      <Panel labelledBy="result-title" center bottom={12} width={690} className={`result-panel result-${outcome}`}>
+        <Emblem size={54} className="result-crest" />
+        <div className="result-words">
+          <h2 id="result-title" className={`big${headline.length > 12 ? ' big-long' : ''}`}>
+            {headline}
+          </h2>
+          {notes.length > 0 && <p className="note result-note">{notes.join(' · ')}</p>}
+        </div>
+        <div className="scoreline">
+          <span className="who">{playerName(t, session, 0)}</span>
+          <p className="score result-score">{t('result.score', { a: last.totals[0], b: last.totals[1] })}</p>
+          <span className="who">{playerName(t, session, 1)}</span>
+        </div>
         <div className="result-actions">
           <Button kind="primary" className="result-again" onClick={onPlayAgain} autoFocus>
             {t('result.again')}

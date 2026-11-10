@@ -10,7 +10,7 @@ export function AboutScreen() {
   return (
     <main className="about">
       <div className="about-dim" aria-hidden="true" />
-      <Panel labelledBy="about-title" title={<Mixed text={t('about.title')} />} center y={26} width={480} className="about-panel">
+      <Panel labelledBy="about-title" title={<Mixed text={t('about.title')} />} center width={500} className="about-panel">
         <Medallion icon="close" size={30} label={t('about.close')} className="panel-back" onClick={() => setScreen('home')} />
         <p className="note about-p">
           <Mixed text={t('about.p1')} />

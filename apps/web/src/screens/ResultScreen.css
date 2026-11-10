@@ -1,4 +1,4 @@
-/* The result (spec §9, screen 8): one centred panel over the orbiting scene. */
+/* The result: a low panel along the bottom, so the board turns in full view above it. */
 .result {
   position: absolute;
   inset: 0;
@@ -9,77 +9,108 @@
   pointer-events: auto;
 }
 
-/* The scene dims behind the panel (the reference's "dim"); the embers still burst through. */
+/* Nothing dims the board at the end: it is what the player is looking at. */
 .result-dim {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: rgba(6, 4, 3, 0.45);
+  display: none;
 }
 
 .ui-layer .result-panel {
-  padding: calc(22px * var(--ui)) calc(24px * var(--ui));
-  text-align: center;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: calc(16px * var(--ui));
+  padding: calc(12px * var(--ui)) calc(22px * var(--ui));
 }
 
-.ui-layer .result-panel .emblem {
-  display: block;
-  margin: 0 auto;
-  color: var(--gold-300);
-}
-
-.ui-layer .result-panel .emblem circle,
-.ui-layer .result-panel .emblem path {
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* The headline, large. */
+/* The headline. */
 .ui-layer .big {
-  margin: calc(8px * var(--ui)) 0 0;
-  font: 700 calc(34px * var(--ui)) / 1.1 var(--f-display);
-  letter-spacing: 0.16em;
+  margin: 0;
+  font: 700 calc(22px * var(--ui)) / 1.1 var(--f-display);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold-200);
-  text-shadow: 0 0 30px rgba(255, 170, 70, 0.45);
 }
 
 /* A long headline ("The computer won", a friend's name) steps down so it holds to two lines. */
 .ui-layer .big-long {
-  font-size: calc(24px * var(--ui));
+  font-size: calc(17px * var(--ui));
 }
 
 .ui-layer .big:lang(am) {
-  font: 700 calc(36px * var(--ui)) / 1.2 var(--f-geez);
+  font: 700 calc(22px * var(--ui)) / 1.2 var(--f-geez);
   letter-spacing: 0;
   text-transform: none;
 }
 
-.ui-layer .score {
-  margin: calc(10px * var(--ui)) 0 calc(2px * var(--ui));
-  font: 600 calc(26px * var(--ui)) / 1 var(--f-display);
-  letter-spacing: 0.1em;
-  color: var(--text-100);
+.ui-layer .result-note {
+  margin-top: calc(4px * var(--ui));
+  text-align: left;
+  font-size: max(12px, calc(13px * var(--ui)));
 }
 
-.ui-layer .result-note {
-  font-size: max(12px, calc(13px * var(--ui)));
+/* The score, with a name on each side of it so it is plain whose is whose. */
+.scoreline {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: calc(10px * var(--ui));
+  padding: 0 calc(6px * var(--ui));
+}
+
+.scoreline .who {
+  font: 600 max(9.5px, calc(9.5px * var(--ui))) / 1 var(--f-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-300);
+  white-space: nowrap;
+}
+
+.scoreline .who:lang(am) {
+  font: 600 max(12px, calc(12px * var(--ui))) / 1 var(--f-geez);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.scoreline .who:first-child {
+  text-align: right;
+}
+
+.ui-layer .score {
+  margin: 0;
+  font: 700 calc(26px * var(--ui)) / 1 var(--f-display);
+  letter-spacing: 0.06em;
+  color: var(--text-100);
+  white-space: nowrap;
 }
 
 .result-actions {
   display: flex;
-  gap: calc(12px * var(--ui));
-  justify-content: center;
-  margin-top: calc(18px * var(--ui));
+  gap: calc(8px * var(--ui));
 }
 
-.ui-layer .result-again {
-  width: calc(140px * var(--ui));
+.ui-layer .result-actions .btn {
+  padding-left: calc(14px * var(--ui));
+  padding-right: calc(14px * var(--ui));
 }
 
-.ui-layer .result-home {
-  width: calc(110px * var(--ui));
+/* A win is lit; a loss is quiet, in the other side's colour; a draw sits between. */
+.ui-layer .result-lost .big {
+  color: var(--text-300);
+}
+
+.ui-layer .result-lost .result-crest {
+  color: var(--text-500);
+  opacity: 0.8;
+}
+
+.ui-layer .result-lost.panel {
+  background: var(--grain), radial-gradient(130% 85% at 50% 0%, rgba(127, 156, 196, 0.16), transparent 64%), linear-gradient(180deg, var(--ink-800), var(--ink-950));
+}
+
+.ui-layer .result-won .big {
+  text-shadow: 0 0 22px rgba(255, 170, 70, 0.5);
+}
+
+.ui-layer .result-won.panel {
+  border-color: var(--gold-300);
 }

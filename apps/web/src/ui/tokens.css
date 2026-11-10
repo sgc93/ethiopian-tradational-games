@@ -1,29 +1,52 @@
-/* The Teret interface tokens (spec §9). The values are mirrored in tokens.ts. */
+/*
+ * The interface tokens. The values are mirrored in tokens.ts.
+ *
+ * The interface is the fittings of the object on screen: panels are the oxblood leather of a
+ * game case, the linework is brass inlay, and the icons and text are the colour of bone. The
+ * scene behind is a daylight studio, so these are dark, opaque materials set against light paper.
+ */
 :root {
-  --ink-950: #0a0806;
-  --ink-900: #120e0a;
-  --ink-800: #1b1510;
-  --ink-700: #261d15;
-  --gold-200: #f1dcaa;
-  --gold-300: #e6c88e;
-  --gold-400: #d6ae6a;
-  --gold-500: #c09553;
-  --gold-700: #7d5f33;
+  /* Ebony and case leather: the grounds. */
+  --ink-950: #120907;
+  --ink-900: #1c0e0a;
+  --ink-800: #27130d;
+  --ink-700: #351a11;
+  /* Oxblood: header bands and the one main action. */
+  --ox-700: #43170f;
+  --ox-600: #5a2015;
+  --ox-500: #742b1c;
+  /* Brass. */
+  --gold-200: #f0dcab;
+  --gold-300: #e2c486;
+  --gold-400: #c9a15a;
+  --gold-500: #a8823f;
+  --gold-700: #6f5527;
+  /* The near player's accent, and the far player's. */
   --ember-300: #ffc27a;
   --ember-400: #ff9a3c;
   --ember-600: #d9661f;
   --moon-300: #b9cfee;
   --moon-500: #7f9cc4;
-  --text-100: #f4ead8;
-  --text-300: #cdbfa3;
-  --text-500: #8f826b;
-  --panel: rgba(13, 10, 7, 0.84);
-  --line: rgba(214, 174, 106, 0.55);
-  --line-soft: rgba(214, 174, 106, 0.18);
+  /* Bone, for text and stamped icons. */
+  --text-100: #efe6d2;
+  --text-300: #c9bba0;
+  --text-500: #93856c;
+  /* Ink on the paper backdrop, for captions that sit on the scene itself. */
+  --paper-ink: #3b2414;
+  --panel: #1f0f0b;
+  --line: rgba(201, 161, 90, 0.62);
+  --line-soft: rgba(201, 161, 90, 0.2);
 
   --f-display: 'Cinzel', 'Times New Roman', serif;
   --f-text: 'EB Garamond', Georgia, serif;
   --f-geez: 'Noto Serif Ethiopic', serif;
+
+  /* The grain of worked leather: fine noise, laid over every dark ground. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .86 0 0 0 0 .7 0 0 0 .5 -.16'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  /* The board's carved band as brass inlay: the zigzag with the window row over it, 20 px a repeat. */
+  --band: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10' viewBox='0 0 20 10'%3E%3Cpath d='M0 8.6 5 3.4l5 5.2 5-5.2 5 5.2' fill='none' stroke='%23c9a15a' stroke-width='1.1' stroke-linejoin='miter'/%3E%3Cpath d='M3.6 9.6 5 8.1l1.4 1.5zM13.6 9.6 15 8.1l1.4 1.5z' fill='%23c9a15a'/%3E%3Cpath d='M1 0h2.6v1.5H1zM6 0h2.6v1.5H6zM11 0h2.6v1.5H11zM16 0h2.6v1.5H16z' fill='%23c9a15a' opacity='.7'/%3E%3C/svg%3E");
+  /* A stepped corner, from the band's stepped pyramids: 12 px, drawn for the top-left. */
+  --corner: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M0 0h12v2.4H8.8v3.2H5.6v3.2H2.4V12H0z' fill='%23c9a15a'/%3E%3C/svg%3E");
 
   /* The interface scale: clamp(0.82, visible height / 390, 1.6), set by the interface layer. */
   --ui: 1;

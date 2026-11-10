@@ -7,7 +7,7 @@ export interface IconProps {
   className?: string;
 }
 
-/** A gold line icon; decorative, so its button or label carries the name. */
+/** A solid, stamped icon; decorative, so its button or label carries the name. */
 export function Icon({ name, size = 18, className }: IconProps) {
   return (
     <svg
@@ -17,7 +17,7 @@ export function Icon({ name, size = 18, className }: IconProps) {
       aria-hidden="true"
       focusable="false"
     >
-      <path d={ICONS[name]} />
+      <path d={ICONS[name]} fillRule="evenodd" clipRule="evenodd" />
     </svg>
   );
 }

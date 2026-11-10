@@ -88,7 +88,8 @@ export function CameraRig() {
     const s = state.current;
     switch (s.mode) {
       case 'home':
-        return homePose(urlOptions.still ? 12 : t);
+        // The board fits between the interface's bars; the bare still has the whole height.
+        return urlOptions.still ? homePose(12) : homePose(t, (bands.bottom - bands.top) / size.height);
       case 'toss':
       case 'round-end':
         return topCamera(size, bands);

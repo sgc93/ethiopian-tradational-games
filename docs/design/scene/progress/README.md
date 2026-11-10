@@ -115,3 +115,36 @@ The experience audit of 2026-11-10 found three rendering settings that were not 
 **A change of design: the tone curve is Khronos Neutral, not the spec's AgX.** Under a composer nothing can skip tone mapping, and the flame, embers, sky and the cups' glowing rings are authored as the colours they should show. AgX drains bright saturated colour by design: tried first, it turned the fire pale pink and the ember rings peach. Neutral leaves in-range colours as they are and rolls the highlights off, so the fire is orange rather than clipped yellow and the rings stay ember. The renderer's own curve, which only reaches the screen on the minimal tier, is Neutral too, so lit surfaces follow one curve on every tier; that tier is a little darker and more contrasted than it was under AgX. [p4-render-play-minimal.jpg](p4-render-play-minimal.jpg)
 
 **Not judged here:** the shadow softness (the captures' grazing firelight does not show it clearly) and the final colour, both of which want a real GPU and the owner's eye.
+
+## Part 5: the board alone in daylight, and the case-leather interface
+
+The owner asked for three things on 2026-11-10: everything but the board taken out of the scene, daylight in place of the night, with every part of the board textured as in the design photographs, and a more artful, vintage interface in the manner of the inspiration designs.
+
+### The scene
+
+- **Only the board is mounted.** `SceneRoot.tsx` mounts the studio, the board and the post chain. The night world's modules (hearth, hut, trees, props, mat, sky) are still in `scene/world/` but nothing mounts them; the fireside ambience and the ember burst are off with them.
+- **A daylight studio** (`scene/world/Studio.tsx`): a paper-coloured backdrop, a neutral room environment for the wood's reflections, sky light, and one key light from the upper left that throws the board's shadow on the floor. The teal-and-amber grade is out of the post chain; bloom, grain and vignette are turned down for daylight.
+- **The wood** is one material family cut "from the block" (`scene/board/woodMaterial.ts`): long grain on the top and sides, end grain on the two ends, the grain running up the heads and along the horns. The cups darken towards the bottom, and the carved band's cuts are shaded from its height map. Colour and grain are taken from design images 01, 17 and 18.
+- **The pebbles** are the eight river-stone colours of image 19, each with a fine speckle.
+
+The board on its own: [p5-board.jpg](p5-board.jpg). Before, for comparison: [p4-render-home-high.jpg](p4-render-home-high.jpg).
+
+### The interface
+
+The interface is drawn as the fittings of the object: the board's case. Oxblood leather, brass inlay and bone lettering; the only ornament is the board's own carved band, and the crest is the blueprint's ibex head.
+
+- **Two leather bars** frame the board, top and bottom, each edged with the band. On the home screen the top bar carries the name either side of the crest and the bottom bar carries the ways to play; the setup questions are answered in the same bar. In play the bars carry the two players, the round's plaque, the turn caption and the menu.
+- **Panels** (toss, round summary, result, pause, about, lesson) are leather with stepped brass corners and an oxblood title band. The toss, summary and result sit along the bottom, and the cameras hold the board above them.
+- **Buttons** are notched plaques; medallions have a milled bezel; the icons are solid stamps.
+
+| Home | Play | Pause |
+|---|---|---|
+| [p5-home.jpg](p5-home.jpg) | [p5-play.jpg](p5-play.jpg) | [p5-pause.jpg](p5-pause.jpg) |
+
+| Round summary | Result | Phone, 844 × 390 |
+|---|---|---|
+| [p5-round-summary.jpg](p5-round-summary.jpg) | [p5-result.jpg](p5-result.jpg) | [p5-phone-home.jpg](p5-phone-home.jpg) · [p5-phone-play.jpg](p5-phone-play.jpg) |
+
+**Copy changed with the scene:** the loading line is now "Setting out the board…" (`ገበጣውን እያዘጋጀን ነው…`, in `docs/i18n-review.md` for the owner's reading), and the home bar's About button reads "About Gebeta". The no-WebGL still (`apps/web/public/home-still.webp`) is the daylight board.
+
+**Not judged here:** the captures are from headless Chrome's software renderer, so the final colour and the frame rate on a phone still want a real GPU and the owner's eye. The stones are still the blueprint's 10 mm.

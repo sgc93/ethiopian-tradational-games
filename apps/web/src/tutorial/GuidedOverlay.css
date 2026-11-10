@@ -4,8 +4,8 @@
 .ui-layer .leave-lesson {
   position: absolute;
   right: calc(59px * var(--ui));
-  top: calc(12px * var(--ui));
-  height: max(34px, calc(34px * var(--ui)));
+  top: calc(4px * var(--ui));
+  height: max(34px, calc(36px * var(--ui)));
   padding: 0 calc(14px * var(--ui));
 }
 
@@ -22,12 +22,11 @@
 }
 
 .ui-layer .lesson-panel {
-  padding: calc(20px * var(--ui)) calc(26px * var(--ui));
   text-align: center;
 }
 
 .ui-layer .lesson-body {
-  margin-top: calc(14px * var(--ui));
+  margin-top: 0;
 }
 
 .ui-layer .lesson-ok {

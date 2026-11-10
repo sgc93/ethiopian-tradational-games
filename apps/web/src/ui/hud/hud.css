@@ -1,4 +1,8 @@
-/* The play HUD (spec §9, screens 7–8). Positions are the mockup's reference pixels at 844 × 390, scaled by --ui. */
+/*
+ * The play HUD. Two leather bars frame the board like the edges of its case: the far player and
+ * the menu in the top one with the round's plaque hanging from its middle, the near player and
+ * the turn caption in the bottom one. Positions are reference pixels at 844 × 390, scaled by --ui.
+ */
 .hud {
   position: absolute;
   inset: 0;
@@ -14,19 +18,12 @@
   --acc: var(--ember-400);
   position: absolute;
   left: calc(59px * var(--ui));
-  width: calc(188px * var(--ui));
-  height: calc(44px * var(--ui));
+  width: calc(196px * var(--ui));
+  height: calc(38px * var(--ui));
   display: flex;
   align-items: center;
   gap: calc(10px * var(--ui));
-  padding: 0 calc(14px * var(--ui)) 0 calc(4px * var(--ui));
   box-sizing: border-box;
-  background: linear-gradient(90deg, rgba(12, 9, 7, 0.88), rgba(12, 9, 7, 0.5));
-  border: 1px solid rgba(214, 174, 106, 0.3);
-  border-radius: 999px;
-  transition:
-    border-color 300ms ease,
-    box-shadow 300ms ease;
 }
 
 .plate.b {
@@ -34,37 +31,37 @@
 }
 
 .plate.far {
-  top: calc(12px * var(--ui));
+  top: calc(3px * var(--ui));
 }
 
 .plate.near {
-  bottom: max(calc(33px * var(--ui)), calc(var(--safe-b) + 12px));
+  bottom: calc(5px * var(--ui) + var(--safe-b));
 }
 
-.plate.active {
-  border-color: rgba(255, 154, 60, 0.75);
-  box-shadow: 0 0 20px rgba(255, 140, 50, 0.28);
-}
-
-.plate.b.active {
-  border-color: rgba(185, 207, 238, 0.7);
-  box-shadow: 0 0 20px rgba(150, 180, 230, 0.25);
-}
-
+/* The avatar: a stamped icon in a ringed medallion, the ring in the player's colour. */
 .plate .av {
   flex: none;
-  width: calc(36px * var(--ui));
-  height: calc(36px * var(--ui));
+  width: calc(34px * var(--ui));
+  height: calc(34px * var(--ui));
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 40% 35%, #3a2a1a, #120d08);
-  border: 1.5px solid var(--acc);
-  color: var(--acc);
+  color: var(--text-300);
+  background: radial-gradient(circle at 40% 30%, var(--ink-700), var(--ink-950));
+  box-shadow:
+    0 0 0 1px var(--ink-950),
+    0 0 0 2.5px var(--gold-700);
+  transition:
+    box-shadow 300ms ease,
+    color 300ms ease;
 }
 
 .plate.active .av {
-  box-shadow: 0 0 12px var(--acc);
+  color: var(--text-100);
+  box-shadow:
+    0 0 0 1px var(--ink-950),
+    0 0 0 2.5px var(--acc),
+    0 0 14px var(--acc);
 }
 
 .plate-text {
@@ -76,10 +73,15 @@
   font: 600 max(9.5px, calc(10.5px * var(--ui))) / 1 var(--f-display);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold-200);
+  color: var(--text-300);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 300ms ease;
+}
+
+.plate.active .nm {
+  color: var(--gold-200);
 }
 
 .plate .nm:lang(am) {
@@ -92,73 +94,82 @@
   display: flex;
   gap: calc(12px * var(--ui));
   margin-top: calc(5px * var(--ui));
-  font: 600 max(12px, calc(13px * var(--ui))) / 1 var(--f-text);
+  font: 600 max(12px, calc(13.5px * var(--ui))) / 1 var(--f-display);
   color: var(--text-100);
 }
 
 .plate .st span {
   display: inline-flex;
   align-items: center;
-  gap: calc(4px * var(--ui));
+  gap: calc(5px * var(--ui));
 }
 
 .plate .st .icon {
   color: var(--gold-400);
-  stroke-width: 1.4;
 }
 
 .plate .st b {
   font-weight: 600;
 }
 
-/* The diamond marker at the active plate's right edge. */
+/* Whose turn: a diamond in the player's colour after the name. */
 .plate .turn {
-  position: absolute;
-  right: -9px;
-  top: 50%;
-  width: 9px;
-  height: 9px;
-  margin-top: -5px;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-left: calc(2px * var(--ui));
   background: var(--acc);
   transform: rotate(45deg);
   box-shadow: 0 0 8px var(--acc);
 }
 
-/* At the end of a round only the cartouche stays; the summary panel carries the players. */
+/* At the end of a round only the top bar and the cartouche stay; the summary panel carries the players. */
 .hud-summary .plate,
-.hud-summary .hud-caption {
+.hud-summary .hud-caption,
+.hud-summary .bar-bottom,
+.hud-summary .hud-crest {
   display: none;
 }
 
-/* In a lesson the ribbon does the talking: no cartouche, no caption (spec §9, screen 9). */
+/* In a lesson the ribbon does the talking: no cartouche, no caption. */
 .hud-lesson .cart,
 .hud-lesson .hud-caption {
   display: none;
 }
 
 /* ---------- the round cartouche ---------- */
+/* An oxblood plaque hanging from the middle of the top bar. */
 .cart {
   position: absolute;
   left: 50%;
-  top: calc(12px * var(--ui));
+  top: calc(5px * var(--ui));
   transform: translateX(-50%);
-  width: calc(168px * var(--ui));
-  height: calc(32px * var(--ui));
+  width: calc(184px * var(--ui));
+  height: calc(34px * var(--ui));
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: calc(4px * var(--ui));
-  background: rgba(12, 9, 7, 0.72);
-  border: 1px solid rgba(214, 174, 106, 0.45);
-  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  isolation: isolate;
+  background: linear-gradient(180deg, var(--gold-300), var(--gold-700));
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
+}
+
+.cart::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: var(--oxblood);
+  clip-path: polygon(11.5px 0, calc(100% - 11.5px) 0, 100% 50%, calc(100% - 11.5px) 100%, 11.5px 100%, 0 50%);
 }
 
 .cart .t {
   font: 600 max(9.5px, calc(10px * var(--ui))) / 1 var(--f-display);
-  letter-spacing: 0.26em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--gold-300);
+  color: var(--gold-200);
   white-space: nowrap;
 }
 
@@ -177,11 +188,11 @@
   width: 5px;
   height: 5px;
   transform: rotate(45deg);
-  border: 1px solid var(--gold-500);
+  border: 1px solid var(--gold-400);
 }
 
 .cart .pips i.done {
-  background: var(--gold-400);
+  background: var(--gold-300);
 }
 
 .cart .pips i.now {
@@ -191,27 +202,35 @@
 }
 
 /* ---------- the turn caption ---------- */
+/* In the bottom bar, beside the near player: whose turn it is and what to do. */
 .hud-caption {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(52px * var(--ui));
+  left: calc(270px * var(--ui));
+  right: calc(110px * var(--ui));
+  bottom: calc(5px * var(--ui) + var(--safe-b));
+  height: calc(38px * var(--ui));
   margin: 0;
-  padding: 0 calc(220px * var(--ui));
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  font: 600 max(9.5px, calc(10px * var(--ui))) / 1.2 var(--f-display);
-  letter-spacing: 0.3em;
+  font: 600 max(9.5px, calc(10.5px * var(--ui))) / 1.3 var(--f-display);
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ember-300);
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
   pointer-events: none;
-  min-height: 1.2em;
 }
 
 .hud-caption:lang(am) {
-  font: 600 max(12px, calc(12px * var(--ui))) / 1.3 var(--f-geez);
+  font: 600 max(12px, calc(12.5px * var(--ui))) / 1.3 var(--f-geez);
   letter-spacing: 0;
   text-transform: none;
+}
+
+/* What to do is said more quietly than whose turn it is. */
+.hud-caption .hint {
+  color: var(--text-300);
+  letter-spacing: 0.18em;
 }
 
 .hud-caption.cool {
@@ -247,14 +266,24 @@
   }
 }
 
+/* The crest closes the bottom bar at the right, where the menu closes the top one. */
+.hud-crest {
+  position: absolute;
+  right: calc(63px * var(--ui));
+  bottom: calc(8px * var(--ui) + var(--safe-b));
+  opacity: 0.9;
+  pointer-events: none;
+}
+
 /* ---------- menu medallion ---------- */
 .ui-layer .hud-menu {
   position: absolute;
   right: calc(59px * var(--ui));
-  top: calc(12px * var(--ui));
+  top: calc(2px * var(--ui));
 }
 
 /* ---------- count discs ---------- */
+/* An ebony counter with a brass rim beside each cup. */
 .discs {
   position: absolute;
   inset: 0;
@@ -277,8 +306,10 @@
   place-items: center;
   font: 700 max(10px, calc(11.5px * var(--ui))) / 1 var(--f-display);
   color: var(--gold-200);
-  background: rgba(9, 7, 5, 0.66);
-  border: 1px solid rgba(214, 174, 106, 0.45);
+  background: radial-gradient(circle at 40% 30%, var(--ink-700), var(--ink-950));
+  box-shadow:
+    0 0 0 1px var(--gold-500),
+    0 2px 5px rgba(40, 20, 8, 0.45);
   will-change: transform;
   user-select: none;
 }
@@ -287,15 +318,21 @@
   width: max(26px, calc(30px * var(--ui)));
   height: max(26px, calc(30px * var(--ui)));
   font-size: max(11px, calc(13.5px * var(--ui)));
+  box-shadow:
+    0 0 0 1px var(--gold-300),
+    0 0 0 3px var(--ink-950),
+    0 0 0 4px var(--gold-700),
+    0 2px 6px rgba(40, 20, 8, 0.5);
 }
 
 .cnt.play {
-  border-color: var(--ember-400);
   color: #fff3da;
-  box-shadow: 0 0 10px rgba(255, 150, 60, 0.6);
+  box-shadow:
+    0 0 0 1.5px var(--ember-400),
+    0 0 10px rgba(255, 140, 50, 0.75);
 }
 
-/* A value change: the disc swells and flashes gold for 160 ms. */
+/* A value change: the disc swells and flashes brass for 160 ms. */
 .cnt.tick {
   animation: cnt-tick 160ms ease-out;
 }
@@ -303,27 +340,49 @@
 @keyframes cnt-tick {
   0% {
     scale: 1;
-    background: rgba(9, 7, 5, 0.66);
   }
   40% {
     scale: 1.15;
-    background: rgba(214, 174, 106, 0.6);
+    background: var(--gold-500);
   }
   100% {
     scale: 1;
-    background: rgba(9, 7, 5, 0.66);
   }
 }
 
 /* ---------- compact layout, below 340 px tall ---------- */
 .ui-compact .plate {
-  width: calc(164px * var(--ui));
-  height: calc(38px * var(--ui));
+  width: calc(170px * var(--ui));
+  height: calc(34px * var(--ui));
+}
+
+.ui-compact .plate.far {
+  top: calc(1px * var(--ui));
+}
+
+.ui-compact .plate.near {
+  bottom: calc(3px * var(--ui) + var(--safe-b));
+}
+
+.ui-compact .plate .av {
+  width: calc(30px * var(--ui));
+  height: calc(30px * var(--ui));
 }
 
 .ui-compact .cart {
-  width: calc(150px * var(--ui));
-  height: calc(28px * var(--ui));
+  top: calc(3px * var(--ui));
+  width: calc(160px * var(--ui));
+  height: calc(29px * var(--ui));
+}
+
+.ui-compact .hud-caption {
+  left: calc(240px * var(--ui));
+  bottom: calc(3px * var(--ui) + var(--safe-b));
+  height: calc(34px * var(--ui));
+}
+
+.ui-compact .ui-layer .hud-menu {
+  top: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -334,4 +393,9 @@
   .cnt.tick {
     animation: none;
   }
+}
+
+/* The caption's two parts are flex items: the space between them is set here. */
+.hud-caption .hint {
+  margin-left: 0.6em;
 }

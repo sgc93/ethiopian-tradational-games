@@ -12,33 +12,20 @@
   gap: calc(22px * var(--tp));
   padding: 0 calc(40px * var(--tp));
   text-align: center;
-  background: radial-gradient(ellipse at 50% 40%, #2a1c10, #070504 70%);
+  background: var(--grain), radial-gradient(ellipse at 50% 38%, var(--ox-600), var(--ink-950) 72%);
   color: var(--text-100);
 }
 
 .turn-phone .emblem {
-  width: calc(72px * var(--tp)) !important;
-  height: calc(72px * var(--tp)) !important;
-  color: var(--gold-300);
-}
-
-.turn-phone .emblem circle,
-.turn-phone .emblem path {
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  width: calc(76px * var(--tp)) !important;
+  height: calc(76px * var(--tp)) !important;
 }
 
 .turn-phone-icon {
   width: calc(54px * var(--tp)) !important;
   height: calc(54px * var(--tp)) !important;
-  stroke: var(--gold-300);
-  fill: none;
-  stroke-width: 1.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  fill: var(--text-100);
+  stroke: none;
   animation: turn-phone-rock 2s cubic-bezier(0.45, 0, 0.2, 1) infinite;
 }
 
@@ -80,7 +67,7 @@
 }
 
 .turn-phone-body:lang(am) {
-  font: 500 max(12px, calc(17px * var(--tp))) / 1.5 var(--f-geez);
+  font: 600 max(12px, calc(16px * var(--tp))) / 1.5 var(--f-geez);
 }
 
 .turn-phone-other {
