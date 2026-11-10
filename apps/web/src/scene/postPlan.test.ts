@@ -16,14 +16,16 @@ test('tones are mapped after the light-gathering effects and before the film one
     const at = (name: (typeof order)[number]) => order.indexOf(name);
     expect(at('bloom')).toBeLessThan(at('tone-mapping'));
     if (order.includes('depth-of-field')) expect(at('depth-of-field')).toBeLessThan(at('tone-mapping'));
-    for (const film of ['grain', 'vignette', 'grade'] as const) expect(at('tone-mapping')).toBeLessThan(at(film));
+    for (const film of ['grain', 'vignette'] as const) expect(at('tone-mapping')).toBeLessThan(at(film));
   }
 });
 
 test('depth of field and SMAA are the high tier’s alone', () => {
-  expect(postEffects('full')).toEqual(['smaa', 'bloom', 'depth-of-field', 'tone-mapping', 'grain', 'vignette', 'grade']);
-  expect(postEffects('full-no-dof')).toEqual(['bloom', 'tone-mapping', 'grain', 'vignette', 'grade']);
-  expect(postEffects('light')).toEqual(['bloom', 'tone-mapping', 'grain', 'vignette', 'grade']);
+  expect(postEffects('full')).toEqual(['smaa', 'bloom', 'depth-of-field', 'tone-mapping', 'grain', 'vignette']);
+  expect(postEffects('full-no-dof')).toEqual(['bloom', 'tone-mapping', 'grain', 'vignette']);
+  expect(postEffects('light')).toEqual(['bloom', 'tone-mapping', 'grain', 'vignette']);
+  // The night scene's grade is out of the daylight studio.
+  for (const level of ['full', 'full-no-dof', 'light'] as const) expect(postEffects(level)).not.toContain('grade');
 });
 
 test('the focus is on the board: the board stays sharp, the hut and the trees soften', () => {

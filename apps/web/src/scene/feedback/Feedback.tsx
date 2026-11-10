@@ -2,7 +2,6 @@ import type { HoleIndex, Player } from '@etg/gebeta-rules';
 import { useFrame } from '@react-three/fiber';
 import { CupRings } from './CupRings';
 import { Dust } from './Dust';
-import { EmberBurst } from './EmberBurst';
 import { EyeGlint } from './EyeGlint';
 import { now, useFeedback } from './feedbackStore';
 import { Inlays } from './Inlays';
@@ -25,7 +24,6 @@ export function Feedback({ owners, playable, suggested = null }: { owners: reado
       <Sparks />
       <StoreGlow />
       <EyeGlint />
-      <EmberBurst />
       <Pruner />
     </>
   );

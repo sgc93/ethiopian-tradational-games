@@ -11,9 +11,9 @@ import { holeCenter } from './layout';
 import { useScene, type SceneMode } from './sceneStore';
 
 const REDUCED_MOTION = typeof window !== 'undefined' && deviceEnv().reducedMotion;
-/** Fixed looks for checking the set: by the fire, and at head B (at x = −5.25, facing +x) like the reference sheets. */
+/** Fixed looks for checking the set: the reference three-quarter view, and three at head B (at x = −5.25, facing +x) like the reference sheets. */
 const DEV_LOOKS: Record<NonNullable<typeof urlOptions.cam>, Pose> = {
-  home: { position: [4, 3.5, 22], target: [-9, 0.5, -1], fov: 32 },
+  home: { position: [-10.5, 9, 18.2], target: [0, 0.8, 0], fov: 30 },
   head: { position: [-5.0, 1.9, 9.5], target: [-5.0, 1.7, 0], fov: 30 },
   head34: { position: [1.5, 3.4, 7.5], target: [-5.0, 1.6, 0], fov: 30 },
   headfront: { position: [4.5, 2.2, 0], target: [-5.0, 1.8, 0], fov: 30 },

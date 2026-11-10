@@ -95,17 +95,19 @@ export function topCamera(_size: Size, _bands: Bands): Pose {
 }
 
 const TAU = Math.PI * 2;
-const HOME_RADIUS = 22;
-const HOME_TARGET: Vec3 = [-9, 0.5, -1];
+const HOME_RADIUS = 21;
+const HOME_TARGET: Vec3 = [0, 0.8, 0];
+const HOME_AZIMUTH = (-30 * Math.PI) / 180;
 
 /**
- * The home camera: on A's side, 1.1 m from the board's centre, sweeping a slow ±25° arc once a
- * minute and bobbing between 2 and 5 above the top, aimed between the board and the fire.
+ * The home camera: the reference photograph's three-quarter view of the board, from A's side, in
+ * front and to the left and a little above. It drifts a slow ±10° about that view once a minute
+ * and rises and falls half a unit, always aimed at the board.
  */
 export function homePose(t: number): Pose {
-  const az = ((25 * Math.PI) / 180) * Math.sin((TAU * t) / 60);
-  const y = 3.5 + 1.5 * Math.sin((TAU * t) / 60 + 1);
-  return { position: [HOME_RADIUS * Math.sin(az), y, HOME_RADIUS * Math.cos(az)], target: HOME_TARGET, fov: 32 };
+  const az = HOME_AZIMUTH + ((10 * Math.PI) / 180) * Math.sin((TAU * t) / 60);
+  const y = 9 + 0.5 * Math.sin((TAU * t) / 60 + 1);
+  return { position: [HOME_RADIUS * Math.sin(az), y, HOME_RADIUS * Math.cos(az)], target: HOME_TARGET, fov: 30 };
 }
 
 const ORBIT_RADIUS = 18;

@@ -38,13 +38,13 @@ function usePortraitPause(portrait: boolean) {
 
 /**
  * Sound everywhere after the first gesture (browsers allow none before one): every tap makes sure
- * audio is running, the fireside ambience plays from then on, and all of it follows the setting.
+ * audio is running, and all of it follows the setting. The fireside ambience (crackle, breeze,
+ * crickets) belongs to the night scene and is not started in the daylight studio.
  */
 function useSound() {
   const sound = useApp((s) => s.settings.sound);
   useEffect(() => sfx.setEnabled(sound), [sound]);
   useEffect(() => {
-    sfx.ambience(true);
     const unlock = () => sfx.unlock();
     window.addEventListener('pointerdown', unlock);
     return () => window.removeEventListener('pointerdown', unlock);

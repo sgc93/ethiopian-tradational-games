@@ -1,5 +1,5 @@
 import { PerformanceMonitor, Stats, useProgress } from '@react-three/drei';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useShallow } from 'zustand/react/shallow';
@@ -9,38 +9,9 @@ import { Post } from './Post';
 import { useScene } from './sceneStore';
 import { TIERS } from './tiers';
 import { useTier } from './useTier';
-import { Embers } from './world/Embers';
-import { makeEnvironment } from './world/environment';
-import { Flame } from './world/Flame';
-import { Grass } from './world/Grass';
-import { Ground } from './world/Ground';
-import { Hearth } from './world/Hearth';
-import { Hut } from './world/Hut';
-import { BakedShadow } from './world/BakedShadow';
-import { Lights } from './world/Lights';
-import { Mat } from './world/Mat';
-import { Props } from './world/Props';
-import { Sky } from './world/Sky';
-import { Smoke } from './world/Smoke';
-import { Trees } from './world/Trees';
+import { Studio } from './world/Studio';
 
 const showFps = typeof location !== 'undefined' && new URLSearchParams(location.search).has('fps');
-
-/** Reflections from a tiny procedural night environment, built once per renderer. */
-function Environment() {
-  const gl = useThree((s) => s.gl);
-  const scene = useThree((s) => s.scene);
-  useEffect(() => {
-    const env = makeEnvironment(gl);
-    scene.environment = env;
-    scene.environmentIntensity = 0.6;
-    return () => {
-      scene.environment = null;
-      env.dispose();
-    };
-  }, [gl, scene]);
-  return null;
-}
 
 /** Measures the frame rate on the home screen and sets the tier; must live inside the canvas. */
 function TierProbe() {
@@ -51,7 +22,7 @@ function TierProbe() {
 /**
  * Mounts only once every sibling in its Suspense boundary has resolved, then waits for the board
  * and for the frames to be quick again: the first frames with everything in the scene upload the
- * buffers and compile the shaders, a stall of a second or two that must not land in the flare.
+ * buffers and compile the shaders, a stall of a second or two that must not land in the reveal.
  */
 function WorldReady() {
   const detail = useScene((s) => TIERS[s.tier].detail);
@@ -79,10 +50,10 @@ function WorldReady() {
   return null;
 }
 
-/** The one canvas behind every screen: the fireside world, the board and the camera. */
+/** The one canvas behind every screen: the board in its daylight studio, and the camera. */
 export function SceneRoot() {
   const [declined, setDeclined] = useState(false);
-  // A shallow pick, so the per-frame `flare` writes during the loading flare do not re-render the canvas.
+  // A shallow pick, so per-frame writes to the store do not re-render the canvas.
   const { session, speed, sfx, suggested, onHoleTap, onAnimationDone, tier, fade, frameloop } = useScene(
     useShallow((s) => ({
       session: s.session,
@@ -113,25 +84,10 @@ export function SceneRoot() {
       >
         <PerformanceMonitor onDecline={() => setDeclined(true)} />
         <TierProbe />
-        <color attach="background" args={['#0a0806']} />
-        <fogExp2 attach="fog" args={['#0a0806', 0.0035]} />
-        <Environment />
-        <Lights />
+        <Studio />
         <Suspense fallback={null}>
-          <Sky />
-          <Ground />
-          <Mat />
-          <Hearth />
-          <Props />
-          <Hut />
-          <Trees />
           <WorldReady />
         </Suspense>
-        <Grass />
-        {TIERS[tier].bakedShadow && <BakedShadow />}
-        <Flame />
-        <Embers />
-        <Smoke />
         <BoardScene
           session={session}
           speed={speed}

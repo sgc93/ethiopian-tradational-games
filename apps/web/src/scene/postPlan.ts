@@ -1,6 +1,6 @@
 import type { PostLevel } from './tiers';
 
-export type PostEffect = 'smaa' | 'bloom' | 'depth-of-field' | 'tone-mapping' | 'grain' | 'vignette' | 'grade';
+export type PostEffect = 'smaa' | 'bloom' | 'depth-of-field' | 'tone-mapping' | 'grain' | 'vignette';
 
 /**
  * The effects of a post level, in the order they run (spec §8 "Post-processing").
@@ -8,8 +8,9 @@ export type PostEffect = 'smaa' | 'bloom' | 'depth-of-field' | 'tone-mapping' | 
  * Bloom and depth of field gather light, so they work on the scene's unmapped values. Tone
  * mapping comes next: the effect composer switches the renderer's own tone mapping off while it
  * is mounted, so without this step the tiers with a composer would show clipped, unmapped
- * colour and only the minimal tier a tone curve. Grain, the vignette and the grade are film
- * effects and work on the mapped picture.
+ * colour and only the minimal tier a tone curve. Grain and the vignette are film effects and
+ * work on the mapped picture. The night scene's colour grade (`gradeEffect.ts`: teal shadows,
+ * amber highlights) is left out of the daylight studio, where the wood should show its own colour.
  *
  * The curve is the Khronos Neutral one on every tier (`Post.tsx` here, the renderer's in
  * `SceneRoot.tsx` for the minimal tier), not the spec's AgX. Under a composer nothing can skip
@@ -21,7 +22,7 @@ export type PostEffect = 'smaa' | 'bloom' | 'depth-of-field' | 'tone-mapping' | 
 export function postEffects(level: PostLevel): PostEffect[] {
   if (level === 'none') return [];
   const full = level === 'full';
-  return [...(full ? (['smaa'] as const) : []), 'bloom', ...(full ? (['depth-of-field'] as const) : []), 'tone-mapping', 'grain', 'vignette', 'grade'];
+  return [...(full ? (['smaa'] as const) : []), 'bloom', ...(full ? (['depth-of-field'] as const) : []), 'tone-mapping', 'grain', 'vignette'];
 }
 
 /** What the lens is focused on: the board's centre, the play camera's target, in every view. */

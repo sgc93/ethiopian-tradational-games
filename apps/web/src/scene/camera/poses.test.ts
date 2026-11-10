@@ -58,36 +58,25 @@ test('the top-down view looks almost straight down from 15.5', () => {
   expect(y).toBeCloseTo(S.height / 2, 0);
 });
 
-test('home arc stays within ±25°, 2–5 above the top, at radius 22', () => {
+test('home view: the reference three-quarter, drifting ±10° about 30° left, 8.5–9.5 up, at radius 21', () => {
   for (let t = 0; t < 60; t += 0.5) {
     const p = homePose(t);
     const az = (Math.atan2(p.position[0], p.position[2]) * 180) / Math.PI;
-    expect(Math.abs(az)).toBeLessThanOrEqual(25.01);
-    expect(p.position[1]).toBeGreaterThanOrEqual(2);
-    expect(p.position[1]).toBeLessThanOrEqual(5);
-    expect(Math.hypot(p.position[0], p.position[2])).toBeCloseTo(22, 1);
+    expect(az).toBeLessThanOrEqual(-19.99);
+    expect(az).toBeGreaterThanOrEqual(-40.01);
+    expect(p.position[1]).toBeGreaterThanOrEqual(8.5);
+    expect(p.position[1]).toBeLessThanOrEqual(9.5);
+    expect(Math.hypot(p.position[0], p.position[2])).toBeCloseTo(21, 1);
     expect(p.position[2]).toBeGreaterThan(0); // on A's side
   }
   homePose(0).position.forEach((v, i) => expect(v).toBeCloseTo(homePose(60).position[i]!, 9)); // once a minute
 });
 
-test('home camera clears every prop by 2', () => {
-  const props = [
-    [-32, 10],
-    [-20, 9],
-    [-20, -9],
-    [-15, -11],
-  ];
-  for (let t = 0; t < 60; t += 0.5) {
-    const p = homePose(t).position;
-    for (const [x, z] of props) expect(Math.hypot(p[0] - x!, p[2] - z!)).toBeGreaterThan(2);
-  }
-});
-
-test('home camera aims between the board and the fire', () => {
+test('home camera aims at the board', () => {
   const { target } = homePose(10);
-  expect(target[0]).toBeLessThan(0);
-  expect(target[0]).toBeGreaterThan(-26);
+  expect(Math.hypot(target[0], target[2])).toBeLessThan(1);
+  expect(target[1]).toBeGreaterThan(0);
+  expect(target[1]).toBeLessThan(2);
 });
 
 test('orbit: one turn in 40 s at radius 18 and tilt 35°', () => {
